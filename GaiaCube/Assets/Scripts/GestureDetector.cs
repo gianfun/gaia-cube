@@ -19,10 +19,17 @@ public class GestureDetector : MonoBehaviour {
 	public bool isPinching = false;
 	public bool isOpenHand = false;
 	public bool isPaw = false;
+	public bool wasPaw = false;
 
 	public Vector3 pinchPosition;
+	public Vector3 pawStartPosition;
+	public Vector3 palmVelocity;
 	public int extendedFingers;
+	public int rawExtendedFingers;
 	public float fingerDistance;
+
+	public int pawLeeway = 0;
+
 
 	private Collider plane;
 	// Use this for initialization
@@ -37,10 +44,13 @@ public class GestureDetector : MonoBehaviour {
 	void Update () {
 		hand = _handModel.GetLeapHand ();
 		if (hand != null || !_handModel.IsTracked) {
+			wasPaw = isPaw;
+
 			isPinching = false;
 			isOpenHand = false;
 			isPaw = false;
 			extendedFingers = 0;
+			rawExtendedFingers = 0;
 			fingerDistance = 0f;
 
 			//Vector3 pos = hand.PalmPosition.ToVector3(); 
@@ -65,8 +75,11 @@ public class GestureDetector : MonoBehaviour {
 			for (int i = 0; i < fingers.Count; i++) {
 				var finger = fingers [i];
 				Vector3 fDir = finger.Bone (Leap.Bone.BoneType.TYPE_DISTAL).Direction.ToVector3();
-				if (Vector3.Dot(fDir, handNormal) < 0.40f && finger.IsExtended) {
+				if (Mathf.Abs( Vector3.Dot(fDir, handNormal)) < 0.50f && finger.IsExtended) {
 					extendedFingers += 1;
+				}
+				if (finger.IsExtended) {
+					rawExtendedFingers += 1;
 				}
 
 				if (finger.Type == Leap.Finger.FingerType.TYPE_MIDDLE ||
@@ -77,14 +90,33 @@ public class GestureDetector : MonoBehaviour {
 			}
 			fingerDistance /= 3;
 
-			print ("Finger dist: " + fingerDistance);
-			print ("We have " + extendedFingers + " extended fingers!");
-			if (extendedFingers == 5) {
+
+
+			Debug.DrawLine(hand.PalmPosition.ToVector3 (), hand.PalmPosition.ToVector3 () + hand.PalmNormal.Normalized.ToVector3 (), Color.red);
+
+			//print ("Finger dist: " + fingerDistance);
+			//print ("We have " + extendedFingers + " extended fingers!");
+			if (rawExtendedFingers == 5) { //extendedFingers needs work.
 				isOpenHand = true;
 			}
 			if (isOpenHand && fingerDistance < 0.021f) {
+				pawLeeway = 0;
 				isPaw = true;
-				print ("Paw!");
+			//	print ("Paw!");
+			} else {
+				if (pawLeeway > 10) {
+					pawLeeway = -1;
+					isPaw = false;
+					wasPaw = false;
+				}
+				pawLeeway += 1;
+			}
+		
+			palmVelocity = hand.PalmVelocity.ToVector3 ();
+			
+			if (!wasPaw && isPaw) { //Just became paw!
+				pawStartPosition = hand.PalmPosition.ToVector3();
+				print("Just became paw. Start pos: " + pawStartPosition);
 			}
 		} else {
 			isPinching = false;

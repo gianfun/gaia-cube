@@ -29,9 +29,13 @@ public class GestureManager : MonoBehaviour {
 	[SerializeField]
 	public Collider plane;
 
+	[SerializeField]
+	private UnityEngine.UI.Text infoText;
 
 	private GestureDetector left;
 	private GestureDetector right;
+
+	private float extrudedLength = 0f;
 
 	// Use this for initialization
 	void Start () {
@@ -49,6 +53,16 @@ public class GestureManager : MonoBehaviour {
 			right = gd1;
 		}
 
+
+		infoText.text =  "Extended Fingers \t: Left: " 		+ left.extendedFingers 		+ "  Right: " + right.extendedFingers 		+ "\n";
+		infoText.text += "Extended Fingers (raw): Left: " 	+ left.rawExtendedFingers 	+ "  Right: " + right.rawExtendedFingers 	+ "\n";
+		infoText.text += "Finger distance\t\t: Left: " 		+ left.fingerDistance  		+ "  Right: " + right.fingerDistance  		+ "\n";
+		infoText.text += "Paw      \t\t\t\t\t: Left: " 		+ left.isPaw           		+ "  Right: " + right.isPaw           		+ "\n";
+		infoText.text += "Paw position \t\t\t: Left: " 		+ left.pawStartPosition		+ "  Right: " + right.pawStartPosition		+ "\n";
+		infoText.text += "Palm velocity\t\t\t: Left: " 		+ left.palmVelocity			+ "  Right: " + right.palmVelocity 			+ "\n";
+		infoText.text += "Palm upwardness\t\t\t: Left: " 		+ left.hand.PalmNormal.ToVector3().normalized			+ "  Right: " + right.hand.PalmNormal.ToVector3().normalized 			+ "\n";
+
+
 		if (left.isPinching && right.isPinching) {
 			topLeftSelection = getPlanePoint (left.pinchPosition);
 			bottomRightSelection = getPlanePoint (right.pinchPosition);
@@ -58,6 +72,24 @@ public class GestureManager : MonoBehaviour {
 			highlighter.transform.position = new Vector3 ((tl.x + br.x) / 2, (tl.y + br.y) / 2, (tl.z + br.z) / 2);
 			highlighter.transform.localScale = new Vector3 ((tl.x - br.x) , 1f, (tl.z - br.z) );
 			highlighter.transform.rotation = Quaternion.identity;
+		}
+
+		if (left.isPaw) {
+			if (!left.wasPaw) {
+				highlighter.transform.position = new Vector3 (0f, 0f, 0f);
+			} else {
+				if( Mathf.Abs(left.hand.PalmNormal.ToVector3().normalized.y) > 0.9f){
+					extrudedLength += left.palmVelocity.y - 10.0f;
+					if (extrudedLength < 0f) {
+						extrudedLength = 0;
+					}
+				}
+				highlighter.transform.localScale = new Vector3 (1f, extrudedLength, 1f);
+				highlighter.transform.position = new Vector3 (0f, highlighter.transform.localScale.y/2f, 0f);
+				highlighter.transform.rotation = Quaternion.identity;
+			}
+		} else {
+			extrudedLength = 0f;
 		}
 	}
 
