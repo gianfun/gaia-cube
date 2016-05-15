@@ -52,7 +52,9 @@ public class GestureDetector : MonoBehaviour {
 	void Start () {
 		hand = _handModel.GetLeapHand ();
 		plane = _plane.GetComponent<Collider>();
-		handednessFactor = (hand.IsLeft) ? -1 : 1;
+
+		//Some directions need to change depending if this is the left or right hand.
+		handednessFactor = (hand.IsLeft) ? 1 : -1;
 	}
 	
 	// Update is called once per frame
@@ -72,9 +74,19 @@ public class GestureDetector : MonoBehaviour {
 			pinchPosition = Vector3.zero;
 			handNormal = hand.PalmNormal.ToVector3 ();  //Normal vector from hand palm (in world coords)
 			c = _controller.transform.rotation.eulerAngles;
-			c2 = new Vector3(Mathf.Sin(c.y/360f*Mathf.PI),Mathf.Cos(c.y/360f*Mathf.PI), Mathf.Tan(c.y/360f*Mathf.PI));
-			cntrlHandNormal = (_controller.transform.rotation * -handNormal ).normalized; // Normal vector in camera coords
-			palmVelocity = _controller.transform.rotation * (hand.PalmVelocity.ToVector3() - _controller.transform.position); // Palm velocity vector
+			c2 = (_controller.transform.rotation * handNormal).normalized; //new Vector3(Mathf.Sin(c.y/360f*Mathf.PI),Mathf.Cos(c.y/360f*Mathf.PI), Mathf.Tan(c.y/360f*Mathf.PI));
+			Quaternion inv = Quaternion.Inverse(_controller.transform.rotation);
+			cntrlHandNormal = (inv * handNormal).normalized; // Normal vector in camera coords
+			//float p = _controller.transform.rotation.eulerAngles.y;
+			//print(_controller.transform.rotation.eulerAngles.y); 
+			//print ((_controller.transform.rotation.eulerAngles.y).GetType() );
+			//print(_controller.transform.rotation.eulerAngles.y == p);
+			//print((p - 315));
+			//if (_controller.transform.rotation.eulerAngles.y == 135 || _controller.transform.rotation.eulerAngles.y == 315) {
+			//	cntrlHandNormal *= -1;
+			//}
+
+			palmVelocity = inv * (hand.PalmVelocity.ToVector3() - _controller.transform.position); // Palm velocity vector
 			palmwidth = hand.PalmWidth	; // Palm velocity vector
 			//Positive if going to 'center' (if left hand going right or vice versa)
 			palmVelocityWithHandedness = new Vector3(palmVelocity.x, palmVelocity.y, palmVelocity.z*handednessFactor);
@@ -149,7 +161,7 @@ public class GestureDetector : MonoBehaviour {
 				pawStartPosition = hand.PalmPosition.ToVector3();
 			}
 
-			if (cntrlHandNormal.z * handednessFactor > 0.95f) {
+			if (cntrlHandNormal.x * handednessFactor > 0.95f) {
 				facingInwards = true;
 			} else {
 				facingInwards = false;
@@ -157,20 +169,20 @@ public class GestureDetector : MonoBehaviour {
 
 			if (isOpenHand && facingInwards) {
 				
-				if (palmVelocityWithHandedness.z > 0.25) {	
+				if ((palmVelocityWithHandedness.x * handednessFactor > 0.25) && ((Time.time - startedMovingForRotationTime) > 0.5f) ) {	
 					startedMovingForRotation = true;
 					startedMovingForRotationTime = Time.time;	
 				}
 			}
 
 
-			if (startedMovingForRotation && (Time.time - startedMovingForRotationTime) < 20f) {
-				float angleFromZ = Mathf.Atan2 (-cntrlHandNormal.x, cntrlHandNormal.z * handednessFactor)*(360/Mathf.PI);
+			if (startedMovingForRotation && (Time.time - startedMovingForRotationTime) < 0.5f) {
+				float angleFromZ = Mathf.Atan2 (-cntrlHandNormal.z, cntrlHandNormal.x * handednessFactor )*(180/Mathf.PI);
 				//print (angleFromZ);
 				if (40f < angleFromZ){//	 && angleFromZ < 50f) {
 					doRotate = true;
 					startedMovingForRotation = false;
-					startedMovingForRotationTime = 0;
+					//Dont reset startedMovingForRotationTime so that we can have a cooldown for that.
 					print ("Action");
 				}
 

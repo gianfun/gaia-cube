@@ -38,10 +38,19 @@ public class GestureManager : MonoBehaviour {
 	private GestureDetector left;
 	private GestureDetector right;
 
+	private bool rotatingLeft = false;
+	private bool rotatingRight = false;
+	private Quaternion startRot;
+	private Quaternion endRot;
+
 	private float extrudedLength = 0f;
+	private float cameraMovementTime;
+	private float currentCameraMovementTime;
 
 	// Use this for initialization
 	void Start () {
+		cameraMovementTime = 0.7f;
+		currentCameraMovementTime = 0f;
 	}
 	
 	// Update is called once per frame
@@ -102,8 +111,26 @@ public class GestureManager : MonoBehaviour {
 		}
 
 		if (left.doRotate) {
-			this.transform.RotateAround (Vector3.zero, Vector3.up, 90f);
+			rotatingLeft = true;
+			startRot = this.transform.rotation;
+			this.transform.RotateAround(Vector3.zero, Vector3.up, 90f);
+			endRot = this.transform.rotation;
+			currentCameraMovementTime = 0f;
+			this.transform.rotation = startRot;
+
 			print("boop");
+
+		}
+		if (right.doRotate) {
+			rotatingRight = true;
+			this.transform.RotateAround(Vector3.zero, Vector3.up, -90f);
+			print("boop");
+		}
+
+		if (rotatingLeft) {
+			currentCameraMovementTime += Time.deltaTime;
+			Quaternion rot = Quaternion.Slerp (startRot, endRot, currentCameraMovementTime / cameraMovementTime);
+			this.transform.rotation = rot;
 		}
 	}
 
