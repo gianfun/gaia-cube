@@ -3,19 +3,24 @@ using System.Collections;
 
 public class BlockHolderController : MonoBehaviour {
 
-	public Material normalMaterial;
+	public Material earthMaterial;
+	public Material waterMaterial;
 	public Material selectedMaterial;
 
+	protected Material normalMaterial;
 	protected Material currentMaterial;
 
 	protected bool topmost = false;
 	protected bool selected = false;
+
+	protected Element element = Element.EARTH;
+
 	public int x { get; protected set; }
 	public int y { get; protected set; }
 	public int z { get; protected set; }
 
 	void Start() {
-		currentMaterial = normalMaterial;
+		GetComponent<Renderer> ().material = currentMaterial = normalMaterial = earthMaterial;
 		transform.Translate (0, .5f, 0);
 	}
 
@@ -50,7 +55,7 @@ public class BlockHolderController : MonoBehaviour {
 		currentMaterial = normalMaterial;
 	}
 
-	protected void Deactivate(bool hide) {
+	public void Deactivate(bool hide) {
 		if (hide) {
 			gameObject.SetActive (false);
 		}
@@ -73,6 +78,8 @@ public class BlockHolderController : MonoBehaviour {
 	}
 
 	void OnMouseEnter() {
+		if (element != Element.EARTH)
+			return;
 		transform.parent.GetComponent<WorldController> ().SetHovered (transform);
 		if (topmost) {
 			Color newColor = new Color (
@@ -85,6 +92,8 @@ public class BlockHolderController : MonoBehaviour {
 	}
 
 	void OnMouseExit() {
+		if (element != Element.EARTH)
+			return;
 		if (transform.parent.GetComponent<WorldController> ().GetHovered () == transform) {
 			transform.parent.GetComponent<WorldController> ().SetHovered (null);
 		}
@@ -97,6 +106,12 @@ public class BlockHolderController : MonoBehaviour {
 	}
 
 	void OnMouseUpAsButton() {
+		if (element != Element.EARTH)
+			return;
 		Select ();
+	}
+
+	public enum Element {
+		EARTH, WATER
 	}
 }

@@ -87,6 +87,13 @@ public class WorldController : MonoBehaviour {
 
 	public Transform MakeBlock(int x, int y, int z) {
 		blocks [x, y, z].gameObject.SetActive(true);
+		blocks [x, y, z].GetComponent<BlockController> ().SetElement (BlockController.Element.EARTH);
+		return blocks [x, y, z];
+	}
+
+	public Transform MakeWaterBlock(int x, int y, int z) {
+		blocks [x, y, z].gameObject.SetActive(true);
+		blocks [x, y, z].GetComponent<BlockController> ().SetElement (BlockController.Element.WATER);
 		return blocks [x, y, z];
 	}
 

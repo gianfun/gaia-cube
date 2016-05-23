@@ -4,7 +4,7 @@ using System.Collections;
 public class BlockController : BlockHolderController {
 
 	void Start() {
-		currentMaterial = normalMaterial;
+		GetComponent<Renderer> ().material = currentMaterial = normalMaterial = earthMaterial;
 	}
 
 	void Update() {
@@ -29,6 +29,18 @@ public class BlockController : BlockHolderController {
 				}
 				throw;
 			}
+		}
+	}
+
+	public void SetElement (Element element) {
+		this.element = element;
+		switch (element) {
+			case Element.EARTH:
+				GetComponent<Renderer> ().material = currentMaterial = normalMaterial = earthMaterial;
+				break;
+			case Element.WATER:
+				GetComponent<Renderer> ().material = currentMaterial = normalMaterial = waterMaterial;
+				break;
 		}
 	}
 }
