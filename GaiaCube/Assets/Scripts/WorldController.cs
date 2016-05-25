@@ -2,6 +2,8 @@
 using System.Collections;
 
 public class WorldController : MonoBehaviour {
+	[SerializeField]
+	private PlayerController playerController;
 
 	public Transform baseBlock;
 	public Transform waterBlock;
