@@ -369,6 +369,54 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 255889746}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1001 &626476770
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 475984, guid: a284e90b5d8a35f45887490944e93c6a, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 11.790225
+      objectReference: {fileID: 0}
+    - target: {fileID: 475984, guid: a284e90b5d8a35f45887490944e93c6a, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 5.9349184
+      objectReference: {fileID: 0}
+    - target: {fileID: 475984, guid: a284e90b5d8a35f45887490944e93c6a, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: -6.5729303
+      objectReference: {fileID: 0}
+    - target: {fileID: 475984, guid: a284e90b5d8a35f45887490944e93c6a, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 475984, guid: a284e90b5d8a35f45887490944e93c6a, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 475984, guid: a284e90b5d8a35f45887490944e93c6a, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 475984, guid: a284e90b5d8a35f45887490944e93c6a, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 475984, guid: a284e90b5d8a35f45887490944e93c6a, type: 2}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: a284e90b5d8a35f45887490944e93c6a, type: 2}
+  m_IsPrefabParent: 0
+--- !u!114 &695587392 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11460030, guid: a284e90b5d8a35f45887490944e93c6a,
+    type: 2}
+  m_PrefabInternal: {fileID: 626476770}
+  m_Script: {fileID: 11500000, guid: b2cc9d1d89e86174fa3403e9bfdb74fa, type: 3}
 --- !u!1 &707848202
 GameObject:
   m_ObjectHideFlags: 0
@@ -777,3 +825,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92f363fe6ddcc704b9a95138bd2031c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerController: {fileID: 695587392}
