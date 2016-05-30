@@ -14,6 +14,9 @@ public class RainController : MonoBehaviour {
 	}
 
 	private void FillLake (GameObject world, Transform hoveredBlock) {
+		if (hoveredBlock == null) {
+			return;
+		}
 		int height;
 		BlockController blockController = hoveredBlock.GetComponent<BlockController> ();
 		WorldController worldController = world.GetComponent<WorldController> ();

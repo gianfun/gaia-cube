@@ -74,7 +74,7 @@ public class WorldController : MonoBehaviour {
 
 	public void ResetBlocks() {
 		for (int i=0; i < 5; i++) {
-			for (int j=0; j < 5; j++) {
+			for (int j=0; j < 6; j++) {
 				for (int k=0; k < 5; k++) {
 					Destroy (blocks [i, j, k].gameObject);
 				}
