@@ -30,6 +30,8 @@ public class BlockController : BlockHolderController {
 				throw;
 			}
 		}
+
+		FloodAdjacent ();
 	}
 
 	public void SetElement (Element element) {
@@ -42,5 +44,29 @@ public class BlockController : BlockHolderController {
 				GetComponent<Renderer> ().material = currentMaterial = normalMaterial = waterMaterial;
 				break;
 		}
+	}
+
+	private void FloodAdjacent() {
+		if (this.element == Element.WATER) {
+			FloodIfEmpty (x+1, y, z);
+			FloodIfEmpty (x-1, y, z);
+			FloodIfEmpty (x, y, z+1);
+			FloodIfEmpty (x, y, z-1);
+			FloodIfEmpty (x, y-1, z);
+		}
+	}
+
+	private void FloodIfEmpty(int x, int y, int z) {
+		try {
+			Transform block = transform.parent.GetComponent<WorldController> ().GetBlock (x, y, z);
+
+			if (!block.gameObject.activeInHierarchy) {
+				block.gameObject.SetActive(true);
+				block.GetComponent<BlockController> ().SetElement (BlockController.Element.WATER);
+
+				Transform blockBelow = transform.parent.GetComponent<WorldController> ().GetBlock (x, y-1, z);
+				blockBelow.GetComponent<BlockHolderController>().Deselect();
+			}
+		} catch (System.IndexOutOfRangeException e) {}
 	}
 }
