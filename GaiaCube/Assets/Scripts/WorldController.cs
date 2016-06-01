@@ -123,6 +123,7 @@ public class WorldController : MonoBehaviour {
 
 					Transform block = (Transform) Instantiate(blockType, new Vector3 (x, y, z), Quaternion.identity);
 					block.SetParent (gameObject.transform, false);
+					block.GetComponent<BlockHolderController> ().playerController = this.playerController;
 					block.GetComponent<BlockHolderController> ().SetCoordinates (x - x0, y - y0, z - z0);
 					blocks [x-x0, y-y0, z-z0] = block;
 					if (y - y0 == n) {

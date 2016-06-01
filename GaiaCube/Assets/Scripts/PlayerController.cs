@@ -14,6 +14,8 @@ public class PlayerController : MonoBehaviour {
 	public bool doWater = false;
 	public bool doFire = false;
 	public bool doEarth = false;
+	public bool moveEarthDown = false;
+	public bool moveEarthUp = false;
 	public bool doWind = false;
 
 	// Use this for initialization
@@ -36,6 +38,10 @@ public class PlayerController : MonoBehaviour {
 				goToBirdsEye = true;
 			} else if (Input.GetKeyDown ("s")) {
 				leaveBirdsEye = true;
+			} else if (Input.GetKeyDown ("down")) {
+				moveEarthDown = true;
+			} else if (Input.GetKeyDown ("up")) {
+				moveEarthUp = true;
 			} else if (Input.GetKeyDown ("1")) {
 				doWater = true;
 			} else if (Input.GetKeyDown ("2")) {
@@ -45,9 +51,15 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void setAllAsFalse(){
-		turnLeft = false;
 		turnRight = false;
+		turnLeft = false;
 		goToBirdsEye = false;
 		leaveBirdsEye = false;
+		doWater = false;
+		doFire = false;
+		doEarth = false;
+		moveEarthDown = false;
+		moveEarthUp = false;
+		doWind = false;
 	}
 }

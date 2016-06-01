@@ -2,6 +2,7 @@
 using System.Collections;
 
 public class BlockHolderController : MonoBehaviour {
+	public PlayerController playerController;
 
 	public Material earthMaterial;
 	public Material waterMaterial;
