@@ -11,6 +11,10 @@ public class PlayerController : MonoBehaviour {
 	public bool turnRight = false;
 	public bool goToBirdsEye = false;
 	public bool leaveBirdsEye = false;
+	public bool doWater = false;
+	public bool doFire = false;
+	public bool doEarth = false;
+	public bool doWind = false;
 
 	// Use this for initialization
 	void Start () {
@@ -32,7 +36,11 @@ public class PlayerController : MonoBehaviour {
 				goToBirdsEye = true;
 			} else if (Input.GetKeyDown ("s")) {
 				leaveBirdsEye = true;
-			}	
+			} else if (Input.GetKeyDown ("1")) {
+				doWater = true;
+			} else if (Input.GetKeyDown ("2")) {
+				doFire = true;
+			}
 		}
 	}
 

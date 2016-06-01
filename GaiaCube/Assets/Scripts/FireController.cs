@@ -2,9 +2,11 @@
 using System.Collections;
 
 public class FireController : MonoBehaviour {
+	[SerializeField]
+	private PlayerController playerController;
 
 	void Update () {
-		if (Input.GetKeyDown ("2")) {
+		if (playerController.doFire) {
 			GameObject world = GameObject.FindGameObjectWithTag ("World");
 			Transform hoveredBlock = world.GetComponent<WorldController> ().GetHovered ();
 			DryOutPoolSlice (world, hoveredBlock);

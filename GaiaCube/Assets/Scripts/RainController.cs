@@ -2,11 +2,13 @@
 using System.Collections;
 
 public class RainController : MonoBehaviour {
+	[SerializeField]
+	private PlayerController playerController;
 
 	public Transform waterBlock;
 	
 	void Update () {
-		if (Input.GetKeyDown ("1")) {
+		if (playerController.doWater) {
 			GameObject world = GameObject.FindGameObjectWithTag ("World");
 			Transform hoveredBlock = world.GetComponent<WorldController> ().GetHovered ();
 			FillLake (world, hoveredBlock);
