@@ -17,32 +17,31 @@ public class RainController : MonoBehaviour {
 		if (hoveredBlock == null) {
 			return;
 		}
-		int height;
-		BlockController blockController = hoveredBlock.GetComponent<BlockController> ();
+
+		BlockHolderController blockController = hoveredBlock.GetComponent<BlockHolderController> ();
 		WorldController worldController = world.GetComponent<WorldController> ();
+
+		int x;
+		int y;
+		int z;
+
 		try {
-			height = blockController.y;
+			x = blockController.x;
+			y = blockController.y;
+			z = blockController.z;
 		} catch (System.NullReferenceException) {
-			height = 0;
+			print ("WHOOPSIES");
+			return;
 		}
-		Debug.Log ("terrain map for height: " + height);
-		int[,] terrain;
-		terrain = worldController.GetTerrain ();
-		string printable = "";
-		for (int i = 0; i < 5; i++) {
-			for (int j = 0; j < 5; j++) {
-				printable += terrain [i, j];
-				if (terrain [i, j] <= height) { // TODO: Actually check for CONNECTED pools, not just any block under the height line
-					AddWaterBlock (i, height, j, worldController, blockController);
-				}
-			}
-			printable += "\n";
+
+		foreach (int [] coord in worldController.GetCanyon(x, y + 1, z)) {
+			AddWaterBlock (coord [0], coord [1], coord [2], worldController, blockController);
 		}
-		print (printable);
+//		print (printable);
 	}
 
-	private void AddWaterBlock(int x, int y, int z, WorldController worldController, BlockController blockController) {
-		Transform waterBlock = worldController.MakeWaterBlock (x, y + 1, z);
+	private void AddWaterBlock(int x, int y, int z, WorldController worldController, BlockHolderController blockController) {
+		Transform waterBlock = worldController.MakeWaterBlock (x, y, z);
 		blockController.Deactivate (false);
 		waterBlock.GetComponent<BlockController> ().SetTopmost (true);
 	}

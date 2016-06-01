@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 public class WorldController : MonoBehaviour {
 	[SerializeField]
@@ -50,6 +52,40 @@ public class WorldController : MonoBehaviour {
 			}
 		}
 		return terrain;
+	}
+
+	public List<int[]> GetCanyon (int x, int y, int z) {
+		return getAdjacentHoles (new List<int[]> (), new List<int[]> { new [] { x, y, z } });
+	}
+
+	private List<int[]> getAdjacentHoles(List<int[]> result, List<int[]> current) {
+		List<int[]> next = new List<int[]> ();
+		foreach (int [] coord in current) {
+			try {
+				if (!GetBlock (coord [0], coord [1], coord [2]).gameObject.activeInHierarchy) {
+					bool mustBreak = false;
+					foreach (int [] resCoord in result) {
+						if (coord.SequenceEqual(resCoord)) {
+							mustBreak = true;
+							break;
+						}
+					}
+					if (mustBreak) {
+						break;
+					}
+					result.Add(coord);
+					next.Add (new [] { coord [0] + 1, coord [1], coord [2] + 1 });
+					next.Add (new [] { coord [0] + 1, coord [1], coord [2] - 1 });
+					next.Add (new [] { coord [0] - 1, coord [1], coord [2] + 1 });
+					next.Add (new [] { coord [0] - 1, coord [1], coord [2] - 1 });
+					next.Add (new [] { coord [0], coord [1] - 1, coord [2] });
+					result = getAdjacentHoles (result, next);
+				}
+			} catch (System.IndexOutOfRangeException) {
+				continue;
+			}
+		}
+		return result;
 	}
 
 	public int[,] GetSlice(int height) {
