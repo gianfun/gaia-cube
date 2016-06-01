@@ -14,8 +14,15 @@ public class WorldController : MonoBehaviour {
 	private Transform[,,] blocks;
 	private Transform hoveredBlock;
 
+	public Material waterMaterial;
+	private GameObject allWater;
+
 	void Start() {
 		CreateBlocks ();
+
+		allWater = GameObject.CreatePrimitive (PrimitiveType.Cube);
+		allWater.transform.SetParent (transform);
+
 		Color skyBlue = new Color(0.2f, 0.3f, 0.4f, 0.7f);
 		Color sunYellow = new Color(0.8f, 0.6f, 0.2f, 0.3f);
 		RenderSettings.ambientSkyColor = sunYellow;
@@ -35,6 +42,10 @@ public class WorldController : MonoBehaviour {
 		}
 	}
 
+	void LateUpdate() {
+		mergeTerrain ();
+	}
+
 	public void SetHovered(Transform block) {
 		hoveredBlock = block;
 	}
@@ -52,6 +63,27 @@ public class WorldController : MonoBehaviour {
 			}
 		}
 		return terrain;
+	}
+
+	public void mergeTerrain() {
+		List<Transform> allWaterBlocks = new List<Transform> ();
+		List<Transform> allEarth = new List<Transform> ();
+		foreach (Transform block in blocks) {
+			if (block.GetComponent<BlockHolderController> ().element == BlockHolderController.Element.EARTH) {
+				allEarth.Add (block);
+			} else {
+				allWaterBlocks.Add (block);
+			}
+		}
+		CombineInstance[] combineWater = new CombineInstance[allWaterBlocks.Count];
+		for (int i = 0; i < allWaterBlocks.Count; i++) {
+			combineWater [i].mesh = allWaterBlocks [i].GetComponent<MeshFilter> ().sharedMesh;
+			combineWater [i].transform = allWaterBlocks [i].GetComponent<MeshFilter> ().transform.localToWorldMatrix;
+			allWaterBlocks [i].GetComponent<Renderer> ().enabled = false;
+		}
+		allWater.GetComponent<MeshFilter>().mesh.CombineMeshes (combineWater);
+		allWater.GetComponent<Renderer>().material = waterMaterial;
+		allWater.transform.SetParent (gameObject.transform, false);
 	}
 
 	public List<int[]> GetCanyon (int x, int y, int z) {

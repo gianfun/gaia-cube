@@ -13,7 +13,7 @@ public class BlockHolderController : MonoBehaviour {
 	protected bool topmost = false;
 	protected bool selected = false;
 
-	protected Element element = Element.EARTH;
+	public Element element = Element.EARTH;
 
 	public int x { get; protected set; }
 	public int y { get; protected set; }

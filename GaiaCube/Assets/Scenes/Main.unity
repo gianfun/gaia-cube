@@ -618,9 +618,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f187f324f24c4a99a4bfd90bb1fe5c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerController: {fileID: 0}
   baseBlock: {fileID: 465206, guid: 14fa25426a5714ac38286acc879f199f, type: 2}
   waterBlock: {fileID: 469642, guid: ba465faca614bd7458aaeca07e026576, type: 2}
   basePlane: {fileID: 432906, guid: d4423f767f20848a8a6b29569108feaf, type: 2}
+  waterMaterial: {fileID: 2100000, guid: 1e6930c0f65f0a3428f385a01b9c4c70, type: 2}
 --- !u!4 &1172742440
 Transform:
   m_ObjectHideFlags: 0

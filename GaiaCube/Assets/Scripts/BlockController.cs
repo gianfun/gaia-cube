@@ -67,6 +67,6 @@ public class BlockController : BlockHolderController {
 				Transform blockBelow = transform.parent.GetComponent<WorldController> ().GetBlock (x, y-1, z);
 				blockBelow.GetComponent<BlockHolderController>().Deselect();
 			}
-		} catch (System.IndexOutOfRangeException e) {}
+		} catch (System.IndexOutOfRangeException) {}
 	}
 }
