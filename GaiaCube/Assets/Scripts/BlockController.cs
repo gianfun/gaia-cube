@@ -8,7 +8,7 @@ public class BlockController : BlockHolderController {
 	}
 
 	void Update() {
-		if (Input.GetKeyDown ("down") && selected) {
+		if (playerController.moveEarthDown && selected) {
 			Deactivate (true);
 			try {
 				Transform nextBlock = transform.parent.GetComponent<WorldController> ().GetBlock (x, y - 1, z);
@@ -17,7 +17,7 @@ public class BlockController : BlockHolderController {
 			} catch (System.IndexOutOfRangeException) {
 				return;
 			}
-		} else if (Input.GetKeyDown ("up") && selected) {
+		} else if (playerController.moveEarthUp && selected) {
 			try {
 				Transform nextBlock = transform.parent.GetComponent<WorldController> ().MakeBlock (x, y + 1, z);
 				Deactivate (false);

@@ -90,6 +90,7 @@ MonoBehaviour:
   earthMaterial: {fileID: 2100000, guid: 873966883dea741e293c0e5a62896040, type: 2}
   waterMaterial: {fileID: 2100000, guid: 1e6930c0f65f0a3428f385a01b9c4c70, type: 2}
   selectedMaterial: {fileID: 2100000, guid: f96223c1ba7074a36940bd145959e899, type: 2}
+  playerController: {fileID: 11460030, guid: a284e90b5d8a35f45887490944e93c6a, type: 2}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
