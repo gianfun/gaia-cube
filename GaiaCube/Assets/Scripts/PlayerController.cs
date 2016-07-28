@@ -28,7 +28,23 @@ public class PlayerController : MonoBehaviour {
 		setAllAsFalse ();
 
 		if (shouldUseLeap) {
-			//if(GM.
+			if (GM.left.doRotate) {
+				turnLeft = true;
+			} else if (GM.right.doRotate) {
+				turnRight = true;
+			} else if (GM.right.doRotate) {				
+				goToBirdsEye = true;
+			} else if (GM.right.doRotate) {
+				leaveBirdsEye = true;
+			} else if (GM.moveEarthDown) {
+				moveEarthDown = true;
+			} else if (GM.moveEarthUp) {
+				moveEarthUp = true;
+			} else if (GM.right.doRotate) {
+				doWater = true;
+			} else if (GM.right.doRotate) {
+				doFire = true;
+			}
 		} else {
 			if (Input.GetKeyDown ("d")) {
 				turnLeft = true;

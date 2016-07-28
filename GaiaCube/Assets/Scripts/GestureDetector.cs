@@ -7,15 +7,13 @@ public class GestureDetector : MonoBehaviour {
 	public Leap.Unity.IHandModel _handModel;
 
 	[SerializeField]
-	protected GameObject _cube;
-
-	[SerializeField]
 	protected Camera _camera;
 
 	[SerializeField]
 	protected GameObject _controller;
 
-	[SerializeField]
+	public Transform parentTransform;
+
 	public GameObject _plane;
 
 	public int handednessFactor = 0;
@@ -56,6 +54,12 @@ public class GestureDetector : MonoBehaviour {
 		//Some directions need to change depending if this is the left or right hand.
 		handednessFactor = (hand.IsLeft) ? 1 : -1;
 	}
+
+	void Awake(){
+
+		parentTransform = GetComponentInParent<Transform> ();
+
+	}
 	
 	// Update is called once per frame
 	void Update () {
@@ -75,7 +79,7 @@ public class GestureDetector : MonoBehaviour {
 			handNormal = hand.PalmNormal.ToVector3 ();  //Normal vector from hand palm (in world coords)
 			c = _controller.transform.rotation.eulerAngles;
 			c2 = (_controller.transform.rotation * handNormal).normalized; //new Vector3(Mathf.Sin(c.y/360f*Mathf.PI),Mathf.Cos(c.y/360f*Mathf.PI), Mathf.Tan(c.y/360f*Mathf.PI));
-			Quaternion inv = Quaternion.Inverse(_controller.transform.rotation);
+			Quaternion inv = Quaternion.Inverse(parentTransform.rotation);
 			cntrlHandNormal = (inv * handNormal).normalized; // Normal vector in camera coords
 			//float p = _controller.transform.rotation.eulerAngles.y;
 			//print(_controller.transform.rotation.eulerAngles.y); 
@@ -86,7 +90,7 @@ public class GestureDetector : MonoBehaviour {
 			//	cntrlHandNormal *= -1;
 			//}
 
-			palmVelocity = inv * (hand.PalmVelocity.ToVector3() - _controller.transform.position); // Palm velocity vector
+			palmVelocity = inv * (hand.PalmVelocity.ToVector3() - parentTransform.position);// - leapControllerTransform.localPosition; // Palm velocity vector
 			palmwidth = hand.PalmWidth	; // Palm velocity vector
 			//Positive if going to 'center' (if left hand going right or vice versa)
 			palmVelocityWithHandedness = new Vector3(palmVelocity.x, palmVelocity.y, palmVelocity.z*handednessFactor);
@@ -144,7 +148,7 @@ public class GestureDetector : MonoBehaviour {
 				isOpenHand = true;
 			}
 			//Check if is currently paw
-			if (isOpenHand && fingerDistance < 0.021f) {
+			if (isOpenHand && fingerDistance < 0.025f) {
 				pawLeeway = 0;
 				isPaw = true;
 			} else { //If not currently paw, wait a bit to set not-paw (smoothing to obtain better results)
