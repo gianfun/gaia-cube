@@ -445,6 +445,9 @@ MonoBehaviour:
   facingInwards: 0
   startedMovingForRotation: 0
   doRotate: 0
+  makeItRain: 0
+  lastTipVelocitySum: 0
+  lastPalmVelocitySum: 0
   c: {x: 0, y: 0, z: 0}
   c2: {x: 0, y: 0, z: 0}
   pinchPosition: {x: 0, y: 0, z: 0}
@@ -454,6 +457,7 @@ MonoBehaviour:
   palmPosition: {x: 0, y: 0, z: 0}
   palmVelocity: {x: 0, y: 0, z: 0}
   palmVelocityWithHandedness: {x: 0, y: 0, z: 0}
+  littleFingerVelocity: {x: 0, y: 0, z: 0}
   extendedFingers: 0
   rawExtendedFingers: 0
   fingerDistance: 0
@@ -503,6 +507,10 @@ Prefab:
       propertyPath: GM
       value: 
       objectReference: {fileID: 1487474110}
+    - target: {fileID: 11460030, guid: a284e90b5d8a35f45887490944e93c6a, type: 2}
+      propertyPath: shouldUseLeap
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a284e90b5d8a35f45887490944e93c6a, type: 2}
   m_IsPrefabParent: 0
@@ -907,6 +915,9 @@ MonoBehaviour:
   facingInwards: 0
   startedMovingForRotation: 0
   doRotate: 0
+  makeItRain: 0
+  lastTipVelocitySum: 0
+  lastPalmVelocitySum: 0
   c: {x: 0, y: 0, z: 0}
   c2: {x: 0, y: 0, z: 0}
   pinchPosition: {x: 0, y: 0, z: 0}
@@ -916,6 +927,7 @@ MonoBehaviour:
   palmPosition: {x: 0, y: 0, z: 0}
   palmVelocity: {x: 0, y: 0, z: 0}
   palmVelocityWithHandedness: {x: 0, y: 0, z: 0}
+  littleFingerVelocity: {x: 0, y: 0, z: 0}
   extendedFingers: 0
   rawExtendedFingers: 0
   fingerDistance: 0

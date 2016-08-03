@@ -26,6 +26,14 @@ public class GestureDetector : MonoBehaviour {
 	public bool facingInwards = false;
 	public bool startedMovingForRotation = false;
 	public bool doRotate  = false;
+	public bool makeItRain  = false;
+
+	private float[] lastTipVelocities = new float[20];
+	private int lastTipVelocityIndex = 0;
+	public  float lastTipVelocitySum = 0;
+
+	private float[] lastPalmVelocities = new float[20];
+	public  float lastPalmVelocitySum = 0;
 
 	public Vector3 c;
 	public Vector3 c2;
@@ -36,6 +44,7 @@ public class GestureDetector : MonoBehaviour {
 	public Vector3 palmPosition;
 	public Vector3 palmVelocity;
 	public Vector3 palmVelocityWithHandedness;
+	public Vector3 littleFingerVelocity;
 	public int extendedFingers;
 	public int rawExtendedFingers;
 	public float fingerDistance;
@@ -89,8 +98,18 @@ public class GestureDetector : MonoBehaviour {
 			//if (_controller.transform.rotation.eulerAngles.y == 135 || _controller.transform.rotation.eulerAngles.y == 315) {
 			//	cntrlHandNormal *= -1;
 			//}
+			littleFingerVelocity = (inv * (hand.Fingers[4].TipVelocity.ToVector3() - parentTransform.position));
+			lastTipVelocitySum += littleFingerVelocity.sqrMagnitude;
+			lastTipVelocitySum -= lastTipVelocities [lastTipVelocityIndex % 20];
+			lastTipVelocities [lastTipVelocityIndex % 20] = littleFingerVelocity.sqrMagnitude;
 
 			palmVelocity = inv * (hand.PalmVelocity.ToVector3() - parentTransform.position);// - leapControllerTransform.localPosition; // Palm velocity vector
+			lastPalmVelocitySum -= lastPalmVelocities [lastTipVelocityIndex % 20];
+			lastPalmVelocitySum += palmVelocity.sqrMagnitude;
+			lastPalmVelocities [lastTipVelocityIndex % 20] = palmVelocity.sqrMagnitude;
+
+			lastTipVelocityIndex++;
+
 			palmwidth = hand.PalmWidth	; // Palm velocity vector
 			//Positive if going to 'center' (if left hand going right or vice versa)
 			palmVelocityWithHandedness = new Vector3(palmVelocity.x, palmVelocity.y, palmVelocity.z*handednessFactor);
@@ -137,6 +156,9 @@ public class GestureDetector : MonoBehaviour {
 					finger.Type == Leap.Finger.FingerType.TYPE_PINKY) {
 					fingerDistance += Vector3.Distance (finger.TipPosition.ToVector3(), fingers [i - 1].TipPosition.ToVector3());
 				}
+
+
+
 			}
 			fingerDistance /= 3;
 
@@ -191,6 +213,10 @@ public class GestureDetector : MonoBehaviour {
 				}
 
 			}
+
+			if (hand.PalmNormal.ToVector3 ().normalized.y < -0.9f) {
+				print ("boop");
+			}
 				
 		} else {
 			wasPaw = isPaw;
@@ -198,9 +224,11 @@ public class GestureDetector : MonoBehaviour {
 			isPinching = false;
 			isOpenHand = false;
 			isPaw = false;
+			makeItRain  = false;
 			extendedFingers = 0;
 			rawExtendedFingers = 0;
 			fingerDistance = 0f;
+
 		}
 	}
 }

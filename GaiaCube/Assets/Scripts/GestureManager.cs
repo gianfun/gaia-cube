@@ -68,6 +68,10 @@ public class GestureManager : MonoBehaviour {
 				infoText.text += "Palm Roll\t\t\t: Left: " + a + "  Right: " + right.hand.PalmNormal.Roll + "\n";
 				infoText.text += "Palm Yaw\t\t\t: Left: " + left.hand.PalmNormal.Yaw + "  Right: " + right.hand.PalmNormal.Yaw + "\n";
 				infoText.text += "Palm Pitch\t\t\t: Left: " + left.hand.PalmNormal.Pitch + "  Right: " + right.hand.PalmNormal.Pitch + "\n";
+				infoText.text += "Small Finger velocity\t\t\t: Left: " + left.littleFingerVelocity + "  Right: " + right.littleFingerVelocity + "\n";
+				infoText.text += "LastTipVelocity Sum\t\t\t: Left: " + left.lastTipVelocitySum + "  Right: " + right.lastTipVelocitySum + "\n";
+				infoText.text += "lastPalmVelocity Sum\t\t\t: Left: " + left.lastPalmVelocitySum + "  Right: " + right.lastPalmVelocitySum + "\n";
+				infoText.text += "palm - finger velocity\t\t\t: Left: " + (left.lastTipVelocitySum - left.lastPalmVelocitySum) + "  Right: " + (right.lastTipVelocitySum - right.lastPalmVelocitySum) + "\n";
 			}
 
 			if (left.isPinching && right.isPinching) {
@@ -81,10 +85,12 @@ public class GestureManager : MonoBehaviour {
 
 			if (left.isPaw) {
 				if (left.wasPaw) {
+					//Is palm facing down or up
 					if (Mathf.Abs (left.hand.PalmNormal.ToVector3 ().normalized.y) > 0.9f) {
 						extrudedLength += left.palmVelocity.y;
-						print (extrudedLength);
+						//print (extrudedLength);
 						if (extrudedLength > moveEarthYThreshold) {
+							
 							moveEarthUp = true;
 							extrudedLength = 0;
 						} else if (extrudedLength < -moveEarthYThreshold) {

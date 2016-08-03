@@ -29,20 +29,28 @@ public class PlayerController : MonoBehaviour {
 
 		if (shouldUseLeap) {
 			if (GM.left.doRotate) {
+				print ("GM.left.doRotate");
 				turnLeft = true;
 			} else if (GM.right.doRotate) {
+				print ("GM.right.doRotate");
 				turnRight = true;
-			} else if (GM.right.doRotate) {				
+			} else if (GM.right.doRotate) {		
+				print ("GM.enterBirdsEye");
 				goToBirdsEye = true;
 			} else if (GM.right.doRotate) {
+				print ("GM.leaveBirdsEye");
 				leaveBirdsEye = true;
 			} else if (GM.moveEarthDown) {
+				print ("GM.moveEarthUp");
 				moveEarthDown = true;
 			} else if (GM.moveEarthUp) {
+				print ("GM.moveEarthUp");
 				moveEarthUp = true;
 			} else if (GM.right.doRotate) {
+				print ("GM.doWater");
 				doWater = true;
 			} else if (GM.right.doRotate) {
+				print ("GM.doFire");
 				doFire = true;
 			}
 		} else {
