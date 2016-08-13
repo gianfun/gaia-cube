@@ -5,6 +5,7 @@ public class BlockHolderController : MonoBehaviour {
 	public PlayerController playerController;
 
 	public Material earthMaterial;
+	public Material earthTopMaterial;
 	public Material waterMaterial;
 	public Material selectedMaterial;
 

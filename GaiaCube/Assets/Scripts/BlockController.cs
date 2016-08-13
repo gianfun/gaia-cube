@@ -33,6 +33,15 @@ public class BlockController : BlockHolderController {
 
 		FloodAdjacent ();
 	}
+		
+	public void SetTopmost(bool topmost) {
+		base.SetTopmost (topmost);
+		if (topmost) {
+			transform.GetChild (0).GetComponent<MeshRenderer> ().enabled = false;
+		} else {
+			transform.GetChild (0).GetComponent<MeshRenderer> ().enabled = true;
+		}
+	}
 
 	public void SetElement (Element element) {
 		this.element = element;

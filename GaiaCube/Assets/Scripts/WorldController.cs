@@ -197,6 +197,10 @@ public class WorldController : MonoBehaviour {
 					if (y - y0 == n) {
 						block.GetComponent<BlockHolderController> ().SetTopmost (true);
 					}
+
+					if (blockType == baseBlock) {
+						//block.Rotate (-90, 0, 0);
+					}
 				}
 			}
 		}

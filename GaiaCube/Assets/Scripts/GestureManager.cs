@@ -53,7 +53,7 @@ public class GestureManager : MonoBehaviour {
 
 			Vector3 a = (transform.rotation * left.hand.PalmNormal.ToVector3 ()).normalized;
 
-			if (left.hand != null && right.hand != null) {
+			if (false && left.hand != null && right.hand != null) {
 				infoText.text = "Confidence\t\t\t: Left: " + left.hand.Confidence + "  Right: " + right.hand.Confidence + "\n";
 				infoText.text += "Extended Fingers \t: Left: " + left.extendedFingers + "  Right: " + right.extendedFingers + "\n";
 				infoText.text += "Extended Fingers (raw): Left: " + left.rawExtendedFingers + "  Right: " + right.rawExtendedFingers + "\n";
