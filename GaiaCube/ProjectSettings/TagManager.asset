@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - LeapController
+  - Block
+  - World
+  - AreaSelector
   layers:
   - Default
   - TransparentFX
@@ -14,7 +17,7 @@ TagManager:
   - UI
   - 
   - 
-  - 
+  - SelectorPlane
   - 
   - 
   - 

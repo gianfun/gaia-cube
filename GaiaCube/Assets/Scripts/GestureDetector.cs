@@ -7,26 +7,21 @@ public class GestureDetector : MonoBehaviour {
 	public Leap.Unity.IHandModel _handModel;
 
 	[SerializeField]
-	protected Camera _camera;
-
-	[SerializeField]
 	protected GameObject _controller;
 
 	public Transform parentTransform;
 
-	public GameObject _plane;
-
 	public int handednessFactor = 0;
 
 	public Leap.Hand hand;
-	public bool isPinching = false;
-	public bool isOpenHand = false;
-	public bool isPaw = false;
-	public bool wasPaw = false;
-	public bool facingInwards = false;
-	public bool startedMovingForRotation = false;
-	public bool doRotate  = false;
-	public bool makeItRain  = false;
+	public bool isPinching 					= false;
+	public bool isOpenHand 					= false;
+	public bool isPaw 						= false;
+	public bool wasPaw 						= false;
+	public bool facingInwards 				= false;
+	public bool startedMovingForRotation 	= false;
+	public bool doRotate  					= false;
+	public bool makeItRain  				= false;
 
 	private float[] lastTipVelocities = new float[20];
 	private int lastTipVelocityIndex = 0;
@@ -50,24 +45,27 @@ public class GestureDetector : MonoBehaviour {
 	public float fingerDistance;
 	public float palmwidth;
 	public float startedMovingForRotationTime;
+	public float startedElementalActionTime;
+	public Action currentAction;
+
 
 	public int pawLeeway = 0;
+	public float delayBetweenActions = 1f;
 
+	public enum Action
+	{
+		None, Fire, Water, Wind
+	};
 
-	private Collider plane;
 	// Use this for initialization
 	void Start () {
-		hand = _handModel.GetLeapHand ();
-		plane = _plane.GetComponent<Collider>();
-
-		//Some directions need to change depending if this is the left or right hand.
-		handednessFactor = (hand.IsLeft) ? 1 : -1;
 	}
 
 	void Awake(){
-
+		hand = _handModel.GetLeapHand ();
+		//Some directions need to change depending if this is the left or right hand.
+		handednessFactor = (hand.IsLeft) ? 1 : -1;
 		parentTransform = GetComponentInParent<Transform> ();
-
 	}
 	
 	// Update is called once per frame
@@ -204,7 +202,7 @@ public class GestureDetector : MonoBehaviour {
 
 			if (startedMovingForRotation && (Time.time - startedMovingForRotationTime) < 0.5f) {
 				float angleFromZ = Mathf.Atan2 (-cntrlHandNormal.z, cntrlHandNormal.x * handednessFactor )*(180/Mathf.PI);
-				//print (angleFromZ);
+					print (angleFromZ);
 				if (40f < angleFromZ){//	 && angleFromZ < 50f) {
 					doRotate = true;
 					startedMovingForRotation = false;
@@ -214,9 +212,25 @@ public class GestureDetector : MonoBehaviour {
 
 			}
 
-			if (hand.PalmNormal.ToVector3 ().normalized.y < -0.9f) {
-				print ("boop");
-			}
+			if (Time.time - startedElementalActionTime > delayBetweenActions) {
+				if (extendedFingers == 0 && lastTipVelocitySum / lastPalmVelocitySum > 5f && lastPalmVelocitySum < 1f) {
+					if (handNormal.normalized.y < -0.9f) { //Is facing down
+						currentAction = Action.Water;
+						startedElementalActionTime = Time.time;
+					} else if (handNormal.normalized.y > 0.9f) { //Is facing up
+						currentAction = Action.Fire;
+						startedElementalActionTime = Time.time;
+					} else if (facingInwards) { //Is facing inwards
+						currentAction = Action.Wind;
+						startedElementalActionTime = Time.time;
+					} else { //Something else
+						currentAction = Action.None;
+					}
+				} else { //Something else
+					currentAction = Action.None;
+				}
+			} 
+
 				
 		} else {
 			wasPaw = isPaw;

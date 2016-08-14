@@ -7,6 +7,7 @@ public class CameraController : MonoBehaviour {
 
 	private bool birdsEye;
 	private Transform pivot;
+	private Transform camera;
 
 	private bool isRotating = false;
 	private float rotationAngle;
@@ -17,7 +18,8 @@ public class CameraController : MonoBehaviour {
 
 	void Start () {
 		birdsEye = false;
-		pivot = transform.GetChild (0);
+		camera = GameObject.FindWithTag ("MainCamera").GetComponent<Transform>();
+		pivot = camera.GetChild (0);
 	}
 
 	void Update() {
@@ -36,10 +38,10 @@ public class CameraController : MonoBehaviour {
 
 		} else if (playerController.goToBirdsEye && !birdsEye && !isRotating) {
 			birdsEye = true;
-			transform.RotateAround (Vector3.zero, pivot.up, -45);
+			camera.RotateAround (Vector3.zero, pivot.up, -45);
 		} else if (playerController.leaveBirdsEye && birdsEye && !isRotating) {
 			birdsEye = false;
-			transform.RotateAround (Vector3.zero, pivot.up, 45);
+			camera.RotateAround (Vector3.zero, pivot.up, 45);
 		}
 
 		if (isRotating) {

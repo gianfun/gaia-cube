@@ -17,15 +17,15 @@ public static class UnityVectorExtension {
 public class GestureManager : MonoBehaviour {
 	public GestureDetector gd1;
 	public GestureDetector gd2;
-	public Camera _camera;
 
 	public bool moveEarthUp;
 	public bool moveEarthDown;
+	public bool doFire;
+	public bool doWater;
+	public bool doWind;
 
 	public float moveEarthYThreshold = 2f;
 	public Leap.Unity.LeapHandController leapController;
-
-	public Collider plane;
 
 	[SerializeField]
 	private UnityEngine.UI.Text infoText;
@@ -72,16 +72,20 @@ public class GestureManager : MonoBehaviour {
 				infoText.text += "LastTipVelocity Sum\t\t\t: Left: " + left.lastTipVelocitySum + "  Right: " + right.lastTipVelocitySum + "\n";
 				infoText.text += "lastPalmVelocity Sum\t\t\t: Left: " + left.lastPalmVelocitySum + "  Right: " + right.lastPalmVelocitySum + "\n";
 				infoText.text += "palm - finger velocity\t\t\t: Left: " + (left.lastTipVelocitySum - left.lastPalmVelocitySum) + "  Right: " + (right.lastTipVelocitySum - right.lastPalmVelocitySum) + "\n";
+				infoText.text += "palm / finger velocity\t\t\t: Left: " + (left.lastTipVelocitySum / left.lastPalmVelocitySum) + "  Right: " + (right.lastTipVelocitySum / right.lastPalmVelocitySum) + "\n";
 			}
 
-			if (left.isPinching && right.isPinching) {
-				topLeftSelection = getPlanePoint (left.pinchPosition);
-				bottomRightSelection = getPlanePoint (right.pinchPosition);
-				Vector3 tl = topLeftSelection;
-				Vector3 br = bottomRightSelection;
 
+			if (left.currentAction != GestureDetector.Action.None) {
+				if (left.currentAction == GestureDetector.Action.Fire) {
+					doFire = true;
+				} else if (left.currentAction == GestureDetector.Action.Water) {
+					doWater = true;
+				} else if (left.currentAction == GestureDetector.Action.Wind) {
+					doWind = true;
+				} 
+			
 			}
-
 
 			if (left.isPaw) {
 				if (left.wasPaw) {
@@ -106,20 +110,12 @@ public class GestureManager : MonoBehaviour {
 	}
 
 	private void SetBoolsToFalse(){
-		moveEarthUp = false;
-		moveEarthDown = false;
+		moveEarthUp 	= false;
+		moveEarthDown 	= false;
+		doFire			= false;
+		doWater			= false;
+		doWind			= false;
 	}
 
-	public Vector3 getPlanePoint(Vector3 pinchPoint){
-		Vector3 camPos = _camera.transform.position; 
-		Ray ray = new Ray (camPos, pinchPoint - camPos);
-		RaycastHit rayHit;
-		if (plane.Raycast (ray, out rayHit, 100f)) {
-//			print ("Hit: " + rayHit.point);
-			Vector3 hitPoint = rayHit.point;
-			return new Vector3 (hitPoint.x, hitPoint.y, hitPoint.z);
-		} else {
-			return Vector3.zero;
-		}
-	}
+
 }

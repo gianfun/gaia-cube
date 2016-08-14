@@ -14,10 +14,14 @@ public class WorldController : MonoBehaviour {
 	private Transform[,,] blocks;
 	private Transform hoveredBlock;
 
+	private GameObject areaSelectorPlane;
+
 	public Material waterMaterial;
 	private GameObject allWater;
 
 	void Start() {
+		areaSelectorPlane = GameObject.FindWithTag ("AreaSelector");
+
 		CreateBlocks ();
 
 		allWater = GameObject.CreatePrimitive (PrimitiveType.Cube);
@@ -38,6 +42,16 @@ public class WorldController : MonoBehaviour {
 
 			if (!Physics.Raycast(ray, out hit)) {
 				ResetSelection();
+			}
+		} else if (playerController.doSelect) {
+			print ("World Controller: DoSelect. Layer: " + LayerMask.NameToLayer ("SelectorPlane"));
+			RaycastHit hit;
+			if (Physics.Raycast (playerController.ray_topleft, out hit, 100f, 1 << LayerMask.NameToLayer ("SelectorPlane"))) {
+				Vector3 normalizedPoint = transform.InverseTransformPoint (hit.point) + new Vector3(2.5f, -3.6f, 2.5f);
+				normalizedPoint = new Vector3 ((int)normalizedPoint.x, (int)normalizedPoint.y, (int)normalizedPoint.z);
+				print ("Hit plane on " + normalizedPoint); 
+				GetBlock((int) normalizedPoint.x, 5, (int) normalizedPoint.z).GetComponent<BlockHolderController> ().Select();
+			} else {
 			}
 		}
 	}
