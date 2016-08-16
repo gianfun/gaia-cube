@@ -7,6 +7,8 @@ public class WorldController : MonoBehaviour {
 	[SerializeField]
 	private PlayerController playerController;
 
+	private Vector3 dimensions = new Vector3 (5, 6, 5);
+
 	public Transform baseBlock;
 	public Transform waterBlock;
 	public Transform basePlane;
@@ -44,14 +46,52 @@ public class WorldController : MonoBehaviour {
 				ResetSelection();
 			}
 		} else if (playerController.doSelect) {
-			print ("World Controller: DoSelect. Layer: " + LayerMask.NameToLayer ("SelectorPlane"));
+			//print ("World Controller: DoSelect. Layer: " + LayerMask.NameToLayer ("SelectorPlane"));
 			RaycastHit hit;
+			int selectLeft, selectRight, selectTop, selectBottom;
+			Vector3 normalizedPointTL = new Vector3 (-1, -1, -1);
+			Vector3 normalizedPointBR = normalizedPointTL;
 			if (Physics.Raycast (playerController.ray_topleft, out hit, 100f, 1 << LayerMask.NameToLayer ("SelectorPlane"))) {
-				Vector3 normalizedPoint = transform.InverseTransformPoint (hit.point) + new Vector3(2.5f, -3.6f, 2.5f);
-				normalizedPoint = new Vector3 ((int)normalizedPoint.x, (int)normalizedPoint.y, (int)normalizedPoint.z);
-				print ("Hit plane on " + normalizedPoint); 
-				GetBlock((int) normalizedPoint.x, 5, (int) normalizedPoint.z).GetComponent<BlockHolderController> ().Select();
+				normalizedPointTL = transform.InverseTransformPoint (hit.point) + new Vector3(2.5f, -3.6f, 2.5f);
+				normalizedPointTL = new Vector3 ((int)normalizedPointTL.x, (int)normalizedPointTL.y, (int)normalizedPointTL.z);
+			} 
+			if (Physics.Raycast (playerController.ray_bottomright, out hit, 100f, 1 << LayerMask.NameToLayer ("SelectorPlane"))) {
+				normalizedPointBR = transform.InverseTransformPoint (hit.point) + new Vector3(2.5f, -3.6f, 2.5f);
+				normalizedPointBR = new Vector3 ((int)normalizedPointBR.x, (int)normalizedPointBR.y, (int)normalizedPointBR.z);
+				//print ("Hit plane on " + normalizedPointBR); 
+
 			} else {
+			}
+
+			if (normalizedPointBR != new Vector3 (-1, -1, -1) && normalizedPointTL != new Vector3 (-1, -1, -1)) {
+				if (normalizedPointTL.x < normalizedPointBR.x) {
+					selectLeft = (int) normalizedPointTL.x;
+					selectRight = (int) normalizedPointBR.x;
+				} else {
+					selectLeft = (int) normalizedPointBR.x;
+					selectRight = (int) normalizedPointTL.x;
+				}
+
+				if (normalizedPointTL.z < normalizedPointBR.z) {
+					selectBottom = (int) normalizedPointTL.z;
+					selectTop = (int) normalizedPointBR.z;
+				} else {
+					selectBottom = (int) normalizedPointBR.z;
+					selectTop = (int) normalizedPointTL.z;
+				}
+
+				ResetSelection ();
+
+				for(int x = selectLeft; x <= selectRight; x++){
+					for(int z = selectBottom; z <= selectTop; z++){
+						for (int y = (int)dimensions.y - 1; y >= 0; y--) {
+							BlockHolderController block = GetBlock (x, y, z).GetComponent<BlockHolderController> ();
+							if(block != null && block.GetTopmost()){
+								block.Select ();
+							}
+						}
+					}
+				}
 			}
 		}
 	}
@@ -69,7 +109,7 @@ public class WorldController : MonoBehaviour {
 	}
 
 	public int[,] GetTerrain() {
-		int[,] terrain = new int[5, 5];
+		int[,] terrain = new int[(int)dimensions.x, (int)dimensions.z];
 		foreach (Transform block in blocks) {
 			BlockHolderController blockController = block.GetComponent<BlockHolderController> ();
 			if (blockController.GetTopmost ()) {
@@ -135,9 +175,9 @@ public class WorldController : MonoBehaviour {
 	}
 
 	public int[,] GetSlice(int height) {
-		int[,] slice = new int[5, 5];
-		for (int i=0; i < 5; i++) {
-			for (int j=0; j < 5; j++) {
+		int[,] slice = new int[(int)dimensions.x, (int)dimensions.z];
+		for (int i=0; i < (int)dimensions.x; i++) {
+			for (int j=0; j < (int)dimensions.z; j++) {
 				slice [i, j] = blocks [i, height, j].gameObject.activeInHierarchy ? 1 : 0;
 			}
 		}
@@ -145,9 +185,9 @@ public class WorldController : MonoBehaviour {
 	}
 
 	private void ResetSelection() {
-		for (int i=0; i < 5; i++) {
-			for (int j=0; j < 5; j++) {
-				for (int k=0; k < 5; k++) {
+		for (int i=0; i < (int)dimensions.x; i++) {
+			for (int j=0; j < (int)dimensions.y; j++) {
+				for (int k=0; k < (int)dimensions.z; k++) {
 					blocks[i, j, k].GetComponent<BlockHolderController>().Deselect();
 				}
 			}
@@ -155,9 +195,9 @@ public class WorldController : MonoBehaviour {
 	}
 
 	public void ResetBlocks() {
-		for (int i=0; i < 5; i++) {
-			for (int j=0; j < 6; j++) {
-				for (int k=0; k < 5; k++) {
+		for (int i=0; i < (int)dimensions.x; i++) {
+			for (int j=0; j < (int)dimensions.y; j++) {
+				for (int k=0; k < (int)dimensions.z; k++) {
 					Destroy (blocks [i, j, k].gameObject);
 				}
 			}
@@ -191,7 +231,7 @@ public class WorldController : MonoBehaviour {
 	}
 
 	void CreateBlocks(int n, int x0, int y0, int z0) {
-		blocks = new Transform[5, 6, 5];
+		blocks = new Transform[(int)dimensions.x, (int)dimensions.y, (int)dimensions.z];
 		for (int x = x0; x - x0 < n; x++) {
 			for (int y = y0; y - y0 < n + 1; y++) {
 				for (int z = z0; z - z0 < n; z++) {

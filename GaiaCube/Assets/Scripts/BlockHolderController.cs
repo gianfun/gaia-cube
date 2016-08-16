@@ -10,9 +10,11 @@ public class BlockHolderController : MonoBehaviour {
 	public Material selectedMaterial;
 
 	protected Material normalMaterial;
+	[SerializeField]
 	protected Material currentMaterial;
 
 	protected bool topmost = false;
+	[SerializeField]
 	protected bool selected = false;
 
 	public Element element = Element.EARTH;
@@ -39,22 +41,30 @@ public class BlockHolderController : MonoBehaviour {
 		}
 	}
 
-	public void Select() {
+	public void ToggleSelect() {
 		if (topmost) {
 			if (selected) {
 				Deselect ();
 			} else {
-				selected = true;
-				GetComponent<Renderer> ().material = selectedMaterial;
-				currentMaterial = selectedMaterial;
+				Select ();
 			}
 		}
 	}
 
+	public void Select() {
+		if (!selected) {
+			selected = true;
+			GetComponent<Renderer> ().material = selectedMaterial;
+			currentMaterial = selectedMaterial;
+		}
+	}
+
 	public void Deselect() {
-		selected = false;
-		GetComponent<Renderer> ().material = normalMaterial;
-		currentMaterial = normalMaterial;
+		if (selected) {
+			selected = false;
+			GetComponent<Renderer> ().material = normalMaterial;
+			currentMaterial = normalMaterial;
+		}
 	}
 
 	public void Deactivate(bool hide) {
@@ -110,7 +120,7 @@ public class BlockHolderController : MonoBehaviour {
 	void OnMouseUpAsButton() {
 		if (element != Element.EARTH)
 			return;
-		Select ();
+		ToggleSelect ();
 	}
 
 	public enum Element {
