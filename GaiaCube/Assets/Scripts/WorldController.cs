@@ -17,12 +17,14 @@ public class WorldController : MonoBehaviour {
 	private Transform hoveredBlock;
 
 	private GameObject areaSelectorPlane;
+	private MeshRenderer areaSelectorPlaneRenderer;
 
 	public Material waterMaterial;
 	private GameObject allWater;
 
 	void Start() {
 		areaSelectorPlane = GameObject.FindWithTag ("AreaSelector");
+		areaSelectorPlaneRenderer = areaSelectorPlane.GetComponent<MeshRenderer> ();
 
 		CreateBlocks ();
 
@@ -46,6 +48,9 @@ public class WorldController : MonoBehaviour {
 				ResetSelection();
 			}
 		} else if (playerController.doSelect) {
+			if (!areaSelectorPlaneRenderer.enabled) {
+				areaSelectorPlaneRenderer.enabled = true;
+			}
 			//print ("World Controller: DoSelect. Layer: " + LayerMask.NameToLayer ("SelectorPlane"));
 			RaycastHit hit;
 			int selectLeft, selectRight, selectTop, selectBottom;
@@ -93,7 +98,9 @@ public class WorldController : MonoBehaviour {
 					}
 				}
 			}
-		}
+		} else if (!playerController.doSelect && areaSelectorPlaneRenderer.enabled == true) {
+			areaSelectorPlaneRenderer.enabled = false;
+		};
 	}
 
 	void LateUpdate() {
