@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class RainController : MonoBehaviour {
 	[SerializeField]
@@ -11,7 +12,34 @@ public class RainController : MonoBehaviour {
 		if (playerController.doWater) {
 			GameObject world = GameObject.FindGameObjectWithTag ("World");
 			Transform hoveredBlock = world.GetComponent<WorldController> ().GetHovered ();
-			FillLake (world, hoveredBlock);
+			//FillLake (world, hoveredBlock);
+
+			FillLake (world.GetComponent<WorldController> ());
+		}
+	}
+
+	private void FillLake (WorldController world){
+		List<BlockHolderController> selectedBlocks = world.GetSelectedBlocks();
+		if (selectedBlocks.Count == 0) {
+			return;
+		}
+
+		List<Vector3> blocksToFlood = new List<Vector3> ();
+		List<Vector3> floodSource = new List<Vector3> ();
+
+		foreach (BlockHolderController block in selectedBlocks) {
+			floodSource.Add (block.position + new Vector3(0, 1, 0));
+			print ("Adding " + (block.position + new Vector3 (0, 1, 0)));
+		}
+		blocksToFlood = world.GetCanyon (floodSource);
+
+
+		foreach (Vector3 coord in blocksToFlood) {
+			AddWaterBlock (coord, world);
+		}
+
+		foreach (BlockHolderController block in selectedBlocks) {
+			block.Deactivate (false);
 		}
 	}
 
@@ -36,15 +64,20 @@ public class RainController : MonoBehaviour {
 			return;
 		}
 
-		foreach (int [] coord in worldController.GetCanyon(x, y + 1, z)) {
-			AddWaterBlock (coord [0], coord [1], coord [2], worldController, blockController);
+		foreach (Vector3 coord in worldController.GetCanyon(new Vector3(x, y + 1, z))) {
+			AddWaterBlock (coord, worldController, blockController);
 		}
 //		print (printable);
 	}
 
-	private void AddWaterBlock(int x, int y, int z, WorldController worldController, BlockHolderController blockController) {
-		Transform waterBlock = worldController.MakeWaterBlock (x, y, z);
+	private void AddWaterBlock(Vector3 pos, WorldController worldController, BlockHolderController blockController) {
+		Transform waterBlock = worldController.MakeWaterBlock ((int)pos.x, (int)pos.y, (int)pos.z);
 		blockController.Deactivate (false);
+		waterBlock.GetComponent<BlockController> ().SetTopmost (true);
+	}
+
+	private void AddWaterBlock(Vector3 pos, WorldController worldController) {
+		Transform waterBlock = worldController.MakeWaterBlock ((int)pos.x, (int)pos.y, (int)pos.z);
 		waterBlock.GetComponent<BlockController> ().SetTopmost (true);
 	}
 }

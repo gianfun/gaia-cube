@@ -13,30 +13,42 @@ public class BlockHolderController : MonoBehaviour {
 	[SerializeField]
 	protected Material currentMaterial;
 
-	protected bool topmost = false;
 	[SerializeField]
-	protected bool selected = false;
+	protected bool topmost = false;
+
+	public bool selected;
 
 	public Element element = Element.EARTH;
 
 	public int x { get; protected set; }
 	public int y { get; protected set; }
 	public int z { get; protected set; }
+	public Vector3 position {
+		get	{ 
+			return new Vector3 (x, y, z); 
+		} 
+		set{
+			x = (int)value.x; y = (int)value.y; z = (int)value.z;
+		}
+	}
 
 	void Start() {
 		GetComponent<Renderer> ().material = currentMaterial = normalMaterial = earthMaterial;
 		transform.Translate (0, .5f, 0);
+		selected = false;
 	}
 
 	void Update() {
-		if (Input.GetKeyDown ("up") && selected) {
-			try {
-				Transform nextBlock = transform.parent.GetComponent<WorldController> ().MakeBlock (x, y + 1, z);
-				Deactivate (false);
-				nextBlock.GetComponent<BlockController> ().SetTopmost (true);
-				nextBlock.GetComponent<BlockController> ().Select ();
-			} catch (System.IndexOutOfRangeException) {
-				return;
+		if (false) {
+			if (Input.GetKeyDown ("up") && selected) {
+				try {
+					Transform nextBlock = transform.parent.GetComponent<WorldController> ().MakeBlock (x, y + 1, z);
+					Deactivate (false);
+					nextBlock.GetComponent<BlockController> ().SetTopmost (true);
+					nextBlock.GetComponent<BlockController> ().Select ();
+				} catch (System.IndexOutOfRangeException) {
+					return;
+				}
 			}
 		}
 	}
@@ -75,6 +87,10 @@ public class BlockHolderController : MonoBehaviour {
 		topmost = false;
 	}
 
+	public void Activate() {
+		gameObject.SetActive (true);
+	}
+
 	public bool GetTopmost() {
 		return this.topmost;
 	}
@@ -92,7 +108,7 @@ public class BlockHolderController : MonoBehaviour {
 	void OnMouseEnter() {
 		if (element != Element.EARTH)
 			return;
-		transform.parent.GetComponent<WorldController> ().SetHovered (transform);
+		transform.parent.parent.GetComponent<WorldController> ().SetHovered (transform);
 		if (topmost) {
 			Color newColor = new Color (
 				currentMaterial.color.r + 0.1f,
@@ -106,8 +122,8 @@ public class BlockHolderController : MonoBehaviour {
 	void OnMouseExit() {
 		if (element != Element.EARTH)
 			return;
-		if (transform.parent.GetComponent<WorldController> ().GetHovered () == transform) {
-			transform.parent.GetComponent<WorldController> ().SetHovered (null);
+		if (transform.parent.parent.GetComponent<WorldController> ().GetHovered () == transform) {
+			transform.parent.parent.GetComponent<WorldController> ().SetHovered (null);
 		}
 		Color newColor = new Color (
 			currentMaterial.color.r,

@@ -6,6 +6,7 @@ using System.Linq;
 public class WorldController : MonoBehaviour {
 	[SerializeField]
 	private PlayerController playerController;
+	public Transform blockColumnPrefab;
 
 	private Vector3 dimensions = new Vector3 (5, 6, 5);
 
@@ -14,6 +15,7 @@ public class WorldController : MonoBehaviour {
 	public Transform basePlane;
 
 	private Transform[,,] blocks;
+	private BlockColumn[,] blockColumns;
 	private Transform hoveredBlock;
 
 	private GameObject areaSelectorPlane;
@@ -89,6 +91,7 @@ public class WorldController : MonoBehaviour {
 
 				for(int x = selectLeft; x <= selectRight; x++){
 					for(int z = selectBottom; z <= selectTop; z++){
+						blockColumns [x, z].GetComponent<BlockColumn> ().Select ();
 						for (int y = (int)dimensions.y - 1; y >= 0; y--) {
 							BlockHolderController block = GetBlock (x, y, z).GetComponent<BlockHolderController> ();
 							if(block != null && block.GetTopmost()){
@@ -147,35 +150,37 @@ public class WorldController : MonoBehaviour {
 		allWater.transform.SetParent (gameObject.transform, false);
 	}
 
-	public List<int[]> GetCanyon (int x, int y, int z) {
-		return getAdjacentHoles (new List<int[]> (), new List<int[]> { new [] { x, y, z } });
+	public List<Vector3> GetCanyon (Vector3 pos) {
+		return getAdjacentHoles (new List<Vector3> (), new List<Vector3> { pos });
 	}
 
-	private List<int[]> getAdjacentHoles(List<int[]> result, List<int[]> current) {
-		List<int[]> next = new List<int[]> ();
-		foreach (int [] coord in current) {
-			try {
-				if (!GetBlock (coord [0], coord [1], coord [2]).gameObject.activeInHierarchy) {
-					bool mustBreak = false;
-					foreach (int [] resCoord in result) {
-						if (coord.SequenceEqual(resCoord)) {
-							mustBreak = true;
-							break;
-						}
-					}
-					if (mustBreak) {
-						break;
-					}
+	public List<Vector3> GetCanyon (List<Vector3> sources) {
+		return getAdjacentHoles (new List<Vector3> (), sources);
+	}
+
+	private List<Vector3> getAdjacentHoles(List<Vector3> result, List<Vector3> current) {
+		List<Vector3> next = new List<Vector3> ();
+		foreach (Vector3 coord in current) {
+			if (!GetBlock (coord).gameObject.activeInHierarchy) {
+				if(!result.Contains(coord)){
 					result.Add(coord);
-					next.Add (new [] { coord [0] + 1, coord [1], coord [2] + 1 });
-					next.Add (new [] { coord [0] + 1, coord [1], coord [2] - 1 });
-					next.Add (new [] { coord [0] - 1, coord [1], coord [2] + 1 });
-					next.Add (new [] { coord [0] - 1, coord [1], coord [2] - 1 });
-					next.Add (new [] { coord [0], coord [1] - 1, coord [2] });
+					if (coord.x < dimensions.x - 1) {
+						next.Add (new Vector3 (coord.x + 1, coord.y, coord.z));
+					}
+					if (coord.x > 0) {
+						next.Add (new Vector3 (coord.x - 1, coord.y, coord.z));
+					}
+					if (coord.z < dimensions.z - 1) {
+						next.Add(new Vector3(coord.x, coord.y	 , coord.z + 1	));
+					}
+					if (coord.z > 0) {
+						next.Add(new Vector3(coord.x, coord.y	 , coord.z - 1	));
+					}
+					if (coord.y > 0) {
+						next.Add (new Vector3 (coord.x, coord.y - 1, coord.z));
+					}
 					result = getAdjacentHoles (result, next);
 				}
-			} catch (System.IndexOutOfRangeException) {
-				continue;
 			}
 		}
 		return result;
@@ -191,12 +196,22 @@ public class WorldController : MonoBehaviour {
 		return slice;
 	}
 
+
+	public List<BlockHolderController> GetSelectedBlocks() {
+		List<BlockHolderController> selectedBlocks = new List<BlockHolderController>();
+		foreach (Transform block in blocks) {
+			BlockHolderController blockController = block.GetComponent<BlockHolderController> ();
+			if (blockController.selected) {
+				selectedBlocks.Add (blockController);
+			}
+		}
+		return selectedBlocks;
+	}
+
 	private void ResetSelection() {
 		for (int i=0; i < (int)dimensions.x; i++) {
-			for (int j=0; j < (int)dimensions.y; j++) {
-				for (int k=0; k < (int)dimensions.z; k++) {
-					blocks[i, j, k].GetComponent<BlockHolderController>().Deselect();
-				}
+			for (int k=0; k < (int)dimensions.z; k++) {
+				blockColumns[i, k].Deselect();
 			}
 		}
 	}
@@ -213,7 +228,11 @@ public class WorldController : MonoBehaviour {
 	}
 
 	public Transform GetBlock(int x, int y, int z) {
-		return blocks [x, y, z];
+		return GetBlock (new Vector3 (x, y, z));
+	}
+
+	public Transform GetBlock(Vector3 pos) {
+		return blocks [(int)pos.x, (int)pos.y, (int)pos.z];
 	}
 
 	public Transform MakeBlock(int x, int y, int z) {
@@ -234,7 +253,7 @@ public class WorldController : MonoBehaviour {
 	}
 
 	void CreateBlocks() {
-		CreateBlocks (5, -2, -2, -2);
+		CreateBlocks2 (5, -2, -2, -2);
 	}
 
 	void CreateBlocks(int n, int x0, int y0, int z0) {
@@ -263,6 +282,22 @@ public class WorldController : MonoBehaviour {
 						//block.Rotate (-90, 0, 0);
 					}
 				}
+			}
+		}
+	}
+
+	void CreateBlocks2(int n, int x0, int y0, int z0) {
+		blocks = new Transform[(int)dimensions.x, (int)dimensions.y, (int)dimensions.z];
+		blockColumns = new BlockColumn[(int)dimensions.x, (int)dimensions.z];
+		for (int x = x0; x - x0 < n; x++) {
+			for (int z = z0; z - z0 < n; z++) {
+				Transform blockColumn = (Transform)Instantiate (blockColumnPrefab, new Vector3 (x, -1, z), Quaternion.identity);
+				blockColumn.SetParent (transform, false);
+				BlockColumn col = blockColumn.GetComponent<BlockColumn> ();
+				col.playerController = playerController;
+				col.SetPrefabs (baseBlock, waterBlock, basePlane);
+				col.Init(x - x0, z - z0, n, blocks);
+				blockColumns [x - x0, z - z0] = col;
 			}
 		}
 	}
