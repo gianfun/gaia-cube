@@ -1,83 +1,149 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BlockController : BlockHolderController {
+public class BlockController : MonoBehaviour {
+	public PlayerController playerController;
+
+	public Material earthMaterial;
+	public Material earthTopMaterial;
+	public Material waterMaterial;
+	public Material selectedMaterial;
+
+	protected Material normalMaterial;
+	[SerializeField]
+	protected Material currentMaterial;
+
+	[SerializeField]
+	protected bool topmost = false;
+
+	public bool selected { get; protected set; }
+
+	public Element element = Element.EARTH;
+
+	public int x { get; protected set; }
+	public int y { get; protected set; }
+	public int z { get; protected set; }
+	public Vector3 position {
+		get	{ 
+			return new Vector3 (x, y, z); 
+		} 
+		set{
+			x = (int)value.x; y = (int)value.y; z = (int)value.z;
+		}
+	}
 
 	void Start() {
 		GetComponent<Renderer> ().material = currentMaterial = normalMaterial = earthMaterial;
+		transform.Translate (0, .5f, 0);
+		selected = false;
 	}
 
-	void Update() {
-		if (false) {
-			if (playerController.moveEarthDown && selected) {
-				Deactivate (true);
-				try {
-					Transform nextBlock = transform.parent.GetComponent<WorldController> ().GetBlock (x, y - 1, z);
-					nextBlock.GetComponent<BlockHolderController> ().SetTopmost (true);
-					nextBlock.GetComponent<BlockHolderController> ().Select ();
-				} catch (System.IndexOutOfRangeException) {
-					return;
-				}
-			} else if (playerController.moveEarthUp && selected) {
-				try {
-					Transform nextBlock = transform.parent.GetComponent<WorldController> ().MakeBlock (x, y + 1, z);
-					Deactivate (false);
-					nextBlock.GetComponent<BlockController> ().SetTopmost (true);
-					nextBlock.GetComponent<BlockController> ().Select ();
-				} catch (System.Exception e) {
-					if (e is System.IndexOutOfRangeException || e is System.NullReferenceException) {
-						return;
-					}
-					throw;
-				}
+	public void ToggleSelect() {
+		if (topmost) {
+			if (selected) {
+				Deselect ();
+			} else {
+				Select ();
 			}
 		}
-
-		FloodAdjacent ();
 	}
-		
-	new public void SetTopmost(bool topmost) {
-		base.SetTopmost (topmost);
-		if (topmost) {
-			transform.GetChild (0).GetComponent<MeshRenderer> ().enabled = false;
-		} else {
-			transform.GetChild (0).GetComponent<MeshRenderer> ().enabled = true;
+
+	public void Select() {
+		if (!selected) {
+			selected = true;
+
+			GetComponent<Renderer> ().material = selectedMaterial;
+			currentMaterial = selectedMaterial;
 		}
+	}
+
+	public void Deselect() {
+		if (selected) {
+			selected = false;
+
+			GetComponent<Renderer> ().material = normalMaterial;
+			currentMaterial = normalMaterial;
+		}
+	}
+
+	public void Deactivate(bool hide) {
+		if (hide) {
+			gameObject.SetActive (false);
+		}
+		Deselect ();
+		topmost = false;
+	}
+
+	public void Activate() {
+		gameObject.SetActive (true);
+	}
+
+	public bool GetTopmost() {
+		return this.topmost;
+	}
+
+	public void SetTopmost(bool topmost) {
+		this.topmost = topmost;
+		if (topmost) {
+			//TODO: Show grass
+		} 
 	}
 
 	public void SetElement (Element element) {
 		this.element = element;
 		switch (element) {
-			case Element.EARTH:
-				GetComponent<Renderer> ().material = currentMaterial = normalMaterial = earthMaterial;
-				break;
-			case Element.WATER:
-				GetComponent<Renderer> ().material = currentMaterial = normalMaterial = waterMaterial;
-				break;
+		case Element.EARTH:
+			GetComponent<Renderer> ().material = currentMaterial = normalMaterial = earthMaterial;
+			break;
+		case Element.WATER:
+			GetComponent<Renderer> ().material = currentMaterial = normalMaterial = waterMaterial;
+			break;
 		}
 	}
 
-	private void FloodAdjacent() {
-		if (this.element == Element.WATER) {
-			FloodIfEmpty (x+1, y, z);
-			FloodIfEmpty (x-1, y, z);
-			FloodIfEmpty (x, y, z+1);
-			FloodIfEmpty (x, y, z-1);
-			FloodIfEmpty (x, y-1, z);
+	public void SetCoordinates(int x, int y, int z) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+	}
+
+	/*
+	void OnMouseEnter() {
+		if (element != Element.EARTH)
+			return;
+		transform.parent.parent.GetComponent<WorldController> ().SetHovered (transform);
+		if (topmost) {
+			Color newColor = new Color (
+				currentMaterial.color.r + 0.1f,
+				currentMaterial.color.g + 0.1f,
+				currentMaterial.color.b + 0.1f
+			);
+			GetComponent<Renderer> ().material.color = newColor;
 		}
 	}
 
-	private void FloodIfEmpty(int x, int y, int z) {
-		try {
-			Transform block = transform.parent.parent.GetComponent<WorldController> ().GetBlock (x, y, z);
+	void OnMouseExit() {
+		if (element != Element.EARTH)
+			return;
+		if (transform.parent.parent.GetComponent<WorldController> ().GetHovered () == transform) {
+			transform.parent.parent.GetComponent<WorldController> ().SetHovered (null);
+		}
+		Color newColor = new Color (
+			currentMaterial.color.r,
+			currentMaterial.color.g,
+			currentMaterial.color.b
+		);
+		GetComponent<Renderer> ().material.color = newColor;
+	}
 
-			if (!block.gameObject.activeInHierarchy) {
-				block.gameObject.SetActive(true);
-				block.GetComponent<BlockController> ().SetElement (BlockController.Element.WATER);
+	void OnMouseUpAsButton() {
+		if (element != Element.EARTH)
+			return;
+		ToggleSelect ();
+	}
+	*/
 
-				Transform blockBelow = transform.parent.parent.GetComponent<WorldController> ().GetBlock (x, y-1, z);
-				blockBelow.GetComponent<BlockHolderController>().Deselect();
-			}
-		} catch (System.IndexOutOfRangeException) {}
+	public enum Element {
+		EARTH, WATER, INVALID
 	}
 }

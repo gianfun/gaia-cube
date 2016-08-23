@@ -5,44 +5,20 @@ using System.Collections.Generic;
 public class RainController : MonoBehaviour {
 	[SerializeField]
 	private PlayerController playerController;
-
+	WorldController worldController;
 	public Transform waterBlock;
-	
+
+	void Start(){
+		worldController = GameObject.FindGameObjectWithTag ("World").GetComponent<WorldController> ();
+	}
+
 	void Update () {
-		if (playerController.doWater) {
-			GameObject world = GameObject.FindGameObjectWithTag ("World");
-			Transform hoveredBlock = world.GetComponent<WorldController> ().GetHovered ();
-			//FillLake (world, hoveredBlock);
-
-			FillLake (world.GetComponent<WorldController> ());
-		}
+		
 	}
 
-	private void FillLake (WorldController world){
-		List<BlockHolderController> selectedBlocks = world.GetSelectedBlocks();
-		if (selectedBlocks.Count == 0) {
-			return;
-		}
-
-		List<Vector3> blocksToFlood = new List<Vector3> ();
-		List<Vector3> floodSource = new List<Vector3> ();
-
-		foreach (BlockHolderController block in selectedBlocks) {
-			floodSource.Add (block.position + new Vector3(0, 1, 0));
-			print ("Adding " + (block.position + new Vector3 (0, 1, 0)));
-		}
-		blocksToFlood = world.GetCanyon (floodSource);
 
 
-		foreach (Vector3 coord in blocksToFlood) {
-			AddWaterBlock (coord, world);
-		}
-
-		foreach (BlockHolderController block in selectedBlocks) {
-			block.Deactivate (false);
-		}
-	}
-
+	/*
 	private void FillLake (GameObject world, Transform hoveredBlock) {
 		if (hoveredBlock == null) {
 			return;
@@ -69,15 +45,17 @@ public class RainController : MonoBehaviour {
 		}
 //		print (printable);
 	}
+	*/
 
+	/*
 	private void AddWaterBlock(Vector3 pos, WorldController worldController, BlockHolderController blockController) {
 		Transform waterBlock = worldController.MakeWaterBlock ((int)pos.x, (int)pos.y, (int)pos.z);
 		blockController.Deactivate (false);
 		waterBlock.GetComponent<BlockController> ().SetTopmost (true);
 	}
+	*/
 
-	private void AddWaterBlock(Vector3 pos, WorldController worldController) {
-		Transform waterBlock = worldController.MakeWaterBlock ((int)pos.x, (int)pos.y, (int)pos.z);
-		waterBlock.GetComponent<BlockController> ().SetTopmost (true);
+	private void FillWaterColumn(Vector3 pos, WorldController worldController) {
+		worldController.FillWaterColumn (pos);
 	}
 }

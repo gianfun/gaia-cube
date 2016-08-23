@@ -8,6 +8,8 @@ public class WorldController : MonoBehaviour {
 	private PlayerController playerController;
 	public Transform blockColumnPrefab;
 
+	private bool recalculateWaterMesh;
+
 	private Vector3 dimensions = new Vector3 (5, 6, 5);
 
 	public Transform baseBlock;
@@ -31,6 +33,7 @@ public class WorldController : MonoBehaviour {
 		CreateBlocks ();
 
 		allWater = GameObject.CreatePrimitive (PrimitiveType.Cube);
+		allWater.name = "WaterMesh";
 		allWater.transform.SetParent (transform);
 
 		Color skyBlue = new Color(0.2f, 0.3f, 0.4f, 0.7f);
@@ -42,12 +45,15 @@ public class WorldController : MonoBehaviour {
 	}
 
 	void Update () {
+		recalculateWaterMesh = false;
+
 		if (Input.GetButtonDown("Fire1")) {
 			RaycastHit hit = new RaycastHit();
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 
 			if (!Physics.Raycast(ray, out hit)) {
 				ResetSelection();
+				recalculateWaterMesh = true;
 			}
 		} else if (playerController.doSelect) {
 			if (!areaSelectorPlaneRenderer.enabled) {
@@ -92,22 +98,44 @@ public class WorldController : MonoBehaviour {
 				for(int x = selectLeft; x <= selectRight; x++){
 					for(int z = selectBottom; z <= selectTop; z++){
 						blockColumns [x, z].GetComponent<BlockColumn> ().Select ();
-						for (int y = (int)dimensions.y - 1; y >= 0; y--) {
-							BlockHolderController block = GetBlock (x, y, z).GetComponent<BlockHolderController> ();
-							if(block != null && block.GetTopmost()){
-								block.Select ();
-							}
-						}
+
 					}
 				}
+				recalculateWaterMesh = true;
 			}
 		} else if (!playerController.doSelect && areaSelectorPlaneRenderer.enabled == true) {
 			areaSelectorPlaneRenderer.enabled = false;
 		};
+
+		if (playerController.moveEarthDown) {
+			foreach (BlockColumn col in GetSelectedColumns()) {
+				col.MoveEarthDown ();
+				print ("Moved down. Should flood? " + ShouldFlood (col));
+				if (ShouldFlood (col)) {
+					FillLake (col.GetTopBlock ());
+					recalculateWaterMesh = true;
+				}
+
+			}
+		}
+		if (playerController.moveEarthUp) {
+			foreach (BlockColumn col in GetSelectedColumns()) {
+				col.MoveEarthUp ();
+			}
+		}
+
+		if (playerController.doWater) {
+			FillLake (GetSelectedBlocks());
+			recalculateWaterMesh = true;
+		}
+
+
 	}
 
 	void LateUpdate() {
-		mergeTerrain ();
+		if(recalculateWaterMesh){
+			mergeTerrain ();
+		}
 	}
 
 	public void SetHovered(Transform block) {
@@ -121,7 +149,7 @@ public class WorldController : MonoBehaviour {
 	public int[,] GetTerrain() {
 		int[,] terrain = new int[(int)dimensions.x, (int)dimensions.z];
 		foreach (Transform block in blocks) {
-			BlockHolderController blockController = block.GetComponent<BlockHolderController> ();
+			BlockController blockController = block.GetComponent<BlockController> ();
 			if (blockController.GetTopmost ()) {
 				terrain [blockController.x, blockController.z] = blockController.y;
 			}
@@ -133,17 +161,23 @@ public class WorldController : MonoBehaviour {
 		List<Transform> allWaterBlocks = new List<Transform> ();
 		List<Transform> allEarth = new List<Transform> ();
 		foreach (Transform block in blocks) {
-			if (block.GetComponent<BlockHolderController> ().element == BlockHolderController.Element.EARTH) {
+			BlockController blockCont = block.GetComponent<BlockController> ();
+			if (blockCont.element == BlockController.Element.EARTH) {
 				allEarth.Add (block);
-			} else {
-				allWaterBlocks.Add (block);
+			} else if (blockCont.element == BlockController.Element.WATER){
+				if (!blockCont.selected) {
+					allWaterBlocks.Add (block);
+					block.GetComponent<Renderer> ().enabled = false;
+				} else {
+					block.GetComponent<Renderer> ().enabled = true;
+				}
 			}
 		}
 		CombineInstance[] combineWater = new CombineInstance[allWaterBlocks.Count];
 		for (int i = 0; i < allWaterBlocks.Count; i++) {
-			combineWater [i].mesh = allWaterBlocks [i].GetComponent<MeshFilter> ().sharedMesh;
-			combineWater [i].transform = allWaterBlocks [i].GetComponent<MeshFilter> ().transform.localToWorldMatrix;
-			allWaterBlocks [i].GetComponent<Renderer> ().enabled = false;
+				
+				combineWater [i].mesh = allWaterBlocks [i].GetComponent<MeshFilter> ().sharedMesh;
+				combineWater [i].transform = allWaterBlocks [i].GetComponent<MeshFilter> ().transform.localToWorldMatrix;
 		}
 		allWater.GetComponent<MeshFilter>().mesh.CombineMeshes (combineWater);
 		allWater.GetComponent<Renderer>().material = waterMaterial;
@@ -151,14 +185,18 @@ public class WorldController : MonoBehaviour {
 	}
 
 	public List<Vector3> GetCanyon (Vector3 pos) {
-		return getAdjacentHoles (new List<Vector3> (), new List<Vector3> { pos });
+		return getAdjacentHoles (new List<Vector3> (), new List<Vector3> { pos }, true);
 	}
 
-	public List<Vector3> GetCanyon (List<Vector3> sources) {
-		return getAdjacentHoles (new List<Vector3> (), sources);
+	public List<Vector3> GetCanyon (List<Vector3> sources) {	
+		return getAdjacentHoles (new List<Vector3> (), sources, true);
 	}
 
-	private List<Vector3> getAdjacentHoles(List<Vector3> result, List<Vector3> current) {
+	public List<Vector3> GetCanyonPlane (List<Vector3> sources) {	
+		return getAdjacentHoles (new List<Vector3> (), sources, false);
+	}
+
+	private List<Vector3> getAdjacentHoles(List<Vector3> result, List<Vector3> current, bool shouldGoDown) {
 		List<Vector3> next = new List<Vector3> ();
 		foreach (Vector3 coord in current) {
 			if (!GetBlock (coord).gameObject.activeInHierarchy) {
@@ -176,10 +214,10 @@ public class WorldController : MonoBehaviour {
 					if (coord.z > 0) {
 						next.Add(new Vector3(coord.x, coord.y	 , coord.z - 1	));
 					}
-					if (coord.y > 0) {
+					if (shouldGoDown && coord.y > 0) {
 						next.Add (new Vector3 (coord.x, coord.y - 1, coord.z));
 					}
-					result = getAdjacentHoles (result, next);
+					result = getAdjacentHoles (result, next, shouldGoDown);
 				}
 			}
 		}
@@ -197,10 +235,23 @@ public class WorldController : MonoBehaviour {
 	}
 
 
-	public List<BlockHolderController> GetSelectedBlocks() {
-		List<BlockHolderController> selectedBlocks = new List<BlockHolderController>();
+	public List<BlockColumn> GetSelectedColumns() {
+		List<BlockColumn> selectedColumns = new List<BlockColumn>();
+		for (int i=0; i < (int)dimensions.x; i++) {
+			for (int k=0; k < (int)dimensions.z; k++) {
+				if (blockColumns[i, k].selected) {
+					selectedColumns.Add (blockColumns[i, k]);
+				}
+			}
+		}
+			
+		return selectedColumns;
+	}
+
+	public List<BlockController> GetSelectedBlocks() {
+		List<BlockController> selectedBlocks = new List<BlockController>();
 		foreach (Transform block in blocks) {
-			BlockHolderController blockController = block.GetComponent<BlockHolderController> ();
+			BlockController blockController = block.GetComponent<BlockController> ();
 			if (blockController.selected) {
 				selectedBlocks.Add (blockController);
 			}
@@ -247,6 +298,66 @@ public class WorldController : MonoBehaviour {
 		return blocks [x, y, z];
 	}
 
+	public void FillWaterColumn(Vector3 pos) {
+		blockColumns [(int)pos.x, (int)pos.z].FillWaterColumn ((int)pos.y);
+	}
+
+	public void FillLake (BlockController selectedBlock){
+		FillLake (new List<BlockController> { selectedBlock });
+	}
+
+	public void FillLake (List<BlockController> selectedBlocks){
+		if (selectedBlocks.Count == 0) {
+			return;
+		}
+
+		List<Vector3> blocksToFlood = new List<Vector3> ();
+		List<Vector3> floodSource = new List<Vector3> ();
+
+		foreach (BlockController block in selectedBlocks) {
+			floodSource.Add (block.position + new Vector3(0, 1, 0)); // + (0,1,0) to get block on top.
+			print ("Adding " + (block.position + new Vector3 (0, 1, 0)));
+		}
+		blocksToFlood = GetCanyonPlane (floodSource);
+
+
+		foreach (Vector3 coord in blocksToFlood) {
+			FillWaterColumn (coord);
+		}
+
+		foreach (BlockController block in selectedBlocks) {
+			block.Deactivate (false);
+		}
+	}
+
+	public bool ShouldFlood(BlockColumn col){
+		int x = (int)col.position.x;
+		int y = col.topmost + 1;
+		int z = (int)col.position.y;
+
+		if (x > 0) {
+			if(blockColumns [x - 1, z].GetBlockElementAt (y) == BlockController.Element.WATER){
+				return true;
+			}
+		}
+		if (x < dimensions.x - 1) {
+			if(blockColumns [x + 1, z].GetBlockElementAt (y) == BlockController.Element.WATER){
+				return true;
+			}
+		}
+		if (z > 0) {
+			if(blockColumns [x, z - 1].GetBlockElementAt (y) == BlockController.Element.WATER){
+				return true;
+			}
+		}
+		if (z > dimensions.z - 1) {
+			if(blockColumns [x, z + 1].GetBlockElementAt (y) == BlockController.Element.WATER){
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public void CreateWaterBlock(int x, int y, int z) {
 		Transform block = (Transform)Instantiate (waterBlock, new Vector3 (x - 2, y - 2, z - 2), Quaternion.identity);
 		block.SetParent (gameObject.transform, false);
@@ -271,11 +382,11 @@ public class WorldController : MonoBehaviour {
 
 					Transform block = (Transform) Instantiate(blockType, new Vector3 (x, y, z), Quaternion.identity);
 					block.SetParent (gameObject.transform, false);
-					block.GetComponent<BlockHolderController> ().playerController = this.playerController;
-					block.GetComponent<BlockHolderController> ().SetCoordinates (x - x0, y - y0, z - z0);
+					block.GetComponent<BlockController> ().playerController = this.playerController;
+					block.GetComponent<BlockController> ().SetCoordinates (x - x0, y - y0, z - z0);
 					blocks [x-x0, y-y0, z-z0] = block;
 					if (y - y0 == n) {
-						block.GetComponent<BlockHolderController> ().SetTopmost (true);
+						block.GetComponent<BlockController> ().SetTopmost (true);
 					}
 
 					if (blockType == baseBlock) {
@@ -292,6 +403,7 @@ public class WorldController : MonoBehaviour {
 		for (int x = x0; x - x0 < n; x++) {
 			for (int z = z0; z - z0 < n; z++) {
 				Transform blockColumn = (Transform)Instantiate (blockColumnPrefab, new Vector3 (x, -1, z), Quaternion.identity);
+				blockColumn.name = "Column_"+ (x - x0) +"_"+ (z - z0);
 				blockColumn.SetParent (transform, false);
 				BlockColumn col = blockColumn.GetComponent<BlockColumn> ();
 				col.playerController = playerController;

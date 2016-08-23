@@ -5,42 +5,21 @@ public class BlockColumn : MonoBehaviour {
 	Transform earthPrefab, waterPrefab, bottomPrefab;
 	private int height;
 
-	private int topmost;
-	private bool selected = false;
-	private BlockHolderController[] myBlocks;
+	public Vector2 position;
+
+	public int topmost { get; protected set;}
+	public bool selected = false;
+	private BlockController[] myBlocks;
 	public PlayerController playerController;
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		if (playerController != null && selected) { 
-			if (playerController.moveEarthDown && topmost > 0) {
-				myBlocks [topmost].Deactivate (true);
-				topmost--;
-				myBlocks [topmost].SetTopmost(true);
-				myBlocks [topmost].Select();
-
-			} else if (playerController.moveEarthUp && topmost < height) {
-				myBlocks [topmost].Deactivate (false);
-				topmost++;
-				myBlocks [topmost].Activate();
-				myBlocks [topmost].SetTopmost(true);
-				myBlocks [topmost].Select();
-			}
-		}
-	}
 
 	/*
 	 		if (playerController.moveEarthDown && selected) {
 			Deactivate (true);
 			try {
 				Transform nextBlock = transform.parent.GetComponent<WorldController> ().GetBlock (x, y - 1, z);
-				nextBlock.GetComponent<BlockHolderController> ().SetTopmost (true);
-				nextBlock.GetComponent<BlockHolderController> ().Select ();
+				nextBlock.GetComponent<BlockController> ().SetTopmost (true);
+				nextBlock.GetComponent<BlockController> ().Select ();
 			} catch (System.IndexOutOfRangeException) {
 				return;
 			}
@@ -66,22 +45,25 @@ public class BlockColumn : MonoBehaviour {
 	}
 
 	public void Init(int x, int z, int height, Transform[,,] blocks){
-		myBlocks =  new BlockHolderController[height + 1];
+		position = new Vector2 (x, z);
+		myBlocks =  new BlockController[height + 1];
 		Transform block = (Transform) Instantiate(bottomPrefab , new Vector3(0, -1, 0), Quaternion.identity);
+		block.name = "Base";
 		block.SetParent (transform, false);	
-		block.GetComponent<BlockHolderController> ().SetCoordinates (x, -1, z);
+		block.GetComponent<BlockController> ().SetCoordinates (x, -1, z);
 		blocks [x, 0, z] = block;
-		myBlocks [0] = block.GetComponent<BlockHolderController>();
+		myBlocks [0] = block.GetComponent<BlockController>();
 		for (int y = 0; y < height; y++) {
 			block = (Transform) Instantiate(earthPrefab, new Vector3(0, y, 0), Quaternion.identity);
+			block.name = "Block" + y;
 			block.SetParent (transform, false);	
-			block.GetComponent<BlockHolderController> ().SetCoordinates (x, y + 1, z);
+			block.GetComponent<BlockController> ().SetCoordinates (x, y + 1, z);
 			blocks [x, y + 1, z] = block;
-			myBlocks [y + 1] = block.GetComponent<BlockHolderController>();
+			myBlocks [y + 1] = block.GetComponent<BlockController>();
 		}
 		block.GetComponent<BlockController> ().SetTopmost (true);
 		topmost = height;
-		this.height = height;
+		this.height = height + 1;
 	}
 
 	public void Select(){
@@ -92,5 +74,58 @@ public class BlockColumn : MonoBehaviour {
 	public void Deselect(){
 		myBlocks [topmost].Deselect ();
 		selected = false;
+	}
+
+	public void MoveEarthDown(){
+		if (selected && topmost > 0 && myBlocks [topmost].element == BlockController.Element.EARTH) {
+			myBlocks [topmost].Deactivate (true);
+			topmost--;
+			myBlocks [topmost].SetTopmost (true);
+			myBlocks [topmost].Select ();
+		}
+	}
+
+	public void MoveEarthUp(){
+		if (selected && topmost < height && myBlocks[topmost].element == BlockController.Element.EARTH) {
+			myBlocks [topmost].Deactivate (false);
+			topmost++;
+			myBlocks [topmost].Activate();
+			myBlocks [topmost].SetTopmost(true);
+			myBlocks [topmost].Select();
+		}
+	}
+
+	public void FillWaterColumn(int height){
+		if (topmost + 1 <= height) {
+			print ("FillWaterColumn -> Topmost: " + topmost + " height: " + height);
+			for (int i = topmost + 1; i <= height; i++) {
+				myBlocks [i].SetElement (BlockController.Element.WATER);
+				myBlocks [i].Activate ();
+			}
+			myBlocks [topmost].SetTopmost (false);
+			myBlocks [topmost].Deselect();
+			topmost = height;
+			myBlocks [topmost].SetTopmost (true);
+			selected = false;
+		}
+	}
+
+	public void FloodTop(){
+		FillWaterColumn (topmost + 1);
+	}
+
+	public BlockController.Element GetBlockElementAt(int y){
+		if (y < height) {
+			return myBlocks [y].element;
+		} else {
+			return BlockController.Element.INVALID;
+		}
+	}
+
+	public BlockController GetTopBlock(){
+		if (topmost < height) {
+			return myBlocks [topmost];
+		}
+		return null;
 	}
 }
