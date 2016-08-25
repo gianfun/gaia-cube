@@ -98,6 +98,10 @@ public class BlockController : MonoBehaviour {
 		case Element.WATER:
 			GetComponent<Renderer> ().material = currentMaterial = normalMaterial = waterMaterial;
 			break;
+		case Element.AIR:
+			gameObject.SetActive (false);
+			//GetComponent<Renderer> ().material = currentMaterial = normalMaterial = waterMaterial;
+			break;
 		}
 	}
 
@@ -144,6 +148,6 @@ public class BlockController : MonoBehaviour {
 	*/
 
 	public enum Element {
-		EARTH, WATER, INVALID
+		AIR, EARTH, WATER, INVALID
 	}
 }

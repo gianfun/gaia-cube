@@ -110,7 +110,7 @@ public class WorldController : MonoBehaviour {
 		if (playerController.moveEarthDown) {
 			foreach (BlockColumn col in GetSelectedColumns()) {
 				col.MoveEarthDown ();
-				print ("Moved down. Should flood? " + ShouldFlood (col));
+				//print ("Moved down. Should flood? " + ShouldFlood (col));
 				if (ShouldFlood (col)) {
 					FillLake (col.GetTopBlock ());
 					recalculateWaterMesh = true;
@@ -126,6 +126,11 @@ public class WorldController : MonoBehaviour {
 
 		if (playerController.doWater) {
 			FillLake (GetSelectedBlocks());
+			recalculateWaterMesh = true;
+		}
+
+		if (playerController.doFire) {
+			DryOutWater (GetSelectedBlocks());
 			recalculateWaterMesh = true;
 		}
 
@@ -185,21 +190,29 @@ public class WorldController : MonoBehaviour {
 	}
 
 	public List<Vector3> GetCanyon (Vector3 pos) {
-		return getAdjacentHoles (new List<Vector3> (), new List<Vector3> { pos }, true);
+		return getAdjacentHoles (new List<Vector3> (), new List<Vector3> { pos }, true, BlockController.Element.AIR);
 	}
 
 	public List<Vector3> GetCanyon (List<Vector3> sources) {	
-		return getAdjacentHoles (new List<Vector3> (), sources, true);
+		return getAdjacentHoles (new List<Vector3> (), sources, true, BlockController.Element.AIR);
 	}
 
 	public List<Vector3> GetCanyonPlane (List<Vector3> sources) {	
-		return getAdjacentHoles (new List<Vector3> (), sources, false);
+		return getAdjacentHoles (new List<Vector3> (), sources, false, BlockController.Element.AIR);
+	}
+
+	public List<Vector3> GetCanyonPlane (List<Vector3> sources, BlockController.Element element) {	
+		return getAdjacentHoles (new List<Vector3> (), sources, false, element);
 	}
 
 	private List<Vector3> getAdjacentHoles(List<Vector3> result, List<Vector3> current, bool shouldGoDown) {
+		return getAdjacentHoles (result, current, shouldGoDown, BlockController.Element.AIR);
+	}
+
+	private List<Vector3> getAdjacentHoles(List<Vector3> result, List<Vector3> current, bool shouldGoDown, BlockController.Element element) {
 		List<Vector3> next = new List<Vector3> ();
 		foreach (Vector3 coord in current) {
-			if (!GetBlock (coord).gameObject.activeInHierarchy) {
+			if (GetBlock (coord).GetComponent<BlockController>().element == element) {
 				if(!result.Contains(coord)){
 					result.Add(coord);
 					if (coord.x < dimensions.x - 1) {
@@ -217,7 +230,7 @@ public class WorldController : MonoBehaviour {
 					if (shouldGoDown && coord.y > 0) {
 						next.Add (new Vector3 (coord.x, coord.y - 1, coord.z));
 					}
-					result = getAdjacentHoles (result, next, shouldGoDown);
+					result = getAdjacentHoles (result, next, shouldGoDown, element);
 				}
 			}
 		}
@@ -316,7 +329,7 @@ public class WorldController : MonoBehaviour {
 
 		foreach (BlockController block in selectedBlocks) {
 			floodSource.Add (block.position + new Vector3(0, 1, 0)); // + (0,1,0) to get block on top.
-			print ("Adding " + (block.position + new Vector3 (0, 1, 0)));
+			//print ("Adding " + (block.position + new Vector3 (0, 1, 0)));
 		}
 		blocksToFlood = GetCanyonPlane (floodSource);
 
@@ -358,6 +371,28 @@ public class WorldController : MonoBehaviour {
 		return false;
 	}
 
+
+	public void DryOutWater(List<BlockController> selectedBlocks){
+		if (selectedBlocks.Count == 0) {
+			return;
+		}
+
+		List<Vector3> blocksToDry = new List<Vector3> ();
+		List<Vector3> dryOutSource = new List<Vector3> ();
+
+		foreach (BlockController block in selectedBlocks) {
+			dryOutSource.Add (block.position);
+			print ("Adding " + (block.position));
+		}
+		blocksToDry = GetCanyonPlane (dryOutSource, BlockController.Element.WATER);
+
+		foreach (Vector3 coord in blocksToDry) {
+			print (coord);
+			blockColumns[(int)coord.x, (int)coord.z].DryBlock((int)coord.y);
+		}
+	}
+
+
 	public void CreateWaterBlock(int x, int y, int z) {
 		Transform block = (Transform)Instantiate (waterBlock, new Vector3 (x - 2, y - 2, z - 2), Quaternion.identity);
 		block.SetParent (gameObject.transform, false);
@@ -384,6 +419,7 @@ public class WorldController : MonoBehaviour {
 					block.SetParent (gameObject.transform, false);
 					block.GetComponent<BlockController> ().playerController = this.playerController;
 					block.GetComponent<BlockController> ().SetCoordinates (x - x0, y - y0, z - z0);
+					block.GetComponent<BlockController> ().SetElement (BlockController.Element.EARTH);
 					blocks [x-x0, y-y0, z-z0] = block;
 					if (y - y0 == n) {
 						block.GetComponent<BlockController> ().SetTopmost (true);

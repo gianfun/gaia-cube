@@ -58,6 +58,8 @@ public class BlockColumn : MonoBehaviour {
 			block.name = "Block" + y;
 			block.SetParent (transform, false);	
 			block.GetComponent<BlockController> ().SetCoordinates (x, y + 1, z);
+			block.GetComponent<BlockController> ().SetElement (BlockController.Element.EARTH);
+
 			blocks [x, y + 1, z] = block;
 			myBlocks [y + 1] = block.GetComponent<BlockController>();
 		}
@@ -79,6 +81,7 @@ public class BlockColumn : MonoBehaviour {
 	public void MoveEarthDown(){
 		if (selected && topmost > 0 && myBlocks [topmost].element == BlockController.Element.EARTH) {
 			myBlocks [topmost].Deactivate (true);
+			myBlocks [topmost].SetElement(BlockController.Element.AIR);
 			topmost--;
 			myBlocks [topmost].SetTopmost (true);
 			myBlocks [topmost].Select ();
@@ -91,13 +94,14 @@ public class BlockColumn : MonoBehaviour {
 			topmost++;
 			myBlocks [topmost].Activate();
 			myBlocks [topmost].SetTopmost(true);
+			myBlocks [topmost].SetElement(BlockController.Element.EARTH);
 			myBlocks [topmost].Select();
 		}
 	}
 
 	public void FillWaterColumn(int height){
 		if (topmost + 1 <= height) {
-			print ("FillWaterColumn -> Topmost: " + topmost + " height: " + height);
+			//print ("FillWaterColumn -> Topmost: " + topmost + " height: " + height);
 			for (int i = topmost + 1; i <= height; i++) {
 				myBlocks [i].SetElement (BlockController.Element.WATER);
 				myBlocks [i].Activate ();
@@ -112,6 +116,19 @@ public class BlockColumn : MonoBehaviour {
 
 	public void FloodTop(){
 		FillWaterColumn (topmost + 1);
+	}
+
+	public void DryBlock(int height){
+		if (topmost == height) {
+			myBlocks [topmost].SetTopmost (false);
+			myBlocks [topmost].Deactivate (true);
+			myBlocks [topmost].SetElement(BlockController.Element.AIR);
+			topmost--;
+			myBlocks [topmost].SetTopmost (true);
+			selected = false;
+		} else {
+			Debug.LogError ("Tried drying block " + height + " of blockColumn "+ position + " which isn't topmost..") ;
+		}
 	}
 
 	public BlockController.Element GetBlockElementAt(int y){
