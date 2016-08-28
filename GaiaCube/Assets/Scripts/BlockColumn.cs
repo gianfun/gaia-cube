@@ -3,40 +3,17 @@ using System.Collections;
 
 public class BlockColumn : MonoBehaviour {
 	Transform earthPrefab, waterPrefab, bottomPrefab;
+	[SerializeField]
 	private int height;
 
 	public Vector2 position;
+	[SerializeField]
+	private int _topmost;
+	public int topmost { get {return _topmost;} protected set {_topmost = value;}}
 
-	public int topmost { get; protected set;}
 	public bool selected = false;
 	private BlockController[] myBlocks;
 	public PlayerController playerController;
-
-
-	/*
-	 		if (playerController.moveEarthDown && selected) {
-			Deactivate (true);
-			try {
-				Transform nextBlock = transform.parent.GetComponent<WorldController> ().GetBlock (x, y - 1, z);
-				nextBlock.GetComponent<BlockController> ().SetTopmost (true);
-				nextBlock.GetComponent<BlockController> ().Select ();
-			} catch (System.IndexOutOfRangeException) {
-				return;
-			}
-		} else if (playerController.moveEarthUp && selected) {
-			try {
-				Transform nextBlock = transform.parent.GetComponent<WorldController> ().MakeBlock (x, y + 1, z);
-				Deactivate (false);
-				nextBlock.GetComponent<BlockController> ().SetTopmost (true);
-				nextBlock.GetComponent<BlockController> ().Select ();
-			} catch (System.Exception e) {
-				if (e is System.IndexOutOfRangeException || e is System.NullReferenceException) {
-					return;
-				}
-				throw;
-			}
-		}
-	 */
 
 	public void SetPrefabs(Transform earth, Transform water, Transform bottom){
 		earthPrefab = earth;
@@ -50,7 +27,8 @@ public class BlockColumn : MonoBehaviour {
 		Transform block = (Transform) Instantiate(bottomPrefab , new Vector3(0, -1, 0), Quaternion.identity);
 		block.name = "Base";
 		block.SetParent (transform, false);	
-		block.GetComponent<BlockController> ().SetCoordinates (x, -1, z);
+		block.GetComponent<BlockController> ().SetCoordinates (x, 0, z);
+		block.GetComponent<BlockController> ().SetElement (BlockController.Element.BASE);
 		blocks [x, 0, z] = block;
 		myBlocks [0] = block.GetComponent<BlockController>();
 		for (int y = 0; y < height; y++) {
@@ -65,7 +43,7 @@ public class BlockColumn : MonoBehaviour {
 		}
 		block.GetComponent<BlockController> ().SetTopmost (true);
 		topmost = height;
-		this.height = height + 1;
+		this.height = height;
 	}
 
 	public void Select(){
@@ -80,8 +58,9 @@ public class BlockColumn : MonoBehaviour {
 
 	public void MoveEarthDown(){
 		if (selected && topmost > 0 && myBlocks [topmost].element == BlockController.Element.EARTH) {
-			myBlocks [topmost].Deactivate (true);
+			myBlocks [topmost].Deselect ();
 			myBlocks [topmost].SetElement(BlockController.Element.AIR);
+			myBlocks [topmost].SetTopmost(false);
 			topmost--;
 			myBlocks [topmost].SetTopmost (true);
 			myBlocks [topmost].Select ();
@@ -90,7 +69,8 @@ public class BlockColumn : MonoBehaviour {
 
 	public void MoveEarthUp(){
 		if (selected && topmost < height && myBlocks[topmost].element == BlockController.Element.EARTH) {
-			myBlocks [topmost].Deactivate (false);
+			myBlocks [topmost].Deselect ();
+			myBlocks [topmost].SetTopmost(false);
 			topmost++;
 			myBlocks [topmost].Activate();
 			myBlocks [topmost].SetTopmost(true);
@@ -121,7 +101,7 @@ public class BlockColumn : MonoBehaviour {
 	public void DryBlock(int height){
 		if (topmost == height) {
 			myBlocks [topmost].SetTopmost (false);
-			myBlocks [topmost].Deactivate (true);
+			myBlocks [topmost].Deselect ();
 			myBlocks [topmost].SetElement(BlockController.Element.AIR);
 			topmost--;
 			myBlocks [topmost].SetTopmost (true);

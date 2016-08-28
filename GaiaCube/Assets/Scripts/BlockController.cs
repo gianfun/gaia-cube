@@ -34,7 +34,6 @@ public class BlockController : MonoBehaviour {
 
 	void Start() {
 		GetComponent<Renderer> ().material = currentMaterial = normalMaterial = earthMaterial;
-		transform.Translate (0, .5f, 0);
 		selected = false;
 	}
 
@@ -91,6 +90,7 @@ public class BlockController : MonoBehaviour {
 
 	public void SetElement (Element element) {
 		this.element = element;
+		GetComponent<Renderer> ().enabled = true;
 		switch (element) {
 		case Element.EARTH:
 			GetComponent<Renderer> ().material = currentMaterial = normalMaterial = earthMaterial;
@@ -101,6 +101,12 @@ public class BlockController : MonoBehaviour {
 		case Element.AIR:
 			gameObject.SetActive (false);
 			//GetComponent<Renderer> ().material = currentMaterial = normalMaterial = waterMaterial;
+			break;
+		case Element.BASE:
+			this.element = Element.EARTH;
+			GetComponent<Renderer> ().material = currentMaterial = normalMaterial = earthMaterial;
+			transform.localScale = new Vector3(1f, 0.1f, 1f);
+			transform.localPosition = new Vector3(0f, -0.55f, 0f);
 			break;
 		}
 	}
@@ -148,6 +154,6 @@ public class BlockController : MonoBehaviour {
 	*/
 
 	public enum Element {
-		AIR, EARTH, WATER, INVALID
+		AIR, EARTH, WATER, BASE, INVALID
 	}
 }
