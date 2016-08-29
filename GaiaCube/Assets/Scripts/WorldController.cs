@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿	using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +8,7 @@ public class WorldController : MonoBehaviour {
 	private PlayerController playerController;
 	public Transform blockColumnPrefab;
 
+	public CanvasManager canvas;
 	private bool recalculateWaterMesh;
 
 	private Vector3 dimensions = new Vector3 (5, 6, 5);
@@ -108,6 +109,8 @@ public class WorldController : MonoBehaviour {
 		};
 
 		if (playerController.moveEarthDown) {
+			ShowElementAction (CanvasManager.PlayerAction.EARTH_DOWN);
+
 			foreach (BlockColumn col in GetSelectedColumns()) {
 				col.MoveEarthDown ();
 				//print ("Moved down. Should flood? " + ShouldFlood (col));
@@ -119,18 +122,27 @@ public class WorldController : MonoBehaviour {
 			}
 		}
 		if (playerController.moveEarthUp) {
+			ShowElementAction (CanvasManager.PlayerAction.EARTH_UP);
 			foreach (BlockColumn col in GetSelectedColumns()) {
 				col.MoveEarthUp ();
 			}
 		}
 
 		if (playerController.doWater) {
+			ShowElementAction (CanvasManager.PlayerAction.WATER);
 			FillLake (GetSelectedBlocks());
 			recalculateWaterMesh = true;
 		}
 
 		if (playerController.doFire) {
+			ShowElementAction (CanvasManager.PlayerAction.FIRE);
 			DryOutWater (GetSelectedBlocks());
+			recalculateWaterMesh = true;
+		}
+
+		if (playerController.doWind ) {
+			ShowElementAction (CanvasManager.PlayerAction.WIND);
+
 			recalculateWaterMesh = true;
 		}
 
@@ -448,5 +460,15 @@ public class WorldController : MonoBehaviour {
 				blockColumns [x - x0, z - z0] = col;
 			}
 		}
+	}
+
+	void ShowElementAction(CanvasManager.PlayerAction action){
+		StartCoroutine(ShowElementActionCoroutine(action));
+	}
+
+	IEnumerator ShowElementActionCoroutine(CanvasManager.PlayerAction action){
+		canvas.ShowElement (action);
+		yield return new WaitForSeconds (0.8f);
+		canvas.ShowElement (CanvasManager.PlayerAction.NONE);
 	}
 }

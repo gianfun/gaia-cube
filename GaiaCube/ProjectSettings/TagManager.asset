@@ -8,6 +8,7 @@ TagManager:
   - Block
   - World
   - AreaSelector
+  - BoundingGrid
   layers:
   - Default
   - TransparentFX
