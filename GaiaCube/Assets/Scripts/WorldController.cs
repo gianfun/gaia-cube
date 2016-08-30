@@ -12,6 +12,9 @@ public class WorldController : MonoBehaviour {
 	private bool recalculateWaterMesh;
 
 	private Vector3 dimensions = new Vector3 (5, 6, 5);
+	private Vector2[] windDirections = { new Vector2 (1, 0), new Vector2 (0, 1), new Vector2 (-1, 0), new Vector2 (0, -1) };
+	public int currentWindDirection = 0;
+		
 
 	public Transform baseBlock;
 	public Transform waterBlock;
@@ -140,9 +143,16 @@ public class WorldController : MonoBehaviour {
 			recalculateWaterMesh = true;
 		}
 
+		if (playerController.turnRight) {
+			currentWindDirection = (currentWindDirection + 3) % 4; // == cWD - 1 but without underflow
+		}
+
+		if (playerController.turnLeft) {
+			currentWindDirection = (currentWindDirection + 1) % 4;
+		} 
 		if (playerController.doWind ) {
 			ShowElementAction (CanvasManager.PlayerAction.WIND);
-
+			ApplyWind (currentWindDirection);
 			recalculateWaterMesh = true;
 		}
 
@@ -401,6 +411,180 @@ public class WorldController : MonoBehaviour {
 		foreach (Vector3 coord in blocksToDry) {
 			print (coord);
 			blockColumns[(int)coord.x, (int)coord.z].DryBlock((int)coord.y);
+		}
+	}
+
+	public void ApplyWind (int windDirection){
+		//Warning: Do not read this function, you will get sad.
+		// In a vain attempt to not have a thousand fors inside a million ifs, everything got ugly.
+		// This will look for a water block at height N at (i, j), followed by a earth block at height N + 1 at (i+1, j), and then 
+		//   (optionally) followed by earth blocks at height N at positions (i+2, j-1);(i+2, j);(i+2, j+1). These blocks
+		//	 will become sand if they exist. (If they are not earth or are not at height N, nothing happens to them)
+		// The positions i and j are defined based on rotation of the world. At any of the 4 given rotations, the world is seen
+		// at an angle of 45, forming a V. The vector which goes to the top right is 'i', whilst the one that goes
+		// to the top left is 'j'.
+
+		//Declare auxiliary vars.
+		int x, z; //Loop vars
+		int initX, initZ, stepX, stepZ, finalX, finalZ; //Loop start, end and step.
+		int loopCheckMultiplierX, loopCheckMultiplierZ; //If loop is decrementing, these are -1 (to flip the comparison from '<' to '>'
+		bool mightHaveLeft, mightHaveRight; //Bools so we don't try to access OutOfBounds stuff
+		BlockColumn waterCol, stoneCol; //Receives the water blockColumn and the stone blockColumn
+		BlockColumn leftSand, middleSand, rightSand; //Receive, depending on borders, the blocks which will become sand.
+
+		if (windDirection == 0) {
+			//Two incrementing loops. Perfect.
+			initX = 0;
+			stepX = 1;
+			finalX = (int)dimensions.x - 2;
+			loopCheckMultiplierX = 1;
+				
+			initZ = 0;
+			stepZ = 1;
+			finalZ = (int)dimensions.z;
+			loopCheckMultiplierZ = 1;
+		} else if (windDirection == 1) {
+			//Increments in X and decrements in Z (but X depends on Z and Z on X, because this is rotated 90 deg)
+			initX = 0;
+			stepX = 1;
+			finalX = (int)dimensions.z - 2;
+			loopCheckMultiplierX = 1;
+
+			initZ = (int)dimensions.x - 1;
+			stepZ = -1;
+			finalZ = -1;
+			loopCheckMultiplierZ = -1;
+		} else if (windDirection == 2) {
+			//Increments in X and decrements in Z
+			initX = (int)dimensions.x - 1;
+			stepX = -1;
+			finalX = 1;
+			loopCheckMultiplierX = -1;
+
+			initZ = 0;
+			stepZ = 1;
+			finalZ = (int)dimensions.z;
+			loopCheckMultiplierZ = 1;
+		} else { //if (windDirection == 3) {
+			initX =(int)dimensions.z - 1;
+			stepX = -1;
+			finalX = 1;
+			loopCheckMultiplierX = -1;
+
+			initZ = 0;
+			stepZ = 1;
+			finalZ = (int)dimensions.x;
+			loopCheckMultiplierZ = 1;
+		}
+
+		for (x = initX; x * loopCheckMultiplierX < finalX * loopCheckMultiplierX; x += stepX) {
+			for (z = initZ; z * loopCheckMultiplierZ < finalZ * loopCheckMultiplierZ; z += stepZ) {
+				if (windDirection == 0) {
+					waterCol = blockColumns [x, z];
+					stoneCol = blockColumns [x + 1, z];
+
+					mightHaveLeft = (z < dimensions.z - 1);
+					mightHaveRight = (z > 0);
+
+					if (mightHaveLeft) {
+						leftSand = blockColumns [x + 2, z + 1];
+					} else {
+						leftSand = null;
+					}
+					middleSand = blockColumns [x + 2, z];
+					if (mightHaveRight) {
+						rightSand = blockColumns [x + 2, z - 1];
+					}else {
+						rightSand = null;
+					}	
+				} else if (windDirection == 1) {
+					waterCol = blockColumns [z, x];
+					stoneCol = blockColumns [z, x + 1];
+
+					mightHaveLeft = (z > 0);
+					mightHaveRight = (z < dimensions.z - 1);
+
+					if (mightHaveLeft) {
+						leftSand = blockColumns [z - 1, x + 2];
+					} else {
+						leftSand = null;
+					}
+					middleSand = blockColumns [z, x + 2];
+					if (mightHaveRight) {
+						rightSand = blockColumns [z + 1, x + 2];
+					}else {
+						rightSand = null;
+					}	
+
+				} else if (windDirection == 2) {
+					waterCol = blockColumns [x, z];
+					stoneCol = blockColumns [x - 1, z];
+
+					mightHaveLeft = (z > 0);
+					mightHaveRight = (z < dimensions.z - 1);
+
+					if (mightHaveLeft) {
+						leftSand = blockColumns [x - 2, z - 1];
+					} else {
+						leftSand = null;
+					}
+					middleSand = blockColumns [x - 2, z];
+					if (mightHaveRight) {
+						rightSand = blockColumns [x - 2, z + 1];
+					}else {
+						rightSand = null;
+					}	
+				} else { //if (windDirection == 3) {
+
+					waterCol = blockColumns [z, x];
+					stoneCol = blockColumns [z, x - 1];
+
+					mightHaveLeft = (z < dimensions.z - 1);
+					mightHaveRight = (z > 0);
+
+					if (mightHaveLeft) {
+						leftSand = blockColumns [z + 1, x - 2];
+					} else {
+						leftSand = null;
+					}
+					middleSand = blockColumns [z, x - 2];
+					if (mightHaveRight) {
+						rightSand = blockColumns [z - 1, x - 2];
+					}else {
+						rightSand = null;
+					}	
+				}
+
+
+				/*
+				print (x+","+z+" Activation? "+ (waterCol.topmost + 1 == stoneCol.topmost) + " " 
+					+(waterCol.GetTopElement () == BlockController.Element.WATER) + " "
+					+(stoneCol.GetTopElement () == BlockController.Element.EARTH) + " "
+				);
+				*/
+
+				if (waterCol.topmost + 1 == stoneCol.topmost
+				   &&	waterCol.GetTopElement () == BlockController.Element.WATER
+					&& stoneCol.GetTopElement () == BlockController.Element.EARTH) {
+					if (mightHaveLeft
+						&& 	leftSand.topmost == waterCol.topmost 
+						&& 	leftSand.GetTopElement() == BlockController.Element.EARTH ) {
+						leftSand.MakeTopSand ();
+					}
+
+					if (	middleSand.topmost == waterCol.topmost 
+						&& 	middleSand.GetTopElement() == BlockController.Element.EARTH ) {
+						middleSand.MakeTopSand ();
+					}
+
+					if (mightHaveRight
+						&& 	rightSand.topmost == waterCol.topmost 
+						&& 	rightSand.GetTopElement() == BlockController.Element.EARTH ) {
+						rightSand.MakeTopSand ();
+					}
+				}
+		
+			}
 		}
 	}
 

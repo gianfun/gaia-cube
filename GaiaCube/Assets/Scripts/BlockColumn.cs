@@ -111,6 +111,12 @@ public class BlockColumn : MonoBehaviour {
 		}
 	}
 
+	public void MakeTopSand(){
+		if (myBlocks [topmost].element == BlockController.Element.EARTH) {
+			myBlocks [topmost].SetElement (BlockController.Element.SAND);
+		}
+	}
+
 	public BlockController.Element GetBlockElementAt(int y){
 		if (y < height) {
 			return myBlocks [y].element;
@@ -124,5 +130,9 @@ public class BlockColumn : MonoBehaviour {
 			return myBlocks [topmost];
 		}
 		return null;
+	}
+
+	public BlockController.Element GetTopElement(){
+		return myBlocks [topmost].element;
 	}
 }

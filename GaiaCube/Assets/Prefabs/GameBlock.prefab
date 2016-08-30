@@ -28,6 +28,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.159554, y: 4.011156, z: -1.423254}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -40,17 +41,20 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
   m_Materials:
   - {fileID: 2100000, guid: 873966883dea741e293c0e5a62896040, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
-  m_UseLightProbes: 1
-  m_ReflectionProbeUsage: 1
   m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_SelectedWireframeHidden: 0
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
@@ -91,10 +95,10 @@ MonoBehaviour:
   earthMaterial: {fileID: 2100000, guid: 873966883dea741e293c0e5a62896040, type: 2}
   earthTopMaterial: {fileID: 2100000, guid: bdc852998a06fe4448e1adecb1d6db45, type: 2}
   waterMaterial: {fileID: 2100000, guid: 1e6930c0f65f0a3428f385a01b9c4c70, type: 2}
+  sandMaterial: {fileID: 2100000, guid: 01cb22cdff404594d8dee17817fe6e13, type: 2}
   selectedMaterial: {fileID: 2100000, guid: f96223c1ba7074a36940bd145959e899, type: 2}
   currentMaterial: {fileID: 0}
   topmost: 0
-  selected: 0
   element: 0
 --- !u!1001 &100100000
 Prefab:
