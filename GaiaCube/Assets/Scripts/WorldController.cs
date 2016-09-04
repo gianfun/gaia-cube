@@ -582,6 +582,8 @@ public class WorldController : MonoBehaviour {
 						&& 	rightSand.GetTopElement() == BlockController.Element.EARTH ) {
 						rightSand.MakeTopSand ();
 					}
+
+					stoneCol.BreakTopEarth();
 				}
 		
 			}

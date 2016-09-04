@@ -117,6 +117,16 @@ public class BlockColumn : MonoBehaviour {
 		}
 	}
 
+	public void BreakTopEarth(){
+		if (selected && topmost > 0 && myBlocks [topmost].element == BlockController.Element.EARTH) {
+			myBlocks [topmost].Deselect ();
+			myBlocks [topmost].SetElement(BlockController.Element.AIR);
+			myBlocks [topmost].SetTopmost(false);
+			topmost--;
+			myBlocks [topmost].SetTopmost (true);
+		}
+	}
+
 	public BlockController.Element GetBlockElementAt(int y){
 		if (y < height) {
 			return myBlocks [y].element;
