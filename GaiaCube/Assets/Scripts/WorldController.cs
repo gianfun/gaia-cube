@@ -158,6 +158,7 @@ public class WorldController : MonoBehaviour {
 		}
 
 
+		MoveSelectorPlane ();
 	}
 
 	void LateUpdate() {
@@ -293,6 +294,22 @@ public class WorldController : MonoBehaviour {
 			}
 		}
 		return selectedBlocks;
+	}
+
+	private void MoveSelectorPlane (){
+		int top = 0;
+		for (int i=0; i < (int)dimensions.x; i++) {
+			for (int k=0; k < (int)dimensions.z; k++) {
+				if (blockColumns[i, k].topmost > top) {
+					top = blockColumns [i, k].topmost;
+				}
+			}
+		}
+
+		Vector3 pos = areaSelectorPlane.transform.position;
+		if ((int)(pos.y - 0.52f + 2) != top) {
+			areaSelectorPlane.transform.position = new Vector3 (pos.x, top-2+0.52f, pos.z);
+		}
 	}
 
 	private void ResetSelection() {
