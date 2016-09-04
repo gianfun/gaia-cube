@@ -2,7 +2,6 @@
 using System.Collections;
 
 public class BlockColumn : MonoBehaviour {
-	Transform earthPrefab, waterPrefab, bottomPrefab;
 	[SerializeField]
 	private int height;
 
@@ -15,35 +14,36 @@ public class BlockColumn : MonoBehaviour {
 	private BlockController[] myBlocks;
 	public PlayerController playerController;
 
-	public void SetPrefabs(Transform earth, Transform water, Transform bottom){
-		earthPrefab = earth;
-		waterPrefab = water;
-		bottomPrefab = bottom;
-	}
-
-	public void Init(int x, int z, int height, Transform[,,] blocks){
+	public void Init(int x, int z, int height, Transform[,,] blocks, int[,,] state, Transform blockPrefab){
 		position = new Vector2 (x, z);
 		myBlocks =  new BlockController[height + 1];
-		Transform block = (Transform) Instantiate(bottomPrefab , new Vector3(0, -1, 0), Quaternion.identity);
+		Transform block = (Transform) Instantiate(blockPrefab , new Vector3(0, -1, 0), Quaternion.identity);
 		block.name = "Base";
 		block.SetParent (transform, false);	
 		block.GetComponent<BlockController> ().SetCoordinates (x, 0, z);
-		block.GetComponent<BlockController> ().SetElement (BlockController.Element.BASE);
+		block.GetComponent<BlockController> ().SetElement (BlockController.getElementFromId(state[x, 0, z]));
 		blocks [x, 0, z] = block;
 		myBlocks [0] = block.GetComponent<BlockController>();
-		for (int y = 0; y < height; y++) {
-			block = (Transform) Instantiate(earthPrefab, new Vector3(0, y, 0), Quaternion.identity);
+		for (int y = 0; y < height-1; y++) {
+			block = (Transform) Instantiate(blockPrefab, new Vector3(0, y, 0), Quaternion.identity);
 			block.name = "Block" + y;
 			block.SetParent (transform, false);	
 			block.GetComponent<BlockController> ().SetCoordinates (x, y + 1, z);
-			block.GetComponent<BlockController> ().SetElement (BlockController.Element.EARTH);
+
+			block.GetComponent<BlockController> ().SetElement (BlockController.getElementFromId(state[x, y + 1, z]));
 
 			blocks [x, y + 1, z] = block;
 			myBlocks [y + 1] = block.GetComponent<BlockController>();
 		}
-		block.GetComponent<BlockController> ().SetTopmost (true);
-		topmost = height;
-		this.height = height;
+
+		for (int y = height - 1; y >= 0; y--) {
+			if (myBlocks [y].element != BlockController.Element.AIR) {
+				myBlocks [y].SetTopmost (true);
+				topmost = y;
+				break;
+			}
+		}
+		this.height = height-1;
 	}
 
 	public void Select(){

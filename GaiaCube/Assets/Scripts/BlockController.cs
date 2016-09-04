@@ -34,7 +34,7 @@ public class BlockController : MonoBehaviour {
 	}
 
 	void Start() {
-		GetComponent<Renderer> ().material = currentMaterial = normalMaterial = earthMaterial;
+		GetComponent<Renderer> ().material = normalMaterial = currentMaterial;
 		selected = false;
 	}
 
@@ -156,6 +156,22 @@ public class BlockController : MonoBehaviour {
 		ToggleSelect ();
 	}
 	*/
+
+	public static Element getElementFromId(int id){
+		switch (id) {
+		case 0:
+			return Element.AIR;
+		case 1:
+			return Element.EARTH;
+		case 2:
+			return Element.WATER;
+		case 3:
+			return Element.SAND;
+		case 4:
+			return Element.BASE;
+		}
+		return Element.INVALID;
+	}
 
 	public enum Element {
 		AIR, EARTH, WATER, SAND, BASE, INVALID

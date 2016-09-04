@@ -1,4 +1,4 @@
-﻿	using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +7,10 @@ public class WorldController : MonoBehaviour {
 	[SerializeField]
 	private PlayerController playerController;
 	public Transform blockColumnPrefab;
+	public int level;
+
+	private WorldJson worldjson;
+	public int[,,] state;
 
 	public CanvasManager canvas;
 	private bool recalculateWaterMesh;
@@ -15,10 +19,7 @@ public class WorldController : MonoBehaviour {
 	private Vector2[] windDirections = { new Vector2 (1, 0), new Vector2 (0, 1), new Vector2 (-1, 0), new Vector2 (0, -1) };
 	public int currentWindDirection = 0;
 		
-
 	public Transform baseBlock;
-	public Transform waterBlock;
-	public Transform basePlane;
 
 	private Transform[,,] blocks;
 	private BlockColumn[,] blockColumns;
@@ -34,8 +35,6 @@ public class WorldController : MonoBehaviour {
 		areaSelectorPlane = GameObject.FindWithTag ("AreaSelector");
 		areaSelectorPlaneRenderer = areaSelectorPlane.GetComponent<MeshRenderer> ();
 
-		CreateBlocks ();
-
 		allWater = GameObject.CreatePrimitive (PrimitiveType.Cube);
 		allWater.name = "WaterMesh";
 		allWater.transform.SetParent (transform);
@@ -46,6 +45,8 @@ public class WorldController : MonoBehaviour {
 		RenderSettings.fog = true;
 		RenderSettings.fogDensity = 0.05f;
 		RenderSettings.fogColor = skyBlue;
+
+		CreateBlocks ();
 	}
 
 	void Update () {
@@ -404,7 +405,6 @@ public class WorldController : MonoBehaviour {
 
 		foreach (BlockController block in selectedBlocks) {
 			dryOutSource.Add (block.position);
-			print ("Adding " + (block.position));
 		}
 		blocksToDry = GetCanyonPlane (dryOutSource, BlockController.Element.WATER);
 
@@ -589,61 +589,32 @@ public class WorldController : MonoBehaviour {
 	}
 
 
-	public void CreateWaterBlock(int x, int y, int z) {
-		Transform block = (Transform)Instantiate (waterBlock, new Vector3 (x - 2, y - 2, z - 2), Quaternion.identity);
-		block.SetParent (gameObject.transform, false);
-	}
-
 	void CreateBlocks() {
-		CreateBlocks2 (5, -2, -2, -2);
+		level = 1;
+		 state = WorldLoader.LoadLevel (level);
+
+		//dimensions = new Vector3 (3, 2, 5);
+		dimensions = new Vector3 (5,6,5);
+		CreateBlocks2 (5, -2, -2, -2, state);
 	}
 
-	void CreateBlocks(int n, int x0, int y0, int z0) {
-		blocks = new Transform[(int)dimensions.x, (int)dimensions.y, (int)dimensions.z];
-		for (int x = x0; x - x0 < n; x++) {
-			for (int y = y0; y - y0 < n + 1; y++) {
-				for (int z = z0; z - z0 < n; z++) {
-					Transform blockType;
-
-					if (y == y0) {
-						blockType = basePlane;
-					} else {
-						blockType = baseBlock;
-					}
-
-					Transform block = (Transform) Instantiate(blockType, new Vector3 (x, y, z), Quaternion.identity);
-					block.SetParent (gameObject.transform, false);
-					block.GetComponent<BlockController> ().playerController = this.playerController;
-					block.GetComponent<BlockController> ().SetCoordinates (x - x0, y - y0, z - z0);
-					block.GetComponent<BlockController> ().SetElement (BlockController.Element.EARTH);
-					blocks [x-x0, y-y0, z-z0] = block;
-					if (y - y0 == n) {
-						block.GetComponent<BlockController> ().SetTopmost (true);
-					}
-
-					if (blockType == baseBlock) {
-						//block.Rotate (-90, 0, 0);
-					}
-				}
-			}
-		}
-	}
-
-	void CreateBlocks2(int n, int x0, int y0, int z0) {
+	void CreateBlocks2(int n, int x0, int y0, int z0, int[,,] state) {
 		blocks = new Transform[(int)dimensions.x, (int)dimensions.y, (int)dimensions.z];
 		blockColumns = new BlockColumn[(int)dimensions.x, (int)dimensions.z];
-		for (int x = x0; x - x0 < n; x++) {
-			for (int z = z0; z - z0 < n; z++) {
+		for (int x = x0; x - x0 < (int)dimensions.x; x++) {
+			for (int z = z0; z - z0 < (int)dimensions.z; z++) {
 				Transform blockColumn = (Transform)Instantiate (blockColumnPrefab, new Vector3 (x, -1, z), Quaternion.identity);
 				blockColumn.name = "Column_"+ (x - x0) +"_"+ (z - z0);
 				blockColumn.SetParent (transform, false);
 				BlockColumn col = blockColumn.GetComponent<BlockColumn> ();
 				col.playerController = playerController;
-				col.SetPrefabs (baseBlock, waterBlock, basePlane);
-				col.Init(x - x0, z - z0, n, blocks);
+				col.Init(x - x0, z - z0, (int)dimensions.y, blocks, state, baseBlock);
 				blockColumns [x - x0, z - z0] = col;
 			}
 		}
+
+		recalculateWaterMesh = true;
+		mergeTerrain ();
 	}
 
 	void ShowElementAction(CanvasManager.PlayerAction action){
