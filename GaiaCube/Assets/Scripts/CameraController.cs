@@ -26,6 +26,7 @@ public class CameraController : MonoBehaviour {
 	}
 
 	void Update() {
+		/*
 		if (playerController.turnRight && !isRotating) {
 			isRotating = true;
 			startRotation = this.transform.rotation;
@@ -40,7 +41,7 @@ public class CameraController : MonoBehaviour {
 			rotationAngle = -90f;
 			currentCameraMovementTime = 0f;
 			boundingGrid.SetActive (false);
-		} else if (playerController.goToBirdsEye && !birdsEye && !isRotating) {
+		} else */if (playerController.goToBirdsEye && !birdsEye && !isRotating) {
 			birdsEye = true;
 			cameraTrans.RotateAround (Vector3.zero, pivot.up, -45);
 		} else if (playerController.leaveBirdsEye && birdsEye && !isRotating) {

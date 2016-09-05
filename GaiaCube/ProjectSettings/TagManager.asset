@@ -9,6 +9,8 @@ TagManager:
   - World
   - AreaSelector
   - BoundingGrid
+  - ClayWorld
+  - GoalWorld
   layers:
   - Default
   - TransparentFX

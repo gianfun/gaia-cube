@@ -15,27 +15,45 @@ public class WorldJson {
 	public int[] goal;
 }
 
-public class WorldLoader : MonoBehaviour {
+public class WorldLoader {
+	private WorldDimension dimens;
+	private int[,,] clayState, goalState;
 
-	public static int[,,] LoadLevel(int level){
-		int[,,] world;
+	public WorldLoader(int level){
+		LoadLevel (level);
+	}
+
+	public void LoadLevel(int level){
 		string json = System.IO.File.ReadAllText("Assets/Levels/level" + level + ".json");
 		WorldJson worldjson = JsonUtility.FromJson<WorldJson> (json);
+		dimens = worldjson.dimensions;
 
-		WorldDimension dimens = worldjson.dimensions;
-
-		world = new int[dimens.rowLen, dimens.height, dimens.numRowsPerHeight];
+		clayState = new int[dimens.rowLen, dimens.height, dimens.numRowsPerHeight];
+		goalState = new int[dimens.rowLen, dimens.height, dimens.numRowsPerHeight];
 
 		for (int j = 0; j < dimens.height; j++) {
 			for (int k = 0; k < dimens.numRowsPerHeight; k++) {
 				for (int i = 0; i < dimens.rowLen; i++) {
 					int heightOffset = j * dimens.rowLen * dimens.numRowsPerHeight;
 					int rowOffset = k * dimens.rowLen;
-					world [k, j, i] = worldjson.start [heightOffset + rowOffset + i];
+					clayState [k, j, i] = worldjson.start [heightOffset + rowOffset + i];
+					goalState [k, j, i] = worldjson.goal [heightOffset + rowOffset + i];
 				}
 			}
 		}
-
-		return world;
 	}
+
+
+	public int[,,] getClayState (){
+		return clayState;
+	}
+
+	public int[,,] getGoalState (){
+		return goalState;
+	}
+
+	public Vector3 getDimensions (){
+		return new Vector3(dimens.numRowsPerHeight, dimens.height, dimens.rowLen);
+	}
+
 }

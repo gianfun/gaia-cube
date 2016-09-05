@@ -3,50 +3,31 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-public class WorldController : MonoBehaviour {
-	[SerializeField]
-	protected PlayerController playerController;
-	public Transform blockColumnPrefab;
-	public int level;
+public class UniverseController : MonoBehaviour {
+	int[,,] clayState, goalState;
+	Vector3 dimensions;
 
-	protected WorldJson worldjson;
-	public int[,,] state;
+	Transform clayWorldTrans, goalWorldTrans;
+	WorldController goalWorld;
+	ClayWorldController clayWorld;
 
-	public CanvasManager canvas;
-	protected bool recalculateWaterMesh;
+	void StartLevel(int level){
+		WorldLoader worldLoader = new WorldLoader (level);
+		clayState = worldLoader.getClayState ();
+		goalState = worldLoader.getGoalState ();
+		dimensions = worldLoader.getDimensions ();
 
-	protected Vector3 dimensions = new Vector3 (5, 6, 5);
-	public int currentWindDirection = 0;
+		clayWorld.Init ();
+		goalWorld.Init ();
+		clayWorld.CreateBlocks (clayState, dimensions);
+		goalWorld.CreateBlocks (goalState, dimensions);
+	}
 
-	public Transform baseBlock;
-
-	protected Transform[,,] blocks;
-	protected BlockColumn[,] blockColumns;
-	protected Transform hoveredBlock;
-
-	protected GameObject boundingGridPlanes;
-	protected GameObject areaSelectorPlane;
-	protected MeshRenderer areaSelectorPlaneRenderer;
-
-	protected Vector3[] rotations = { new Vector3 (1, 0, 0), new Vector3 (0, 0, -1), new Vector3 (-1, 0, 0), new Vector3 (0, 0, 1)};
-	protected int currentRotation = 0;
-	protected bool isRotating = false;
-	protected Quaternion targetRotation;
-	protected Quaternion initialRotation;
-	protected float rotationDuration = 0.7f;
-	protected float currentRotationTime;
-
-	public Material waterMaterial;
-	protected GameObject allWater;
-
-	public void Init() {
-		boundingGridPlanes = GameObject.FindWithTag ("BoundingGrid");
-		areaSelectorPlane = GameObject.FindWithTag ("AreaSelector");
-		areaSelectorPlaneRenderer = areaSelectorPlane.GetComponent<MeshRenderer> ();
-
-		allWater = GameObject.CreatePrimitive (PrimitiveType.Cube);
-		allWater.name = "WaterMesh";
-		allWater.transform.SetParent(transform, false);
+	void Start() {
+		clayWorldTrans = GameObject.FindWithTag ("ClayWorld").GetComponent<Transform>();
+		goalWorldTrans = GameObject.FindWithTag ("GoalWorld").GetComponent<Transform>();
+		clayWorld = clayWorldTrans.GetComponent<ClayWorldController>();
+		goalWorld = goalWorldTrans.GetComponent<WorldController>();
 
 		Color skyBlue = new Color(0.2f, 0.3f, 0.4f, 0.7f);
 		Color sunYellow = new Color(0.8f, 0.6f, 0.2f, 0.3f);
@@ -55,12 +36,13 @@ public class WorldController : MonoBehaviour {
 		RenderSettings.fogDensity = 0.05f;
 		RenderSettings.fogColor = skyBlue;
 
+		StartLevel (1);
 	}
 
 	void Update () {
+		/*
 		recalculateWaterMesh = false;
 
-		/*
 		if (Input.GetButtonDown("Fire1")) {
 			RaycastHit hit = new RaycastHit();
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
@@ -224,72 +206,17 @@ public class WorldController : MonoBehaviour {
 		*/
 	}
 
-	void LateUpdate() {
-		if(recalculateWaterMesh){
-			mergeTerrain ();
-		}
-	}
-
-
-	public void mergeTerrain() {
-		
-		List<Transform> allWaterBlocks = new List<Transform> ();
-		List<Transform> allEarth = new List<Transform> ();
-		foreach (Transform block in blocks) {
-			BlockController blockCont = block.GetComponent<BlockController> ();
-			if (blockCont.element == BlockController.Element.EARTH) {
-				allEarth.Add (block);
-			} else if (blockCont.element == BlockController.Element.WATER){
-				if (!blockCont.selected) {
-					allWaterBlocks.Add (block);
-					block.GetComponent<Renderer> ().enabled = false;
-				} else {
-					block.GetComponent<Renderer> ().enabled = true;
-				}
-			}
-		}
-		CombineInstance[] combineWater = new CombineInstance[allWaterBlocks.Count];
-		for (int i = 0; i < allWaterBlocks.Count; i++) {
-
-			combineWater [i].mesh = allWaterBlocks [i].GetComponent<MeshFilter> ().sharedMesh;
-			combineWater [i].transform = allWaterBlocks [i].GetComponent<MeshFilter> ().transform.localToWorldMatrix;
-		}
-		allWater.GetComponent<MeshFilter>().mesh.CombineMeshes (combineWater);
-		allWater.GetComponent<Renderer>().material = waterMaterial;
-		allWater.transform.SetParent (gameObject.transform, false);
-
-	}
-
-	public void CreateBlocks(int[,,] state, Vector3 dimensions) {
-		blocks = new Transform[(int)dimensions.x, (int)dimensions.y, (int)dimensions.z];
-		blockColumns = new BlockColumn[(int)dimensions.x, (int)dimensions.z];
-		int x0 = -(int)((dimensions.x - 1)/2);
-		int y0 = -(int)((dimensions.y - 1)/2);
-		int z0 = -(int)((dimensions.z - 1)/2);
-
-		for (int x = x0; x - x0 < (int)dimensions.x; x++) {
-			for (int z = z0; z - z0 < (int)dimensions.z; z++) {
-				Transform blockColumn = (Transform)Instantiate (blockColumnPrefab, new Vector3 (x, -1, z), Quaternion.identity);
-				blockColumn.name = "Column_"+ (x - x0) +"_"+ (z - z0);
-				blockColumn.SetParent (this.transform, false);
-				BlockColumn col = blockColumn.GetComponent<BlockColumn> ();
-				col.playerController = playerController;
-				col.Init(x - x0, z - z0, (int)dimensions.y, blocks, state, baseBlock);
-				blockColumns [x - x0, z - z0] = col;
-			}
-		}
-
-		recalculateWaterMesh = true;
-		mergeTerrain ();
-	}
-
+	/*
 	void ShowElementAction(CanvasManager.PlayerAction action){
 		StartCoroutine(ShowElementActionCoroutine(action));
 	}
 
 	IEnumerator ShowElementActionCoroutine(CanvasManager.PlayerAction action){
+		
 		canvas.ShowElement (action);
 		yield return new WaitForSeconds (0.8f);
 		canvas.ShowElement (CanvasManager.PlayerAction.NONE);
+
 	}
+	*/
 }
