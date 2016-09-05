@@ -28,6 +28,7 @@ public class BlockColumn : MonoBehaviour {
 			block = (Transform) Instantiate(blockPrefab, new Vector3(0, y, 0), Quaternion.identity);
 			block.name = "Block" + y;
 			block.SetParent (transform, false);	
+			block.GetComponent<BlockController> ().Init ();
 			block.GetComponent<BlockController> ().SetCoordinates (x, y + 1, z);
 
 			block.GetComponent<BlockController> ().SetElement (BlockController.getElementFromId(state[x, y + 1, z]));
@@ -118,7 +119,7 @@ public class BlockColumn : MonoBehaviour {
 	}
 
 	public void BreakTopEarth(){
-		if (selected && topmost > 0 && myBlocks [topmost].element == BlockController.Element.EARTH) {
+		if (topmost > 0 && myBlocks [topmost].element == BlockController.Element.EARTH) {
 			myBlocks [topmost].Deselect ();
 			myBlocks [topmost].SetElement(BlockController.Element.AIR);
 			myBlocks [topmost].SetTopmost(false);

@@ -9,7 +9,7 @@ public class BlockController : MonoBehaviour {
 	public Material waterMaterial;
 	public Material sandMaterial;
 	public Material selectedMaterial;
-
+	[SerializeField]
 	protected Material normalMaterial;
 	[SerializeField]
 	protected Material currentMaterial;
@@ -33,8 +33,7 @@ public class BlockController : MonoBehaviour {
 		}
 	}
 
-	void Start() {
-		GetComponent<Renderer> ().material = normalMaterial = currentMaterial;
+	public void Init() {
 		selected = false;
 	}
 

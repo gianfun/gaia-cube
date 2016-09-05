@@ -154,6 +154,7 @@ public class WorldController : MonoBehaviour {
 		if (playerController.doWind ) {
 			ShowElementAction (CanvasManager.PlayerAction.WIND);
 			ApplyWind (currentWindDirection);
+			ResetSelection ();
 			recalculateWaterMesh = true;
 		}
 
