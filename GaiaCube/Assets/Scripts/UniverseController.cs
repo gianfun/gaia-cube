@@ -2,14 +2,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class UniverseController : MonoBehaviour {
-	int[,,] clayState, goalState;
-	Vector3 dimensions;
+    int[,,] clayState, goalState;
+    Vector3 dimensions;
+    public bool moveCameraLeft { get; set; }
+    public bool moveCameraRight { get; set; }
+    float cameraDuration = 1.5f;
+    float cameraTime = 0;
 
-	Transform clayWorldTrans, goalWorldTrans;
+    Quaternion lookAtClayWorld, lookAtGoalWorld;
+
+    Transform clayWorldTrans, goalWorldTrans;
 	WorldController goalWorld;
 	ClayWorldController clayWorld;
+
+    private StateManager sm;
+
+    public GameObject WinMessage;
 
 	void StartLevel(int level){
 		WorldLoader worldLoader = new WorldLoader (level);
@@ -24,23 +35,84 @@ public class UniverseController : MonoBehaviour {
 	}
 
 	void Start() {
+        sm = GameObject.FindGameObjectWithTag("StateManager").GetComponent<StateManager>();
+
 		clayWorldTrans = GameObject.FindWithTag ("ClayWorld").GetComponent<Transform>();
 		goalWorldTrans = GameObject.FindWithTag ("GoalWorld").GetComponent<Transform>();
 		clayWorld = clayWorldTrans.GetComponent<ClayWorldController>();
 		goalWorld = goalWorldTrans.GetComponent<WorldController>();
 
-		Color skyBlue = new Color(0.2f, 0.3f, 0.4f, 0.7f);
+        lookAtClayWorld = Quaternion.Euler(45, 0, 0);
+        lookAtGoalWorld = Quaternion.Euler(45, 90, 0);
+
+        
+
+        Color skyBlue = new Color(0.2f, 0.3f, 0.4f, 0.7f);
 		Color sunYellow = new Color(0.8f, 0.6f, 0.2f, 0.3f);
 		RenderSettings.ambientSkyColor = sunYellow;
 		RenderSettings.fog = true;
 		RenderSettings.fogDensity = 0.05f;
 		RenderSettings.fogColor = skyBlue;
 
-		StartLevel (1);
+		StartLevel (sm.currentLevel);
 	}
 
-	void Update () {
-		/*
+    public void CheckForWinningCondition()
+    {
+        bool areEqual = true;
+        for(int x = 0; x < dimensions.x && areEqual; x++)
+        {
+            for (int y = 0; y < dimensions.y && areEqual; y++)
+            {
+                for (int z = 0; z < dimensions.z && areEqual; z++)
+                {
+                    if (clayWorld.GetElementAt(x, y, z) != goalWorld.GetElementAt(x, y, z))
+                    {
+                        areEqual = false;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (areEqual)
+        {
+            print("Finit");
+            StartCoroutine(ShowWin());
+        } 
+    }
+
+    private IEnumerator ShowWin()
+    {
+        WinMessage.SetActive(true);
+        yield return new WaitForSeconds(3);
+        SceneManager.LoadScene("Menu");
+    }
+
+    void Update()
+    {
+        if (moveCameraLeft || moveCameraRight)
+        {
+            if (moveCameraLeft)
+            {
+                cameraTime -= Time.deltaTime;
+                if (cameraTime < 0f)
+                {
+                    cameraTime = 0f;
+                }
+            }
+            else
+            {
+                cameraTime += Time.deltaTime;
+                if (cameraTime > cameraDuration)
+                {
+                    cameraTime = cameraDuration;
+                }
+            }
+            Camera.main.transform.localRotation = Quaternion.Slerp(lookAtClayWorld, lookAtGoalWorld, cameraTime / cameraDuration);
+        }
+    
+        /*
 		recalculateWaterMesh = false;
 
 		if (Input.GetButtonDown("Fire1")) {
@@ -204,9 +276,9 @@ public class UniverseController : MonoBehaviour {
 
 		MoveSelectorPlane ();
 		*/
-	}
+    }
 
-	/*
+    /*
 	void ShowElementAction(CanvasManager.PlayerAction action){
 		StartCoroutine(ShowElementActionCoroutine(action));
 	}
@@ -219,4 +291,5 @@ public class UniverseController : MonoBehaviour {
 
 	}
 	*/
+
 }

@@ -11,6 +11,8 @@ TagManager:
   - BoundingGrid
   - ClayWorld
   - GoalWorld
+  - UniverseController
+  - StateManager
   layers:
   - Default
   - TransparentFX
@@ -21,8 +23,8 @@ TagManager:
   - 
   - 
   - SelectorPlane
-  - 
-  - 
+  - ClayWorld
+  - GoalWorld
   - 
   - 
   - 

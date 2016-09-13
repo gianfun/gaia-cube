@@ -39,7 +39,7 @@ public class WorldController : MonoBehaviour {
 	public Material waterMaterial;
 	protected GameObject allWater;
 
-	public void Init() {
+	public virtual void Init() {
 		boundingGridPlanes = GameObject.FindWithTag ("BoundingGrid");
 		areaSelectorPlane = GameObject.FindWithTag ("AreaSelector");
 		areaSelectorPlaneRenderer = areaSelectorPlane.GetComponent<MeshRenderer> ();
@@ -47,14 +47,6 @@ public class WorldController : MonoBehaviour {
 		allWater = GameObject.CreatePrimitive (PrimitiveType.Cube);
 		allWater.name = "WaterMesh";
 		allWater.transform.SetParent(transform, false);
-
-		Color skyBlue = new Color(0.2f, 0.3f, 0.4f, 0.7f);
-		Color sunYellow = new Color(0.8f, 0.6f, 0.2f, 0.3f);
-		RenderSettings.ambientSkyColor = sunYellow;
-		RenderSettings.fog = true;
-		RenderSettings.fogDensity = 0.05f;
-		RenderSettings.fogColor = skyBlue;
-
 	}
 
 	void Update () {
@@ -232,7 +224,6 @@ public class WorldController : MonoBehaviour {
 
 
 	public void mergeTerrain() {
-		
 		List<Transform> allWaterBlocks = new List<Transform> ();
 		List<Transform> allEarth = new List<Transform> ();
 		foreach (Transform block in blocks) {
@@ -282,6 +273,11 @@ public class WorldController : MonoBehaviour {
 		recalculateWaterMesh = true;
 		mergeTerrain ();
 	}
+
+    public BlockController.Element GetElementAt(int x, int y, int z)
+    {
+        return blockColumns[x, z].GetBlockElementAt(y);
+    }
 
 	void ShowElementAction(CanvasManager.PlayerAction action){
 		StartCoroutine(ShowElementActionCoroutine(action));

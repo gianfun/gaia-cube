@@ -5,7 +5,7 @@ using System.Linq;
 
 
 public class ClayWorldController : WorldController {
-	/*
+    /*
 	[SerializeField]
 	private PlayerController playerController;
 	public Transform blockColumnPrefab;
@@ -44,26 +44,12 @@ public class ClayWorldController : WorldController {
 	public Material waterMaterial;
 	private GameObject allWater;
 	*/
+    private UniverseController universe;
 
-	//void Init() {
-		/*
-		boundingGridPlanes = GameObject.FindWithTag ("BoundingGrid");
-		areaSelectorPlane = GameObject.FindWithTag ("AreaSelector");
-		areaSelectorPlaneRenderer = areaSelectorPlane.GetComponent<MeshRenderer> ();
-
-		allWater = GameObject.CreatePrimitive (PrimitiveType.Cube);
-		allWater.name = "WaterMesh";
-		allWater.transform.SetParent (transform);
-
-		Color skyBlue = new Color(0.2f, 0.3f, 0.4f, 0.7f);
-		Color sunYellow = new Color(0.8f, 0.6f, 0.2f, 0.3f);
-		RenderSettings.ambientSkyColor = sunYellow;
-		RenderSettings.fog = true;
-		RenderSettings.fogDensity = 0.05f;
-		RenderSettings.fogColor = skyBlue;
-		*/
-
-	//}
+    override public void Init() {
+        base.Init();
+        universe = GameObject.FindGameObjectWithTag("UniverseController").GetComponent<UniverseController>();
+	}
 
 	void Update () {
 		recalculateWaterMesh = false;
@@ -140,25 +126,29 @@ public class ClayWorldController : WorldController {
 				}
 
 			}
-		}
+            universe.CheckForWinningCondition();
+        }
 		if (playerController.moveEarthUp) {
 			ShowElementAction (CanvasManager.PlayerAction.EARTH_UP);
 			foreach (BlockColumn col in GetSelectedColumns()) {
 				col.MoveEarthUp ();
 			}
-		}
+            universe.CheckForWinningCondition();
+        }
 
-		if (playerController.doWater) {
+        if (playerController.doWater) {
 			ShowElementAction (CanvasManager.PlayerAction.WATER);
 			FillLake (GetSelectedBlocks());
 			recalculateWaterMesh = true;
-		}
+            universe.CheckForWinningCondition();
+        }
 
 		if (playerController.doFire) {
 			ShowElementAction (CanvasManager.PlayerAction.FIRE);
 			DryOutWater (GetSelectedBlocks());
 			recalculateWaterMesh = true;
-		}
+            universe.CheckForWinningCondition();
+        }
 
 		if (playerController.turnRight) {
 			currentWindDirection = (currentWindDirection + 3) % 4; // == cWD - 1 but without underflow
@@ -172,33 +162,21 @@ public class ClayWorldController : WorldController {
 			ApplyWind (currentWindDirection);
 			ResetSelection ();
 			recalculateWaterMesh = true;
-		}
+            universe.CheckForWinningCondition();
+        }
 
 		if (playerController.turnRight && !isRotating) {
-			print("Rotate right");
 			isRotating = true;
-			//startRotation = this.transform.rotation;
-			//startPosition = this.transform.position;
-
-			//Quaternion. AngleAxis (90, this.transform.up);
-
 			currentRotation = (currentRotation - 1 + 4) % 4;
 			targetRotation =  Quaternion.FromToRotation(rotations[0], rotations[currentRotation]);
-			print ("From " + rotations[0] + " to " + rotations[(currentRotation )]);
 			initialRotation = this.transform.rotation;
 			currentRotationTime = 0f;
 			boundingGridPlanes.SetActive (false);
-
 		}
 
 		if (playerController.turnLeft && !isRotating) {
 			print("Rotate left");
 			isRotating = true;
-			//startRotation = this.transform.rotation;
-			//startPosition = this.transform.position;
-
-			//Quaternion. AngleAxis (90, this.transform.up);
-
 			currentRotation = (currentRotation + 1) % 4;
 			targetRotation =  Quaternion.FromToRotation(rotations[0], rotations[currentRotation]);
 			print ("From " + rotations[0] + " to " + rotations[(currentRotation )]);
@@ -206,7 +184,6 @@ public class ClayWorldController : WorldController {
 
 			currentRotationTime = 0f;
 			boundingGridPlanes.SetActive (false);
-
 		}
 
 		if (isRotating) {
@@ -253,33 +230,6 @@ public class ClayWorldController : WorldController {
 			}
 		}
 		return terrain;
-	}
-
-	public void mergeTerrain() {
-		List<Transform> allWaterBlocks = new List<Transform> ();
-		List<Transform> allEarth = new List<Transform> ();
-		foreach (Transform block in blocks) {
-			BlockController blockCont = block.GetComponent<BlockController> ();
-			if (blockCont.element == BlockController.Element.EARTH) {
-				allEarth.Add (block);
-			} else if (blockCont.element == BlockController.Element.WATER){
-				if (!blockCont.selected) {
-					allWaterBlocks.Add (block);
-					block.GetComponent<Renderer> ().enabled = false;
-				} else {
-					block.GetComponent<Renderer> ().enabled = true;
-				}
-			}
-		}
-		CombineInstance[] combineWater = new CombineInstance[allWaterBlocks.Count];
-		for (int i = 0; i < allWaterBlocks.Count; i++) {
-
-			combineWater [i].mesh = allWaterBlocks [i].GetComponent<MeshFilter> ().sharedMesh;
-			combineWater [i].transform = allWaterBlocks [i].GetComponent<MeshFilter> ().transform.localToWorldMatrix;
-		}
-		allWater.GetComponent<MeshFilter>().mesh.CombineMeshes (combineWater);
-		allWater.GetComponent<Renderer>().material = waterMaterial;
-		allWater.transform.SetParent (gameObject.transform, false);
 	}
 
 	public List<Vector3> GetCanyon (Vector3 pos) {
