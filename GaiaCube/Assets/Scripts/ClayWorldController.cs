@@ -445,7 +445,6 @@ public class ClayWorldController : WorldController {
 		blocksToDry = GetCanyonPlane (dryOutSource, BlockController.Element.WATER);
 
 		foreach (Vector3 coord in blocksToDry) {
-			print (coord);
 			blockColumns[(int)coord.x, (int)coord.z].DryBlock((int)coord.y);
 		}
 	}

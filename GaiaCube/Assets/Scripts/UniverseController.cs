@@ -64,7 +64,7 @@ public class UniverseController : MonoBehaviour {
         {
             for (int y = 0; y < dimensions.y && areEqual; y++)
             {
-                for (int z = 0; z < dimensions.z && areEqual; z++)
+                for (int z = 0; z < dimensions.z -1 && areEqual; z++)
                 {
                     if (clayWorld.GetElementAt(x, y, z) != goalWorld.GetElementAt(x, y, z))
                     {

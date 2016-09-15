@@ -7,7 +7,11 @@ public class StateManager : MonoBehaviour {
 
     void Awake()
     {
-        DontDestroyOnLoad(gameObject);
+		if (GameObject.FindGameObjectWithTag ("StateManager") != null) {
+			DontDestroyOnLoad (gameObject);
+		} else {
+			Destroy (gameObject);
+		}
     }
 
     public void LoadCurrentLevel()

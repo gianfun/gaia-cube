@@ -224,6 +224,7 @@ public class WorldController : MonoBehaviour {
 
 
 	public void mergeTerrain() {
+		
 		List<Transform> allWaterBlocks = new List<Transform> ();
 		List<Transform> allEarth = new List<Transform> ();
 		foreach (Transform block in blocks) {
@@ -248,6 +249,8 @@ public class WorldController : MonoBehaviour {
 		allWater.GetComponent<MeshFilter>().mesh.CombineMeshes (combineWater);
 		allWater.GetComponent<Renderer>().material = waterMaterial;
 		allWater.transform.SetParent (gameObject.transform, false);
+		allWater.transform.position = Vector3.zero;
+
 
 	}
 

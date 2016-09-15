@@ -129,7 +129,7 @@ public class BlockColumn : MonoBehaviour {
 	}
 
 	public BlockController.Element GetBlockElementAt(int y){
-		if (y < height) {
+		if (y <= height) {
 			return myBlocks [y].element;
 		} else {
 			return BlockController.Element.INVALID;
