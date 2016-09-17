@@ -16,17 +16,11 @@ public class WorldController : MonoBehaviour {
 	protected bool recalculateWaterMesh;
 
 	protected Vector3 dimensions = new Vector3 (5, 6, 5);
-	public int currentWindDirection = 0;
 
 	public Transform baseBlock;
 
 	protected Transform[,,] blocks;
 	protected BlockColumn[,] blockColumns;
-	protected Transform hoveredBlock;
-
-	protected GameObject boundingGridPlanes;
-	protected GameObject areaSelectorPlane;
-	protected MeshRenderer areaSelectorPlaneRenderer;
 
 	protected Vector3[] rotations = { new Vector3 (1, 0, 0), new Vector3 (0, 0, -1), new Vector3 (-1, 0, 0), new Vector3 (0, 0, 1)};
 	protected int currentRotation = 0;
@@ -40,13 +34,11 @@ public class WorldController : MonoBehaviour {
 	protected GameObject allWater;
 
 	public virtual void Init() {
-		boundingGridPlanes = GameObject.FindWithTag ("BoundingGrid");
-		areaSelectorPlane = GameObject.FindWithTag ("AreaSelector");
-		areaSelectorPlaneRenderer = areaSelectorPlane.GetComponent<MeshRenderer> ();
-
 		allWater = GameObject.CreatePrimitive (PrimitiveType.Cube);
 		allWater.name = "WaterMesh";
 		allWater.transform.SetParent(transform, false);
+
+		currentRotation = (int) transform.localRotation.eulerAngles.y / 90; //So we can rotate correctly, we take initial localrotation into account
 	}
 
 	void Update () {
@@ -214,6 +206,19 @@ public class WorldController : MonoBehaviour {
 
 		MoveSelectorPlane ();
 		*/
+
+		if (playerController.turnRight && !isRotating) {
+			print ("GoRight!");
+			StartRotateWorld (false);
+		}
+
+		if (playerController.turnLeft && !isRotating) {
+			StartRotateWorld (true);
+		}
+
+		if (isRotating) {
+			DoRotateWorld ();
+		}
 	}
 
 	void LateUpdate() {
@@ -222,6 +227,30 @@ public class WorldController : MonoBehaviour {
 		}
 	}
 
+	public virtual void StartRotateWorld(bool rotateLeft){
+		isRotating = true;
+		if (rotateLeft) {
+			currentRotation = (currentRotation + 1) % 4;
+		} else {
+			currentRotation = (currentRotation - 1 + 4) % 4;
+		}
+		targetRotation =  Quaternion.FromToRotation(rotations[0], rotations[currentRotation]);
+		initialRotation = this.transform.rotation;
+		currentRotationTime = 0f;
+	}
+
+	public virtual bool DoRotateWorld(){
+		bool ended = false;
+		currentRotationTime += Time.deltaTime;
+		float rotationPercent = currentRotationTime / rotationDuration;
+		if(rotationPercent >= 1.0f){
+			isRotating = false;
+			rotationPercent = 1.0f; //So our rotation turns exactly 'rotationAngle' degrees
+			ended = true;
+		}
+		this.transform.rotation = Quaternion.Slerp(initialRotation, targetRotation, rotationPercent);
+		return ended;
+	}
 
 	public void mergeTerrain() {
 		
@@ -258,7 +287,7 @@ public class WorldController : MonoBehaviour {
 		blocks = new Transform[(int)dimensions.x, (int)dimensions.y, (int)dimensions.z];
 		blockColumns = new BlockColumn[(int)dimensions.x, (int)dimensions.z];
 		int x0 = -(int)((dimensions.x - 1)/2);
-		int y0 = -(int)((dimensions.y - 1)/2);
+		//int y0 = -(int)((dimensions.y - 1)/2);
 		int z0 = -(int)((dimensions.z - 1)/2);
 
 		for (int x = x0; x - x0 < (int)dimensions.x; x++) {

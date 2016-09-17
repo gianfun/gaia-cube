@@ -167,7 +167,7 @@ namespace Gvr.Internal {
       // Do nothing.
     }
 
-    public virtual void OnLevelLoaded(int level) {
+	public virtual void OnLevelLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode mode) {
       // Do nothing.
     }
 

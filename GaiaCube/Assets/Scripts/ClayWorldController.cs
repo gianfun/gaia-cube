@@ -44,10 +44,24 @@ public class ClayWorldController : WorldController {
 	public Material waterMaterial;
 	private GameObject allWater;
 	*/
+
+
+	protected GameObject boundingGridPlanes;
+	protected GameObject areaSelectorPlane;
+	protected MeshRenderer areaSelectorPlaneRenderer;
+
+	public int currentWindDirection = 0;
+
+
     private UniverseController universe;
 
     override public void Init() {
         base.Init();
+
+		boundingGridPlanes = GameObject.FindWithTag ("BoundingGrid");
+		areaSelectorPlane = GameObject.FindWithTag ("AreaSelector");
+		areaSelectorPlaneRenderer = areaSelectorPlane.GetComponent<MeshRenderer> ();
+
         universe = GameObject.FindGameObjectWithTag("UniverseController").GetComponent<UniverseController>();
 	}
 
@@ -166,42 +180,15 @@ public class ClayWorldController : WorldController {
         }
 
 		if (playerController.turnRight && !isRotating) {
-			isRotating = true;
-			currentRotation = (currentRotation - 1 + 4) % 4;
-			targetRotation =  Quaternion.FromToRotation(rotations[0], rotations[currentRotation]);
-			initialRotation = this.transform.rotation;
-			currentRotationTime = 0f;
-			boundingGridPlanes.SetActive (false);
+			StartRotateWorld (false);
 		}
 
 		if (playerController.turnLeft && !isRotating) {
-			print("Rotate left");
-			isRotating = true;
-			currentRotation = (currentRotation + 1) % 4;
-			targetRotation =  Quaternion.FromToRotation(rotations[0], rotations[currentRotation]);
-			print ("From " + rotations[0] + " to " + rotations[(currentRotation )]);
-			initialRotation = this.transform.rotation;
-
-			currentRotationTime = 0f;
-			boundingGridPlanes.SetActive (false);
+			StartRotateWorld (true);
 		}
 
 		if (isRotating) {
-			currentRotationTime += Time.deltaTime;
-			float rotationPercent = currentRotationTime / rotationDuration;
-			if(rotationPercent >= 1.0f){
-				isRotating = false;
-				rotationPercent = 1.0f; //So our rotation turns exactly 'rotationAngle' degrees
-				boundingGridPlanes.SetActive (true);
-			}
-			//this.transform.position = startPosition;
-			//this.transform.rotation = startRotation;
-			this.transform.rotation = Quaternion.Slerp(initialRotation, targetRotation, rotationPercent);
-	//goalWorld.rotation = Quaternion.Slerp(initialRotation, targetRotation, rotationPercent);
-			//this.transform.RotateAround (Vector3.zero, Vector3.up, rotationAngle * rotationPercent);
-			//Quaternion rot = Quaternion.Slerp (startRotation, endRotation, currentCameraMovementTime / cameraMovementDuration);
-			//this.transform.rotation = rot;
-
+			DoRotateWorld ();
 		}
 
 		MoveSelectorPlane ();
@@ -213,23 +200,17 @@ public class ClayWorldController : WorldController {
 		}
 	}
 
-	public void SetHovered(Transform block) {
-		hoveredBlock = block;
+	override public void StartRotateWorld(bool rotateLeft){
+		base.StartRotateWorld (rotateLeft);
+		boundingGridPlanes.SetActive (false);
 	}
 
-	public Transform GetHovered() {
-		return hoveredBlock;
-	}
-
-	public int[,] GetTerrain() {
-		int[,] terrain = new int[(int)dimensions.x, (int)dimensions.z];
-		foreach (Transform block in blocks) {
-			BlockController blockController = block.GetComponent<BlockController> ();
-			if (blockController.GetTopmost ()) {
-				terrain [blockController.x, blockController.z] = blockController.y;
-			}
+	override public bool DoRotateWorld(){
+		if (base.DoRotateWorld ()) { //Returns if rotation ended.
+			boundingGridPlanes.SetActive (true);
+			return true;
 		}
-		return terrain;
+		return false;
 	}
 
 	public List<Vector3> GetCanyon (Vector3 pos) {
@@ -279,17 +260,6 @@ public class ClayWorldController : WorldController {
 		}
 		return result;
 	}
-
-	public int[,] GetSlice(int height) {
-		int[,] slice = new int[(int)dimensions.x, (int)dimensions.z];
-		for (int i=0; i < (int)dimensions.x; i++) {
-			for (int j=0; j < (int)dimensions.z; j++) {
-				slice [i, j] = blocks [i, height, j].gameObject.activeInHierarchy ? 1 : 0;
-			}
-		}
-		return slice;
-	}
-
 
 	public List<BlockColumn> GetSelectedColumns() {
 		List<BlockColumn> selectedColumns = new List<BlockColumn>();
@@ -356,18 +326,6 @@ public class ClayWorldController : WorldController {
 
 	public Transform GetBlock(Vector3 pos) {
 		return blocks [(int)pos.x, (int)pos.y, (int)pos.z];
-	}
-
-	public Transform MakeBlock(int x, int y, int z) {
-		blocks [x, y, z].gameObject.SetActive(true);
-		blocks [x, y, z].GetComponent<BlockController> ().SetElement (BlockController.Element.EARTH);
-		return blocks [x, y, z];
-	}
-
-	public Transform MakeWaterBlock(int x, int y, int z) {
-		blocks [x, y, z].gameObject.SetActive(true);
-		blocks [x, y, z].GetComponent<BlockController> ().SetElement (BlockController.Element.WATER);
-		return blocks [x, y, z];
 	}
 
 	public void FillWaterColumn(Vector3 pos) {

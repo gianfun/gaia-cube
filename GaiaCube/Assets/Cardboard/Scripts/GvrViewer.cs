@@ -494,6 +494,7 @@ public class GvrViewer : MonoBehaviour {
   }
 
   void OnEnable() {
+    UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnLevelLoaded;
 #if UNITY_EDITOR
     // This can happen if you edit code while the editor is in Play mode.
     if (device == null) {
@@ -504,6 +505,7 @@ public class GvrViewer : MonoBehaviour {
   }
 
   void OnDisable() {
+    UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnLevelLoaded;
     device.OnPause(true);
   }
 
@@ -515,8 +517,8 @@ public class GvrViewer : MonoBehaviour {
     device.OnFocus(focus);
   }
 
-  void OnLevelWasLoaded(int level) {
-    device.OnLevelLoaded(level);
+  void OnLevelLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode mode) {
+	device.OnLevelLoaded(scene, mode);
   }
 
   void OnApplicationQuit() {
