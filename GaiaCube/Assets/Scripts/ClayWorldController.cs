@@ -345,9 +345,15 @@ public class ClayWorldController : WorldController {
 		List<Vector3> floodSource = new List<Vector3> ();
 
 		foreach (BlockController block in selectedBlocks) {
-			floodSource.Add (block.position + new Vector3(0, 1, 0)); // + (0,1,0) to get block on top.
-			//print ("Adding " + (block.position + new Vector3 (0, 1, 0)));
+			if(block.position.y + 1 < dimensions.y){
+				floodSource.Add (block.position + new Vector3(0, 1, 0)); // + (0,1,0) to get block on top.
+				//print ("Adding " + (block.position + new Vector3 (0, 1, 0)));
+			}
 		}
+		if (floodSource.Count == 0) {
+			return;
+		}
+
 		blocksToFlood = GetCanyonPlane (floodSource);
 
 
@@ -577,6 +583,7 @@ public class ClayWorldController : WorldController {
 					}
 
 					stoneCol.BreakTopEarth();
+					stoneCol.MakeTopSand ();
 				}
 
 			}
