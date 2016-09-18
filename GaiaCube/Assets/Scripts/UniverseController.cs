@@ -22,8 +22,9 @@ public class UniverseController : MonoBehaviour {
 
     public GameObject WinMessage;
 
-	void StartLevel(int level){
-		WorldLoader worldLoader = new WorldLoader (level);
+	IEnumerator StartLevel(int level){
+		WorldLoader worldLoader = new WorldLoader ();
+		yield return worldLoader.LoadLevel(level);
 		clayState = worldLoader.getClayState ();
 		goalState = worldLoader.getGoalState ();
 		dimensions = worldLoader.getDimensions ();
@@ -54,7 +55,7 @@ public class UniverseController : MonoBehaviour {
 		RenderSettings.fogDensity = 0.05f;
 		RenderSettings.fogColor = skyBlue;
 
-		StartLevel (sm.currentLevel);
+		StartCoroutine(StartLevel (sm.currentLevel));
 	}
 
     public void CheckForWinningCondition()
