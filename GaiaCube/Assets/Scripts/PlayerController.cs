@@ -9,6 +9,8 @@ public class PlayerController : MonoBehaviour {
 	[SerializeField]
 	private GestureManager GM;
 
+	public bool somethingTriggered = false;
+
 	public bool doSelect = false;
 	public bool turnLeft = false;
 	public bool turnRight = false;
@@ -30,7 +32,10 @@ public class PlayerController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		setAllAsFalse ();
+		if (!somethingTriggered) {
+			setAllAsFalse ();
+		} 
+		somethingTriggered = false;
 
 		if (shouldUseLeap) {
 			if (GM.left.isPinching && GM.right.isPinching) {
@@ -99,6 +104,51 @@ public class PlayerController : MonoBehaviour {
 			}
 		}
 	}
+
+
+	public void TriggerEarthDown(){
+		print ("TriggerEarthDown");
+		moveEarthDown = true;
+		somethingTriggered = true;
+	}
+
+	public void TriggerEarthUp(){
+		print ("TriggerEarthUp");
+		moveEarthUp = true;
+		somethingTriggered = true;
+	}
+
+	public void TriggerRotateLeft(){
+		print ("TriggerRotateLeft");
+		turnRight = true;
+		somethingTriggered = true;
+	}
+
+	public void TriggerRotateRight(){
+		print ("TriggerRotateRight");
+		turnLeft = true;
+		somethingTriggered = true;
+	}
+
+	public void TriggerWater(){
+		print ("TriggerWater");
+		somethingTriggered = true;
+		doWater = true;
+	}
+
+	public void TriggerFire(){
+		print ("TriggerFire");
+		somethingTriggered = true;
+		doFire = true;
+	}
+
+	public void TriggerWind(){
+		print ("TriggerWind");
+		somethingTriggered = true;
+		doWind = true;
+	}
+			
+
 
 	void setAllAsFalse(){
 		doSelect = false;

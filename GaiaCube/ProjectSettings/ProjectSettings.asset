@@ -6,7 +6,7 @@ PlayerSettings:
   serializedVersion: 8
   productGUID: 609c03cdaa93d3d48bf84e53e76dfb78
   AndroidProfiler: 0
-  defaultScreenOrientation: 4
+  defaultScreenOrientation: 2
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
@@ -179,7 +179,7 @@ PlayerSettings:
   - m_BuildTarget: 
     m_Icons:
     - serializedVersion: 2
-      m_Icon: {fileID: 0}
+      m_Icon: {fileID: 2800000, guid: 351672573efffd649ab4fa3c1a8a0bf4, type: 3}
       m_Width: 128
       m_Height: 128
   m_BuildTargetBatching: []

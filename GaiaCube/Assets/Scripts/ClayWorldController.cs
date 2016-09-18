@@ -51,7 +51,7 @@ public class ClayWorldController : WorldController {
 	protected MeshRenderer areaSelectorPlaneRenderer;
 
 	public int currentWindDirection = 0;
-
+	private bool canPlay = false;
 
     private UniverseController universe;
 
@@ -63,12 +63,14 @@ public class ClayWorldController : WorldController {
 		areaSelectorPlaneRenderer = areaSelectorPlane.GetComponent<MeshRenderer> ();
 
         universe = GameObject.FindGameObjectWithTag("UniverseController").GetComponent<UniverseController>();
+		canPlay = true;
 	}
 
 	void Update () {
 		recalculateWaterMesh = false;
 
-		if (Input.GetButtonDown("Fire1")) {
+		if (canPlay) {
+			/*if (Input.GetButtonDown("Fire1")) {
 			RaycastHit hit = new RaycastHit();
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 
@@ -76,122 +78,125 @@ public class ClayWorldController : WorldController {
 				ResetSelection();
 				recalculateWaterMesh = true;
 			}
-		} else if (playerController.doSelect) {
-			if (!areaSelectorPlaneRenderer.enabled) {
-				areaSelectorPlaneRenderer.enabled = true;
-			}
-			//print ("World Controller: DoSelect. Layer: " + LayerMask.NameToLayer ("SelectorPlane"));
-			RaycastHit hit;
-			int selectLeft, selectRight, selectTop, selectBottom;
-			Vector3 normalizedPointTL = new Vector3 (-1, -1, -1);
-			Vector3 normalizedPointBR = normalizedPointTL;
-			if (Physics.Raycast (playerController.ray_topleft, out hit, 100f, 1 << LayerMask.NameToLayer ("SelectorPlane"))) {
-				normalizedPointTL = transform.InverseTransformPoint (hit.point) + new Vector3(2.5f, -3.6f, 2.5f);
-				normalizedPointTL = new Vector3 ((int)normalizedPointTL.x, (int)normalizedPointTL.y, (int)normalizedPointTL.z);
-			} 
-			if (Physics.Raycast (playerController.ray_bottomright, out hit, 100f, 1 << LayerMask.NameToLayer ("SelectorPlane"))) {
-				normalizedPointBR = transform.InverseTransformPoint (hit.point) + new Vector3(2.5f, -3.6f, 2.5f);
-				normalizedPointBR = new Vector3 ((int)normalizedPointBR.x, (int)normalizedPointBR.y, (int)normalizedPointBR.z);
-				//print ("Hit plane on " + normalizedPointBR); 
+		} else */
+			if (playerController.doSelect) {
+				if (!areaSelectorPlaneRenderer.enabled) {
+					areaSelectorPlaneRenderer.enabled = true;
+				}
+				//print ("World Controller: DoSelect. Layer: " + LayerMask.NameToLayer ("SelectorPlane"));
+				RaycastHit hit;
+				int selectLeft, selectRight, selectTop, selectBottom;
+				Vector3 normalizedPointTL = new Vector3 (-1, -1, -1);
+				Vector3 normalizedPointBR = normalizedPointTL;
+				if (Physics.Raycast (playerController.ray_topleft, out hit, 100f, 1 << LayerMask.NameToLayer ("SelectorPlane"))) {
+					normalizedPointTL = transform.InverseTransformPoint (hit.point) + new Vector3 (2.5f, -3.6f, 2.5f);
+					normalizedPointTL = new Vector3 ((int)normalizedPointTL.x, (int)normalizedPointTL.y, (int)normalizedPointTL.z);
+				} 
+				if (Physics.Raycast (playerController.ray_bottomright, out hit, 100f, 1 << LayerMask.NameToLayer ("SelectorPlane"))) {
+					normalizedPointBR = transform.InverseTransformPoint (hit.point) + new Vector3 (2.5f, -3.6f, 2.5f);
+					normalizedPointBR = new Vector3 ((int)normalizedPointBR.x, (int)normalizedPointBR.y, (int)normalizedPointBR.z);
+					//print ("Hit plane on " + normalizedPointBR); 
 
-			} else {
-			}
-
-			if (normalizedPointBR != new Vector3 (-1, -1, -1) && normalizedPointTL != new Vector3 (-1, -1, -1)) {
-				if (normalizedPointTL.x < normalizedPointBR.x) {
-					selectLeft = (int) normalizedPointTL.x;
-					selectRight = (int) normalizedPointBR.x;
 				} else {
-					selectLeft = (int) normalizedPointBR.x;
-					selectRight = (int) normalizedPointTL.x;
 				}
 
-				if (normalizedPointTL.z < normalizedPointBR.z) {
-					selectBottom = (int) normalizedPointTL.z;
-					selectTop = (int) normalizedPointBR.z;
-				} else {
-					selectBottom = (int) normalizedPointBR.z;
-					selectTop = (int) normalizedPointTL.z;
-				}
-
-				ResetSelection ();
-
-				for(int x = selectLeft; x <= selectRight; x++){
-					for(int z = selectBottom; z <= selectTop; z++){
-						blockColumns [x, z].GetComponent<BlockColumn> ().Select ();
-
+				if (normalizedPointBR != new Vector3 (-1, -1, -1) && normalizedPointTL != new Vector3 (-1, -1, -1)) {
+					if (normalizedPointTL.x < normalizedPointBR.x) {
+						selectLeft = (int)normalizedPointTL.x;
+						selectRight = (int)normalizedPointBR.x;
+					} else {
+						selectLeft = (int)normalizedPointBR.x;
+						selectRight = (int)normalizedPointTL.x;
 					}
-				}
-				recalculateWaterMesh = true;
-			}
-		} else if (!playerController.doSelect && areaSelectorPlaneRenderer.enabled == true) {
-			areaSelectorPlaneRenderer.enabled = false;
-		};
 
-		if (playerController.moveEarthDown) {
-			ShowElementAction (CanvasManager.PlayerAction.EARTH_DOWN);
+					if (normalizedPointTL.z < normalizedPointBR.z) {
+						selectBottom = (int)normalizedPointTL.z;
+						selectTop = (int)normalizedPointBR.z;
+					} else {
+						selectBottom = (int)normalizedPointBR.z;
+						selectTop = (int)normalizedPointTL.z;
+					}
 
-			foreach (BlockColumn col in GetSelectedColumns()) {
-				col.MoveEarthDown ();
-				//print ("Moved down. Should flood? " + ShouldFlood (col));
-				if (ShouldFlood (col)) {
-					FillLake (col.GetTopBlock ());
+					ResetSelection ();
+
+					for (int x = selectLeft; x <= selectRight; x++) {
+						for (int z = selectBottom; z <= selectTop; z++) {
+							blockColumns [x, z].GetComponent<BlockColumn> ().Select ();
+
+						}
+					}
 					recalculateWaterMesh = true;
 				}
-
+			} else if (!playerController.doSelect && areaSelectorPlaneRenderer.enabled == true) {
+				areaSelectorPlaneRenderer.enabled = false;
 			}
-            universe.CheckForWinningCondition();
-        }
-		if (playerController.moveEarthUp) {
-			ShowElementAction (CanvasManager.PlayerAction.EARTH_UP);
-			foreach (BlockColumn col in GetSelectedColumns()) {
-				col.MoveEarthUp ();
+			;
+
+			if (playerController.moveEarthDown) {
+				ShowElementAction (CanvasManager.PlayerAction.EARTH_DOWN);
+
+				foreach (BlockColumn col in GetSelectedColumns()) {
+					col.MoveEarthDown ();
+					//print ("Moved down. Should flood? " + ShouldFlood (col));
+					if (ShouldFlood (col)) {
+						FillLake (col.GetTopBlock ());
+						recalculateWaterMesh = true;
+					}
+
+				}
+				universe.CheckForWinningCondition ();
 			}
-            universe.CheckForWinningCondition();
-        }
+			if (playerController.moveEarthUp) {
+				ShowElementAction (CanvasManager.PlayerAction.EARTH_UP);
+				foreach (BlockColumn col in GetSelectedColumns()) {
+					col.MoveEarthUp ();
+				}
+				universe.CheckForWinningCondition ();
+			}
 
-        if (playerController.doWater) {
-			ShowElementAction (CanvasManager.PlayerAction.WATER);
-			FillLake (GetSelectedBlocks());
-			recalculateWaterMesh = true;
-            universe.CheckForWinningCondition();
-        }
+			if (playerController.doWater) {
+				ShowElementAction (CanvasManager.PlayerAction.WATER);
+				FillLake (GetSelectedBlocks ());
+				recalculateWaterMesh = true;
+				universe.CheckForWinningCondition ();
+			}
 
-		if (playerController.doFire) {
-			ShowElementAction (CanvasManager.PlayerAction.FIRE);
-			DryOutWater (GetSelectedBlocks());
-			recalculateWaterMesh = true;
-            universe.CheckForWinningCondition();
-        }
+			if (playerController.doFire) {
+				ShowElementAction (CanvasManager.PlayerAction.FIRE);
+				DryOutWater (GetSelectedBlocks ());
+				recalculateWaterMesh = true;
+				universe.CheckForWinningCondition ();
+			}
 
-		if (playerController.turnRight) {
-			currentWindDirection = (currentWindDirection + 3) % 4; // == cWD - 1 but without underflow
+			if (playerController.turnRight) {
+				currentWindDirection = (currentWindDirection + 3) % 4; // == cWD - 1 but without underflow
+			}
+
+			if (playerController.turnLeft) {
+				currentWindDirection = (currentWindDirection + 1) % 4;
+			} 
+			if (playerController.doWind) {
+				ShowElementAction (CanvasManager.PlayerAction.WIND);
+				ApplyWind (currentWindDirection);
+				ResetSelection ();
+				recalculateWaterMesh = true;
+				universe.CheckForWinningCondition ();
+			}
+
+			if (playerController.turnRight && !isRotating) {
+				StartRotateWorld (false);
+			}
+
+			if (playerController.turnLeft && !isRotating) {
+				StartRotateWorld (true);
+			}
+
+			if (isRotating) {
+				DoRotateWorld ();
+			}
+
+			MoveSelectorPlane ();
 		}
-
-		if (playerController.turnLeft) {
-			currentWindDirection = (currentWindDirection + 1) % 4;
-		} 
-		if (playerController.doWind ) {
-			ShowElementAction (CanvasManager.PlayerAction.WIND);
-			ApplyWind (currentWindDirection);
-			ResetSelection ();
-			recalculateWaterMesh = true;
-            universe.CheckForWinningCondition();
-        }
-
-		if (playerController.turnRight && !isRotating) {
-			StartRotateWorld (false);
-		}
-
-		if (playerController.turnLeft && !isRotating) {
-			StartRotateWorld (true);
-		}
-
-		if (isRotating) {
-			DoRotateWorld ();
-		}
-
-		MoveSelectorPlane ();
 	}
 
 	void LateUpdate() {
