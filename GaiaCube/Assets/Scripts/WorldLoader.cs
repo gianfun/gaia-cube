@@ -24,7 +24,19 @@ public class WorldLoader {
 	}
 	public IEnumerator LoadLevel(int level){
 
-		string json = System.IO.File.ReadAllText("Assets/StreamingAssets/Levels/level" + level + ".json");
+		
+		Debug.Log ("Load Level " + level);
+		string path = Application.streamingAssetsPath + "/Levels/level" + level + ".json";
+		path = "jar:file://" + Application.dataPath + "!/assets/level" + level + ".json";
+		Debug.Log ("Loading " + path);
+
+		WWW www = new WWW ("file:///" + path);
+		yield return www;
+		Debug.Log ("Loaded " + path);
+		Debug.Log ("Size: " + www.size);
+
+		string json = www.text;
+		Debug.Log (json);
 		WorldJson worldjson = JsonUtility.FromJson<WorldJson> (json);
 		dimens = worldjson.dimensions;
 
