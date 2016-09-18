@@ -9,7 +9,7 @@ public class UniverseController : MonoBehaviour {
     Vector3 dimensions;
     public bool moveCameraLeft { get; set; }
     public bool moveCameraRight { get; set; }
-    float cameraDuration = 1.5f;
+    float cameraDuration = 0.8f;
     float cameraTime = 0;
 
     Quaternion lookAtClayWorld, lookAtGoalWorld;
@@ -21,6 +21,7 @@ public class UniverseController : MonoBehaviour {
     private StateManager sm;
 
     public GameObject WinMessage;
+	public bool goBackToMenu;
 
 	IEnumerator StartLevel(int level){
 		WorldLoader worldLoader = new WorldLoader ();
@@ -87,7 +88,7 @@ public class UniverseController : MonoBehaviour {
     {
         WinMessage.SetActive(true);
         yield return new WaitForSeconds(3);
-        SceneManager.LoadScene("Menu");
+		goBackToMenu = true;
     }
 
     void Update()
@@ -113,6 +114,9 @@ public class UniverseController : MonoBehaviour {
             Camera.main.transform.localRotation = Quaternion.Slerp(lookAtClayWorld, lookAtGoalWorld, cameraTime / cameraDuration);
         }
     
+		if (goBackToMenu) {
+			SceneManager.LoadScene("Menu");
+		}
         /*
 		recalculateWaterMesh = false;
 
