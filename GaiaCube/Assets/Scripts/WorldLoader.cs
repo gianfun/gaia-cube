@@ -31,13 +31,17 @@ public class WorldLoader {
 		clayState = new int[dimens.rowLen, dimens.height, dimens.numRowsPerHeight];
 		goalState = new int[dimens.rowLen, dimens.height, dimens.numRowsPerHeight];
 
+		int x, z;
 		for (int j = 0; j < dimens.height; j++) {
 			for (int k = 0; k < dimens.numRowsPerHeight; k++) {
 				for (int i = 0; i < dimens.rowLen; i++) {
+					x = (dimens.rowLen - 1 - i); // = i; //To rotate/mirror json array.
+					z = (dimens.numRowsPerHeight - 1 - k);// = k; //To rotate/mirror json array.
 					int heightOffset = j * dimens.rowLen * dimens.numRowsPerHeight;
 					int rowOffset = k * dimens.rowLen;
-					clayState [k, j, i] = worldjson.start [heightOffset + rowOffset + i];
-					goalState [k, j, i] = worldjson.goal [heightOffset + rowOffset + i];
+
+					clayState [x, j, z] = worldjson.start [heightOffset + rowOffset + x];
+					goalState [x, j, z] = worldjson.goal  [heightOffset + rowOffset + x];
 				}
 			}
 		}
@@ -53,7 +57,7 @@ public class WorldLoader {
 	}
 
 	public Vector3 getDimensions (){
-		return new Vector3(dimens.numRowsPerHeight, dimens.height, dimens.rowLen);
+		return new Vector3(dimens.rowLen, dimens.height, dimens.numRowsPerHeight);
 	}
 
 }

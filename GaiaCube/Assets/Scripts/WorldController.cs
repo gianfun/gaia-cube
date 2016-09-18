@@ -37,6 +37,7 @@ public class WorldController : MonoBehaviour {
 		allWater = GameObject.CreatePrimitive (PrimitiveType.Cube);
 		allWater.name = "WaterMesh";
 		allWater.transform.SetParent(transform, false);
+		allWater.transform.localPosition = Vector3.zero;
 
 		currentRotation = (int) transform.localRotation.eulerAngles.y / 90; //So we can rotate correctly, we take initial localrotation into account
 	}
@@ -253,7 +254,6 @@ public class WorldController : MonoBehaviour {
 	}
 
 	public void mergeTerrain() {
-		
 		List<Transform> allWaterBlocks = new List<Transform> ();
 		List<Transform> allEarth = new List<Transform> ();
 		foreach (Transform block in blocks) {
@@ -278,17 +278,16 @@ public class WorldController : MonoBehaviour {
 		allWater.GetComponent<MeshFilter>().mesh.CombineMeshes (combineWater);
 		allWater.GetComponent<Renderer>().material = waterMaterial;
 		allWater.transform.SetParent (gameObject.transform, false);
-		allWater.transform.position = Vector3.zero;
-
-
+		allWater.transform.localRotation = Quaternion.Inverse(transform.rotation);
+		allWater.transform.position = Vector3.zero;// localPosition = -transform.position;
 	}
 
 	public void CreateBlocks(int[,,] state, Vector3 dimensions) {
 		blocks = new Transform[(int)dimensions.x, (int)dimensions.y, (int)dimensions.z];
 		blockColumns = new BlockColumn[(int)dimensions.x, (int)dimensions.z];
-		int x0 = -(int)((dimensions.x - 1)/2);
+		int x0 = -(int)((dimensions.x - ((int)dimensions.x & 1))/2);
 		//int y0 = -(int)((dimensions.y - 1)/2);
-		int z0 = -(int)((dimensions.z - 1)/2);
+		int z0 = -(int)((dimensions.z - ((int)dimensions.z & 1))/2);
 
 		for (int x = x0; x - x0 < (int)dimensions.x; x++) {
 			for (int z = z0; z - z0 < (int)dimensions.z; z++) {
