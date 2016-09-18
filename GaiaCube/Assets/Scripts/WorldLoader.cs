@@ -24,7 +24,7 @@ public class WorldLoader {
 	}
 
 	public void LoadLevel(int level){
-		string json = System.IO.File.ReadAllText("Assets/Levels/level" + level + ".json");
+		string json = System.IO.File.ReadAllText("Assets/StreamingAssets/Levels/level" + level + ".json");
 		WorldJson worldjson = JsonUtility.FromJson<WorldJson> (json);
 		dimens = worldjson.dimensions;
 
