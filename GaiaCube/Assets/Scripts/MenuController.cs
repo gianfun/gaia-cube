@@ -8,8 +8,12 @@ public class MenuController : MonoBehaviour {
 
     public GameObject levelButton;
     public RectTransform drawArea;
+	private StateManager sm;
 	// Use this for initialization
 	void Start () {
+		sm = StateManager.getInstance ();
+		levels = sm.levelCount;
+
         CreateLevelButtons();
 
     }
@@ -35,7 +39,7 @@ public class MenuController : MonoBehaviour {
                     obj = ((GameObject)Instantiate(levelButton, new Vector3(xStart + col * holderWidth, yStart - row * holderHeight, 0), Quaternion.identity)).GetComponent<RectTransform>();
                     obj.SetParent(drawArea, false);
                     obj.sizeDelta = new Vector2(itemWidth, itemHeight); //new Rect(col * itemWidth, -row * itemHeight, itemWidth, itemHeight);
-                    obj.GetComponent<LevelButton>().Init(lvl);
+					obj.GetComponent<LevelButton>().Init(lvl, sm.unlockedLevels [lvl - 1]);
                 }
             }
         }

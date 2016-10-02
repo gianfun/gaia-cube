@@ -37,7 +37,7 @@ public class UniverseController : MonoBehaviour {
 	}
 
 	void Start() {
-        sm = GameObject.FindGameObjectWithTag("StateManager").GetComponent<StateManager>();
+		sm = StateManager.getInstance();
 
 		clayWorldTrans = GameObject.FindWithTag ("ClayWorld").GetComponent<Transform>();
 		goalWorldTrans = GameObject.FindWithTag ("GoalWorld").GetComponent<Transform>();
@@ -80,6 +80,7 @@ public class UniverseController : MonoBehaviour {
         if (areEqual)
         {
             print("Finit");
+			sm.FinishedLevel (sm.currentLevel);
             StartCoroutine(ShowWin());
         } 
     }
