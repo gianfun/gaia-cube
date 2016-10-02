@@ -14,6 +14,9 @@ public class StateManager : MonoBehaviour {
 	public bool[] completedLevels;
 	public bool[] unlockedLevels;
 
+	public bool shouldUseVR;
+	public bool shouldUseLeap;
+
 
 	public GameState gs;
 
@@ -61,9 +64,34 @@ public class StateManager : MonoBehaviour {
 			gs = new GameState (defaultLevelCount);
 			Save ();
 		}
+
+		if (PlayerPrefs.HasKey ("useVR")) {
+			shouldUseVR = GetPlayerPrefsBool ("useVR");
+		} else {
+			shouldUseVR = false;
+			SetPlayerPrefsBool ("useVR", shouldUseVR);
+		}
+
+		if (PlayerPrefs.HasKey ("useLeap")) {
+			shouldUseLeap = GetPlayerPrefsBool ("useLeap");
+		} else {
+			shouldUseLeap = false;
+			SetPlayerPrefsBool ("useLeap", shouldUseLeap);
+		}
+
 		levelCount = gs.levels;
 		completedLevels = gs.completedLevels;
 		unlockedLevels = gs.unlockedLevels;
+	}
+
+	public void SetVRUsage(bool newValue){
+		SetPlayerPrefsBool ("useVR", newValue);
+		shouldUseVR = newValue;
+	}
+
+	public void SetLeapUsage(bool newValue){
+		SetPlayerPrefsBool ("useLeap", newValue);
+		shouldUseLeap = newValue;
 	}
 
 	private bool Load(){
@@ -76,6 +104,14 @@ public class StateManager : MonoBehaviour {
 			return true;
 		} 
 		return false;
+	}
+
+	public static void SetPlayerPrefsBool(string name, bool value) {
+		PlayerPrefs.SetInt (name, value ? 1 : 0);
+	}
+
+	public static bool GetPlayerPrefsBool(string name) {
+		return (PlayerPrefs.GetInt (name) == 1);
 	}
 }
 
