@@ -939,6 +939,8 @@ Transform:
   m_Children:
   - {fileID: 1978508349}
   - {fileID: 1872884590}
+  - {fileID: 876627950}
+  - {fileID: 828519670}
   m_Father: {fileID: 1560454226}
   m_RootOrder: 3
 --- !u!1 &436380193
@@ -1891,7 +1893,7 @@ GameObject:
   - 64: {fileID: 828519672}
   - 23: {fileID: 828519671}
   m_Layer: 0
-  m_Name: Left
+  m_Name: GoalLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1903,13 +1905,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 828519669}
-  m_LocalRotation: {x: -0.65328157, y: -0.27059808, z: -0.2705981, w: 0.65328145}
-  m_LocalPosition: {x: -1.7819104, y: -10, z: 11.681404}
-  m_LocalScale: {x: 0.49999994, y: 1, z: 0.4999999}
+  m_LocalRotation: {x: -0.65328157, y: 0.27059796, z: 0.27059808, w: 0.6532815}
+  m_LocalPosition: {x: 11.681404, y: -10, z: 1.78191}
+  m_LocalScale: {x: 0.50000036, y: 1, z: 0.50000036}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
-  m_Father: {fileID: 854379869}
-  m_RootOrder: 1
+  m_Father: {fileID: 384227696}
+  m_RootOrder: 3
 --- !u!23 &828519671
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1958,36 +1960,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 828519669}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &854379868
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 854379869}
-  m_Layer: 0
-  m_Name: BoxBoundaryGrid (1)
-  m_TagString: BoundingGrid
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &854379869
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 854379868}
-  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
-  m_Children:
-  - {fileID: 876627950}
-  - {fileID: 828519670}
-  m_Father: {fileID: 1560454226}
-  m_RootOrder: 4
 --- !u!1 &876627949
 GameObject:
   m_ObjectHideFlags: 0
@@ -2000,7 +1972,7 @@ GameObject:
   - 64: {fileID: 876627952}
   - 23: {fileID: 876627951}
   m_Layer: 0
-  m_Name: Right
+  m_Name: GoalRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2012,13 +1984,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 876627949}
-  m_LocalRotation: {x: -0.6532815, y: 0.27059805, z: 0.27059814, w: 0.65328145}
-  m_LocalPosition: {x: 1.781908, y: -10, z: 11.681404}
-  m_LocalScale: {x: 0.5, y: 1, z: 0.5}
+  m_LocalRotation: {x: -0.270598, y: 0.6532815, z: 0.65328157, w: 0.27059805}
+  m_LocalPosition: {x: 11.681405, y: -10, z: -1.7819092}
+  m_LocalScale: {x: 0.50000036, y: 1, z: 0.5000002}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
-  m_Father: {fileID: 854379869}
-  m_RootOrder: 0
+  m_Father: {fileID: 384227696}
+  m_RootOrder: 2
 --- !u!23 &876627951
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -3135,7 +3107,6 @@ Transform:
   - {fileID: 1671690568}
   - {fileID: 1102545495}
   - {fileID: 384227696}
-  - {fileID: 854379869}
   m_Father: {fileID: 0}
   m_RootOrder: 4
 --- !u!114 &1560454227
@@ -4195,7 +4166,7 @@ GameObject:
   - 64: {fileID: 1872884588}
   - 23: {fileID: 1872884587}
   m_Layer: 0
-  m_Name: Left
+  m_Name: ClayLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5425,7 +5396,7 @@ GameObject:
   - 64: {fileID: 1978508347}
   - 23: {fileID: 1978508346}
   m_Layer: 0
-  m_Name: Right
+  m_Name: ClayRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
