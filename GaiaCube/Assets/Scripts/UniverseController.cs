@@ -85,6 +85,12 @@ public class UniverseController : MonoBehaviour {
         } 
     }
 
+	public void ResetClayWorld(){
+		clayWorld.ResetBlocks ();
+		clayWorld.CreateBlocks (clayState, dimensions);
+		clayWorld.mergeTerrain ();
+	}
+
     private IEnumerator ShowWin()
     {
         WinMessage.SetActive(true);

@@ -316,10 +316,11 @@ public class ClayWorldController : WorldController {
 
 	public void ResetBlocks() {
 		for (int i=0; i < (int)dimensions.x; i++) {
-			for (int j=0; j < (int)dimensions.y; j++) {
-				for (int k=0; k < (int)dimensions.z; k++) {
+			for (int k=0; k < (int)dimensions.z; k++) {
+				for (int j=0; j < (int)dimensions.y; j++) {
 					Destroy (blocks [i, j, k].gameObject);
 				}
+				Destroy (blockColumns [i, k].gameObject);
 			}
 		}
 		//CreateBlocks ();
