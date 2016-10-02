@@ -16,6 +16,10 @@ public class MenuController : MonoBehaviour {
 
         CreateLevelButtons();
 
+		if (sm.shouldUseVR) {
+			//drawArea.GetComponent<Canvas> ();
+			GvrViewer.Instance.VRModeEnabled = true;
+		}
     }
 
     void CreateLevelButtons()
@@ -44,8 +48,10 @@ public class MenuController : MonoBehaviour {
             }
         }
     }
-	// Update is called once per frame
-	void Update () {
-	
+
+	public void toggleVRMode(bool isOff){
+		sm.SetVRUsage (!isOff);
+		FindObjectOfType<GvrReticle> ().gameObject.SetActive(!isOff);
+		GvrViewer.Instance.VRModeEnabled = !isOff;
 	}
 }
