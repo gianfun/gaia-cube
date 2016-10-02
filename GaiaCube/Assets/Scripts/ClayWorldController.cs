@@ -191,11 +191,11 @@ public class ClayWorldController : WorldController {
 				StartRotateWorld (true);
 			}
 
-			if (isRotating) {
-				DoRotateWorld ();
-			}
-
 			MoveSelectorPlane ();
+		}
+
+		if (isRotating) {
+			DoRotateWorld ();
 		}
 	}
 
@@ -208,11 +208,13 @@ public class ClayWorldController : WorldController {
 	override public void StartRotateWorld(bool rotateLeft){
 		base.StartRotateWorld (rotateLeft);
 		boundingGridPlanes.SetActive (false);
+		canPlay = false;
 	}
 
 	override public bool DoRotateWorld(){
 		if (base.DoRotateWorld ()) { //Returns if rotation ended.
 			boundingGridPlanes.SetActive (true);
+			canPlay = true;
 			return true;
 		}
 		return false;
