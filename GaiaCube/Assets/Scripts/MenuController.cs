@@ -9,17 +9,21 @@ public class MenuController : MonoBehaviour {
     public GameObject levelButton;
     public RectTransform drawArea;
 	private StateManager sm;
-	// Use this for initialization
-	void Start () {
-		sm = StateManager.getInstance ();
-		levels = sm.levelCount;
+    private VRManager vrManager;
+
+    public UnityEngine.UI.Toggle VRToggle;
+    void Awake()
+    {
+        sm = StateManager.getInstance();
+        vrManager = VRManager.getInstance();
+        levels = sm.levelCount;
 
         CreateLevelButtons();
 
-		if (sm.shouldUseVR) {
-			//drawArea.GetComponent<Canvas> ();
-			GvrViewer.Instance.VRModeEnabled = true;
-		}
+        Debug.Log("Menu Controller Awake. sm.shouldUseVR: " + sm.shouldUseVR);
+        vrManager.toggleVR(sm.shouldUseVR);
+        VRToggle.isOn = !sm.shouldUseVR;
+
     }
 
     void CreateLevelButtons()
@@ -49,9 +53,13 @@ public class MenuController : MonoBehaviour {
         }
     }
 
-	public void toggleVRMode(bool isOff){
-		sm.SetVRUsage (!isOff);
-		FindObjectOfType<GvrReticle> ().gameObject.SetActive(!isOff);
-		GvrViewer.Instance.VRModeEnabled = !isOff;
+	public void disableVRMode(bool pleaseDisable){
+        
+        bool turnVROn = !pleaseDisable;
+        Debug.Log("pleaseDisable: turnOn? " + turnVROn);
+        sm.SetVRUsage (turnVROn);
+        vrManager.toggleVR(turnVROn);
+		//FindObjectOfType<GvrReticle> ().gameObject.SetActive(turnVROn);
+		//GvrViewer.Instance.VRModeEnabled = turnVROn;
 	}
 }
