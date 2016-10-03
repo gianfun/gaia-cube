@@ -8,7 +8,7 @@ public class VRManager : MonoBehaviour {
     public GameObject prefabVRReticle;
 
     public GvrViewer VRviewer;
-    public GvrReticle VRreticle;
+    public OurGazeReticle VRreticle;
 
     public static VRManager getInstance()
     {
@@ -48,7 +48,7 @@ public class VRManager : MonoBehaviour {
             GameObject reticle = Instantiate(prefabVRReticle);
             reticle.name = "GvrReticle2";
             reticle.transform.SetParent(Camera.main.transform);
-            VRreticle = reticle.GetComponent<GvrReticle>();
+            VRreticle = reticle.GetComponent<OurGazeReticle>();
         }
     }
 
