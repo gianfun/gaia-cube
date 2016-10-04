@@ -19,8 +19,8 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 4000011805391218}
-  - 114: {fileID: 114000011066668726}
   - 23: {fileID: 23000011956512706}
+  - 114: {fileID: 114000012669466158}
   m_Layer: 2
   m_Name: OurGvrReticle
   m_TagString: Untagged
@@ -70,7 +70,7 @@ MeshRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 0
---- !u!114 &114000011066668726
+--- !u!114 &114000012669466158
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -78,8 +78,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1000011392316364}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 66c63f8350cb04a2683f8606cc8d36f7, type: 3}
+  m_Script: {fileID: 11500000, guid: 826d448baa52796469cceb92f018f8a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   reticleSegments: 20
-  reticleGrowthSpeed: 8
+  reticleGrowthSpeedPositive: 4
+  reticleGrowthSpeedNegative: 8

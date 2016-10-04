@@ -7,7 +7,7 @@ using System.Collections;
 /// The circle dilates if the object is clickable.
 /// Upon reaching a certain size, a click is generated.
 [RequireComponent(typeof(Renderer))]
-public class OurGazeReticle : MonoBehaviour, IGvrGazePointer
+public class OurGazeReticle : MonoBehaviour, IGvrGazePointer, IGazeClicker
 {
     /// Number of segments making the reticle circle.
     public int reticleSegments = 20;
@@ -15,6 +15,12 @@ public class OurGazeReticle : MonoBehaviour, IGvrGazePointer
     /// Growth speed multiplier for the reticle/
     public float reticleGrowthSpeedPositive = 4.0f;
     public float reticleGrowthSpeedNegative = 8.0f;
+
+    // Should InputManager trigger a click?
+    public bool shouldTrigger = false;
+
+    // We should only trigger once, and reset only when we reselect/select another item.
+    private bool canTrigger = true;
 
     // Private members
     private Material materialComp;
@@ -54,14 +60,16 @@ public class OurGazeReticle : MonoBehaviour, IGvrGazePointer
 
     void OnEnable()
     {
-        GazeInputModule.gazePointer = this;
+        OurGazeInputModule.gazePointer = this;
+        OurGazeInputModule.gazeClicker = this;
     }
 
     void OnDisable()
     {
-        if (GazeInputModule.gazePointer == this)
+        if (OurGazeInputModule.gazePointer == this)
         {
-            GazeInputModule.gazePointer = null;
+            OurGazeInputModule.gazePointer = null;
+            OurGazeInputModule.gazeClicker = null;
         }
     }
 
@@ -92,6 +100,7 @@ public class OurGazeReticle : MonoBehaviour, IGvrGazePointer
                             bool isInteractive)
     {
         SetGazeTarget(intersectionPosition, isInteractive);
+        canTrigger = true;
     }
 
     /// Called every frame the user is still looking at a valid GameObject. This
@@ -219,7 +228,8 @@ public class OurGazeReticle : MonoBehaviour, IGvrGazePointer
         float inner_diameter = 2.0f * Mathf.Tan(inner_half_angle_radians);
         float outer_diameter = 2.0f * Mathf.Tan(outer_half_angle_radians);
 
-        float reticleGrowthSpeed = (reticleInnerDiameter > inner_diameter) ? reticleGrowthSpeedPositive : reticleGrowthSpeedNegative;
+        //Use different speeds for growth and 
+        float reticleGrowthSpeed = (reticleInnerDiameter > inner_diameter) ? reticleGrowthSpeedNegative : reticleGrowthSpeedPositive;
         reticleInnerDiameter =
             Mathf.Lerp(reticleInnerDiameter, inner_diameter, Time.deltaTime * reticleGrowthSpeed);
         reticleOuterDiameter =
@@ -228,6 +238,12 @@ public class OurGazeReticle : MonoBehaviour, IGvrGazePointer
         materialComp.SetFloat("_InnerDiameter", reticleInnerDiameter * reticleDistanceInMeters);
         materialComp.SetFloat("_OuterDiameter", reticleOuterDiameter * reticleDistanceInMeters);
         materialComp.SetFloat("_DistanceInMeters", reticleDistanceInMeters);
+
+        float maxSize = 2.0f * Mathf.Tan(Mathf.Deg2Rad * (kReticleMinOuterAngle + kReticleGrowthAngle) * 0.5f);
+        if (reticleOuterDiameter / maxSize > 0.99f)
+        {
+            shouldTrigger = true;
+        }
     }
 
     private void SetGazeTarget(Vector3 target, bool interactive)
@@ -246,5 +262,18 @@ public class OurGazeReticle : MonoBehaviour, IGvrGazePointer
             reticleInnerAngle = kReticleMinInnerAngle;
             reticleOuterAngle = kReticleMinOuterAngle;
         }
+    }
+
+    public bool ShouldTrigger()
+    {
+        if (canTrigger && shouldTrigger)
+        {
+
+            canTrigger = false;
+            //Reset bool.
+            shouldTrigger = false;
+            return true;
+        }
+        return false;
     }
 }

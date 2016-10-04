@@ -17,6 +17,7 @@ public class UniverseController : MonoBehaviour {
     Transform clayWorldTrans, goalWorldTrans;
 	WorldController goalWorld;
 	ClayWorldController clayWorld;
+    VRManager vrManager;
 
     private StateManager sm;
 
@@ -38,8 +39,9 @@ public class UniverseController : MonoBehaviour {
 
 	void Start() {
 		sm = StateManager.getInstance();
+        vrManager = VRManager.getInstance();
 
-		clayWorldTrans = GameObject.FindWithTag ("ClayWorld").GetComponent<Transform>();
+        clayWorldTrans = GameObject.FindWithTag ("ClayWorld").GetComponent<Transform>();
 		goalWorldTrans = GameObject.FindWithTag ("GoalWorld").GetComponent<Transform>();
 		clayWorld = clayWorldTrans.GetComponent<ClayWorldController>();
 		goalWorld = goalWorldTrans.GetComponent<WorldController>();
@@ -47,7 +49,13 @@ public class UniverseController : MonoBehaviour {
         lookAtClayWorld = Quaternion.Euler(45, 0, 0);
         lookAtGoalWorld = Quaternion.Euler(45, 90, 0);
 
-        
+        vrManager.toggleVR(sm.shouldUseVR);
+        if (sm.shouldUseVR)
+        {
+            GameObject.FindWithTag("Player").GetComponent<Transform>().rotation = Quaternion.Euler(0, 90, 0);
+            GameObject.FindWithTag("CanvasScroller").SetActive(false);
+            
+        }
 
         Color skyBlue = new Color(0.2f, 0.3f, 0.4f, 0.7f);
 		Color sunYellow = new Color(0.8f, 0.6f, 0.2f, 0.3f);

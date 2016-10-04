@@ -7,15 +7,18 @@ public class VRManager : MonoBehaviour {
     public GameObject prefabVRViewer;
     public GameObject prefabVRReticle;
 
-    public GvrViewer VRviewer;
-    public OurGazeReticle VRreticle;
+    public GvrViewer VR_viewer;
+    public OurGazeReticle VR_reticle;
 
     public static VRManager getInstance()
     {
         if (instance == null)
         {
             instance = new VRManager();
-            instance.InitNewInstance();
+            if (!instance.InitNewInstance())
+            {
+                instance = null;
+            }
         }
         return instance;
     }
@@ -32,31 +35,33 @@ public class VRManager : MonoBehaviour {
         }
     }
 
-    private void InitNewInstance()
+    private bool InitNewInstance()
     {
+        if (prefabVRViewer == null) return false;
         instance = this;
-        DontDestroyOnLoad(gameObject);
         
-        VRviewer = FindObjectOfType<GvrViewer>();
-        if (VRviewer == null)
+        VR_viewer = FindObjectOfType<GvrViewer>();
+        if (VR_viewer == null)
         {
+            
             GameObject viewer = Instantiate(prefabVRViewer);
-            VRviewer = viewer.GetComponent<GvrViewer>();
+            VR_viewer = viewer.GetComponent<GvrViewer>();
         }
-        if (VRreticle == null)
+        if (VR_reticle == null)
         {
             GameObject reticle = Instantiate(prefabVRReticle);
             reticle.name = "GvrReticle2";
-            reticle.transform.SetParent(Camera.main.transform);
-            VRreticle = reticle.GetComponent<OurGazeReticle>();
+            reticle.transform.SetParent(Camera.main.transform, false);
+            VR_reticle = reticle.GetComponent<OurGazeReticle>();
         }
+        return true;
     }
 
     public void toggleVR(bool turnOn)
     {
         Debug.Log("VR Manager. Toggling VR to: " + turnOn);
-        VRviewer.VRModeEnabled = turnOn;
-        VRreticle.GetComponent<MeshRenderer>().enabled = turnOn;
+        VR_viewer.VRModeEnabled = turnOn;
+        VR_reticle.GetComponent<MeshRenderer>().enabled = turnOn;
         //VRreticle.enabled = !turnOn;
     }
 

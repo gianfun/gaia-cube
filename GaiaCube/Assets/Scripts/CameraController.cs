@@ -9,7 +9,7 @@ public class CameraController : MonoBehaviour {
 	private Transform pivot;
 	private Transform cameraTrans;
 
-	private bool isRotating = false;
+	private bool isRotating = true;
 
 	void Start () {
 		birdsEye = false;
