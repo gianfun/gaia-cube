@@ -19,7 +19,7 @@ public class MenuController : MonoBehaviour {
         levels = sm.levelCount;
 
         CreateLevelButtons();
-
+		sm.shouldUseVR = false;
         Debug.Log("Menu Controller Awake. sm.shouldUseVR: " + sm.shouldUseVR);
         vrManager.toggleVR(sm.shouldUseVR);
         VRToggle.isOn = !sm.shouldUseVR;
