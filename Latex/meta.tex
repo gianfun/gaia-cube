@@ -1,0 +1,617 @@
+%% abtex2-modelo-trabalho-academico.tex, v-1.6.1 laurocesar
+%% Copyright 2012-2013 by abnTeX2 group at http://abntex2.googlecode.com/
+%%
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%   http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of LaTeX
+%% version 2005/12/01 or later.
+%%
+%% This work has the LPPL maintenance status `maintained'.
+%%
+%% The Current Maintainer of this work is the abnTeX2 team, led
+%% by Lauro César Araujo. Further information are available on
+%% http://abntex2.googlecode.com/
+%%
+%% This work consists of the files abntex2-modelo-trabalho-academico.tex,
+%% abntex2-modelo-include-comandos and abntex2-modelo-references.bib
+%%
+
+% ------------------------------------------------------------------------
+% ------------------------------------------------------------------------
+% abnTeX2: Modelo de Trabalho Academico (tese de doutorado, dissertacao de
+% mestrado e trabalhos monograficos em geral) em conformidade com
+% ABNT NBR 14724:2011: Informacao e documentacao - Trabalhos academicos -
+% Apresentacao
+% ------------------------------------------------------------------------
+% ------------------------------------------------------------------------
+
+% verso e anverso:
+\documentclass[12pt,openright,oneside,a4paper,english,brazil]{abntex2}
+
+% apenas verso:
+% \documentclass[12pt,oneside,a4paper,english,french,spanish,brazil]{abntex2}
+
+
+% ---
+% PACOTES
+% ---
+
+% ---
+% Pacotes fundamentais
+% ---
+\usepackage{cmap}				% Mapear caracteres especiais no PDF
+\usepackage{lmodern}			% Usa a fonte Latin Modern
+\usepackage[T1]{fontenc}		% Selecao de codigos de fonte.
+\usepackage[utf8]{inputenc}		% Codificacao do documento (conversão automática dos acentos)
+\usepackage{lastpage}			% Usado pela Ficha catalográfica
+\usepackage{indentfirst}		% Indenta o primeiro parágrafo de cada seção.
+\usepackage[usenames,dvipsnames]{color}				% Controle das cores
+\usepackage{graphicx}			% Inclusão de gráficos
+\usepackage{multicol}			% enumerate com várias colunas
+\usepackage{pdfpages}
+\usepackage{tabularx}
+\usepackage{xspace}
+\usepackage{listings}
+\usepackage{color}
+%\usepackage{caption}
+\usepackage{array}
+\usepackage{courier}
+\usepackage{amsmath}
+\usepackage{multirow}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\lstset{ %
+  backgroundcolor=\color{white},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}
+  basicstyle=\footnotesize,        % the size of the fonts that are used for the code
+  breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+  breaklines=true,                 % sets automatic line breaking
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{mygreen},    % comment style
+  deletekeywords={...},            % if you want to delete keywords from the given language
+  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+  extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+  frame=single,                    % adds a frame around the code
+  keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+  keywordstyle=\color{blue},       % keyword style
+  language=Octave,                 % the language of the code
+  morekeywords={*,...},            % if you want to add more keywords to the set
+  numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
+  numbersep=5pt,                   % how far the line-numbers are from the code
+  numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
+  rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+  showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+  showstringspaces=false,          % underline spaces within strings only
+  showtabs=false,                  % show tabs within strings adding particular underscores
+  stepnumber=2,                    % the step between two line-numbers. If it's 1, each line will be numbered
+  stringstyle=\color{mymauve},     % string literal style
+  tabsize=2,                       % sets default tabsize to 2 spaces
+  title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
+}
+
+
+% ---
+
+% ---
+% Pacotes de citações
+% ---
+%\usepackage[brazilian,hyperpageref]{backref}	 % Paginas com as citações na bibl
+\usepackage[alf]{abntex2cite}	% Citações padrão ABNT
+
+% ---
+% CONFIGURAÇÕES DE PACOTES
+% ---
+% Configurações do pacote backref
+% Usado sem a opção hyperpageref de backref
+%\renewcommand{\backrefpagesname}{Citado na(s) página(s):~}
+% Texto padrão antes do número das páginas
+%\renewcommand{\backref}{}
+% Define os textos da citação
+%\renewcommand*{\backrefalt}[4]{
+%	\ifcase #1 %
+%		Nenhuma citação no texto.%
+%	\or
+%		Citado na página #2.%
+%	\else
+%		Citado #1 vezes nas páginas #2.%
+%	\fi}%
+% ---
+\newcommand{\TODO}[1]{\textcolor{red}{\large TODO:} \textcolor{Purple}{[#1]~}}
+
+%\DeclareCaptionFormat{reverse}{\hfill#3#2#1}
+%\DeclareCaptionLabelFormat{fullparens}{(\bothIfFirst{#1}{˜}#2)}
+%\DeclareCaptionLabelSeparator{fill}{\hfill}
+
+\newcommand{\resumodocapitulo}{\section*{Resumo do Capítulo}}
+
+\newcommand{\fontedaimg}[1]{%
+%\captionsetup{%
+        %font=footnotesize,%
+        %justification=raggedright,%
+        %singlelinecheck=false,%
+        %format=reverse,%
+        %font=it
+%        justification=raggedleft, format={reverse},%
+%font={small,it}
+%}%
+\ABNTEXfontereduzida{}Fonte: #1}
+
+\newcommand{\fonteAP}{\fontedaimg{Autor}}
+
+\newcolumntype{C}[1]{>{\centering\arraybackslash} m{#1} }
+
+% ---
+% Informações de dados para CAPA e FOLHA DE ROSTO
+% ---
+\titulo{Realidade Virtual aplicada ao desenvolvimento de competências e habilidades de raciocínio lógico em crianças}
+\autor{Vinícius Menézio\\Gianfranco Pennacchi\\}
+% XXX WHY THE HELL THE LAST \\ INFLUENCES IN THE _PREVIOUS_ SPACING!!!
+\local{São Paulo}
+
+%% TODO XXX XXX XXX XXX XXX XXX XXX XXX XXX TODO
+%% TODO                                     TODO
+%% TODO  Nao esquecer de mudar a data aqui! TODO
+%% TODO                                     TODO
+%% TODO XXX XXX XXX XXX XXX XXX XXX XXX XXX TODO
+
+\data{2016}
+\orientador{Prof. Dr. Ricardo Nakamura}
+\coorientador{Lucy Mari Tabuti}
+%coorientador{Equipe \abnTeX}
+%\instituicao{Área de Concentração Sistemas Digitais}
+%  Universidade de São Paulo
+%  \par
+%  Escola Politécnica
+%  \par
+%  Departamento de Engenharia de Computação e Sistemas Digitais}
+
+\tipotrabalho{Trabalho de Formatura}
+% O preambulo deve conter o tipo do trabalho, o objetivo,
+% o nome da instituição e a área de concentração
+\preambulo{Trabalho de Formatura apresentado ao Departamento de Engenharia de Computação e Sistemas
+Digitais da Escola Politécnica da Universidade de São Paulo para obtenção do Diploma de Engenheiro}
+% ---
+
+
+% ---
+% Configurações de aparência do PDF final
+
+% alterando o aspecto da cor azul
+\definecolor{blue}{RGB}{41,5,195}
+
+% informações do PDF
+\makeatletter
+\hypersetup{
+     	%pagebackref=true,
+		pdftitle={\@title},
+		pdfauthor={\@author},
+    	pdfsubject={\imprimirpreambulo},
+	    pdfcreator={LaTeX with abnTeX2},
+        pdfkeywords={keywords aqui},
+		colorlinks=true,       		% false: boxed links; true: colored links
+    	linkcolor=black,          	% color of internal links
+    	citecolor=black,        		% color of links to bibliography
+    	filecolor=black,      		% color of file links
+		urlcolor=black,
+		bookmarksdepth=4
+}
+\makeatother
+% ---
+
+% ---
+% Espaçamentos entre linhas e parágrafos
+% ---
+
+% O tamanho do parágrafo é dado por:
+\setlength{\parindent}{1.3cm}
+
+% Controle do espaçamento entre um parágrafo e outro:
+\setlength{\parskip}{0.2cm}  % tente também \onelineskip
+
+% ---
+% compila o indice
+% ---
+\makeindex
+% ---
+
+% ----
+% Início do documento
+% ----
+\begin{document}
+
+% Retira espaço extra obsoleto entre as frases.
+\frenchspacing
+
+% ----------------------------------------------------------
+% ELEMENTOS PRÉ-TEXTUAIS
+% ----------------------------------------------------------
+% \pretextual
+
+% ---
+% Capa
+% ---
+\imprimircapa
+% ---
+
+\begin{comment}
+\begin{folhadeaprovacao}
+
+  \begin{center}
+    {\ABNTEXchapterfont\large\imprimirautor}
+
+    \vspace*{\fill}\vspace*{\fill}
+    {\ABNTEXchapterfont\bfseries\Large\imprimirtitulo}
+    \vspace*{\fill}
+
+    \hspace{.45\textwidth}
+    \begin{minipage}{.5\textwidth}
+        \imprimirpreambulo
+    \end{minipage}%
+    \vspace*{\fill}
+   \end{center}
+
+   \imprimirlocal, X de dezembro de 2015:
+
+   \assinatura{\textbf{\imprimirorientador} \\ Orientador}
+   %\assinatura{\textbf{Professor} \\ Convidado 1}
+   %\assinatura{\textbf{Professor} \\ Convidado 2}
+   %\assinatura{\textbf{Professor} \\ Convidado 3}
+   %\assinatura{\textbf{Professor} \\ Convidado 4}
+
+   \begin{center}
+    \vspace*{0.5cm}
+    {\large\imprimirlocal}
+    \par
+    {\large\imprimirdata}
+    \vspace*{1cm}
+  \end{center}
+
+\end{folhadeaprovacao}
+\end{comment}
+
+\begin{folhadeaprovacao}
+
+  \begin{center}
+    {\ABNTEXchapterfont\large\imprimirautor}
+
+    \vspace*{\fill}\vspace*{\fill}
+    {\ABNTEXchapterfont\bfseries\Large\imprimirtitulo}
+    \vspace*{\fill}
+
+    \hspace{.45\textwidth}
+    \begin{minipage}{.5\textwidth}
+        \imprimirpreambulo
+    \end{minipage}%
+    \vspace*{\fill}
+   \end{center}
+
+   \begin{center}
+    \vspace*{0.5cm}
+    {\large\imprimirlocal}
+    \par
+    {\large\imprimirdata}
+    \vspace*{1cm}
+  \end{center}
+
+\end{folhadeaprovacao}
+% ---
+% Inserir a ficha bibliografica
+% ---
+
+% Isto é um exemplo de Ficha Catalográfica, ou ``Dados internacionais de
+% catalogação-na-publicação''. Você pode utilizar este modelo como referência.
+% Porém, provavelmente a biblioteca da sua universidade lhe fornecerá um PDF
+% com a ficha catalográfica definitiva após a defesa do trabalho. Quando estiver
+% com o documento, salve-o como PDF no diretório do seu projeto e substitua todo
+% o conteúdo de implementação deste arquivo pelo comando abaixo:
+%
+\begin{fichacatalografica}
+%    \includepdf{fig/fichaCatalografica.pdf}
+\end{fichacatalografica}
+%\begin{comment}
+\begin{fichacatalografica}
+	\vspace*{\fill}					% Posição vertical
+	\hrule							% Linha horizontal
+	\begin{center}					% Minipage Centralizado
+	\begin{minipage}[c]{12.5cm}		% Largura
+
+	\imprimirautor
+
+	\hspace{0.5cm} \imprimirtitulo  / \imprimirautor. --
+	\imprimirlocal, \imprimirdata-
+
+	\hspace{0.5cm} \pageref{LastPage} p. : il. (algumas color.) ; 30 cm.\\
+
+	\hspace{0.5cm} \imprimirorientadorRotulo~\imprimirorientador\\
+
+	\hspace{0.5cm}
+	\parbox[t]{\textwidth}{\imprimirtipotrabalho~--~\imprimirinstituicao,
+	\imprimirdata.}\\
+
+	\hspace{0.5cm}
+                \TODO{Definir palavras chave com a biblioteca}
+
+	\hspace{8.75cm} CDU 02:141:005.7\\
+
+	\end{minipage}
+	\end{center}
+	\hrule
+\end{fichacatalografica}
+%\end{comment}
+% ---
+
+\begin{comment}
+% ---
+% Inserir errata
+% ---
+\begin{errata}
+Elemento opcional da \citeonline[4.2.1.2]{NBR14724:2011}. Exemplo:
+
+\vspace{\onelineskip}
+
+FERRIGNO, C. R. A. \textbf{Tratamento de neoplasias ósseas apendiculares com
+reimplantação de enxerto ósseo autólogo autoclavado associado ao plasma
+rico em plaquetas}: estudo crítico na cirurgia de preservação de membro em
+cães. 2011. 128 f. Tese (Livre-Docência) - Faculdade de Medicina Veterinária e
+Zootecnia, Universidade de São Paulo, São Paulo, 2011.
+
+\begin{table}[htb]
+\center
+\footnotesize
+\begin{tabular}{|p{1.4cm}|p{1cm}|p{3cm}|p{3cm}|}
+  \hline
+   \textbf{Folha} & \textbf{Linha}  & \textbf{Onde se lê}  & \textbf{Leia-se}  \\
+    \hline
+    1 & 10 & auto-conclavo & autoconclavo\\
+   \hline
+\end{tabular}
+\end{table}
+
+\end{errata}
+% ---
+
+% ---
+% Inserir folha de aprovação
+% ---
+
+% Isto é um exemplo de Folha de aprovação, elemento obrigatório da NBR
+% 14724/2011 (seção 4.2.1.3). Você pode utilizar este modelo até a aprovação
+% do trabalho. Após isso, substitua todo o conteúdo deste arquivo por uma
+% imagem da página assinada pela banca com o comando abaixo:
+%
+% \includepdf{folhadeaprovacao_final.pdf}
+%
+\end{comment}
+
+% ---
+% Folha de rosto
+% (o * indica que haverá a ficha bibliográfica)
+% ---
+\imprimirfolhaderosto*
+% ---
+
+% ---
+\begin{comment}
+
+% ---
+% Dedicatória
+% ---
+\begin{dedicatoria}
+   \vspace*{\fill}
+   \centering
+   \noindent
+   \textit{ Este trabalho é dedicado às crianças adultas que,\\
+   quando pequenas, sonharam em se tornar cientistas.} \vspace*{\fill}
+\end{dedicatoria}
+% ---
+
+% ---
+% Agradecimentos
+% ---
+\begin{agradecimentos}
+Os agradecimentos principais são direcionados à Gerald Weber, Miguel Frasson,
+Leslie H. Watter, Bruno Parente Lima, Flávio de Vasconcellos Corrêa, Otavio Real
+Salvador, Renato Machnievscz\footnote{Os nomes dos integrantes do primeiro
+projeto abn\TeX\ foram extraídos de
+\url{http://codigolivre.org.br/projects/abntex/}} e todos aqueles que
+contribuíram para que a produção de trabalhos acadêmicos conforme
+as normas ABNT com \LaTeX\ fosse possível.
+
+Agradecimentos especiais são direcionados ao Centro de Pesquisa em Arquitetura
+da Informação\footnote{\url{http://www.cpai.unb.br/}} da Universidade de
+Brasília (CPAI), ao grupo de usuários
+\emph{latex-br}\footnote{\url{http://groups.google.com/group/latex-br}} e aos
+novos voluntários do grupo
+\emph{\abnTeX}\footnote{\url{http://groups.google.com/group/abntex2} e
+\url{http://abntex2.googlecode.com/}}~que contribuíram e que ainda
+contribuirão para a evolução do \abnTeX.
+
+\end{agradecimentos}
+% ---
+
+% ---
+% Epígrafe
+% ---
+\begin{epigrafe}
+    \vspace*{\fill}
+	\begin{flushright}
+		\textit{``Não vos amoldeis às estruturas deste mundo, \\
+		mas transformai-vos pela renovação da mente, \\
+		a fim de distinguir qual é a vontade de Deus: \\
+		o que é bom, o que Lhe é agradável, o que é perfeito.\\
+		(Bíblia Sagrada, Romanos 12, 2)}
+	\end{flushright}
+\end{epigrafe}
+% ---
+\end{comment}
+
+% ---
+% RESUMOS
+% ---
+\input{RV-resumo}
+
+\begin{comment}
+% resumo em francês
+\begin{resumo}[Résumé]
+ \begin{otherlanguage*}{french}
+    Il s'agit d'un résumé en français.
+
+   \vspace{\onelineskip}
+
+   \noindent
+   \textbf{Mots-clés}: latex. abntex. publication de textes.
+ \end{otherlanguage*}
+\end{resumo}
+
+% resumo em espanhol
+\begin{resumo}[Resumen]
+ \begin{otherlanguage*}{spanish}
+   Este es el resumen en español.
+
+   \vspace{\onelineskip}
+
+   \noindent
+   \textbf{Palabras clave}: latex. abntex. publicación de textos.
+ \end{otherlanguage*}
+\end{resumo}
+% ---
+\end{comment}
+ 
+% ---
+% inserir lista de ilustrações
+% ---
+\input{RV-ilustracoes}
+
+% ---
+
+% ---
+% inserir lista de tabelas
+% ---
+\input{RV-tabelas}
+
+% ---
+
+% ---
+% inserir lista de abreviaturas e siglas
+% ---
+\begin{siglas}
+	\input{RV-siglas}
+\end{siglas}
+% ---
+
+\begin{comment}
+% ---
+% inserir lista de símbolos
+% ---
+\begin{simbolos}
+  \item[$ \Gamma $] Letra grega Gama
+  \item[$ \Lambda $] Lambda
+  \item[$ \zeta $] Letra grega minúscula zeta
+  \item[$ \in $] Pertence
+\end{simbolos}
+% ---
+\end{comment}
+
+% ---
+% inserir o sumario
+% ---
+\pdfbookmark[0]{\contentsname}{toc}
+\tableofcontents*
+\cleardoublepage
+% ---
+
+% ----------------------------------------------------------
+% ELEMENTOS TEXTUAIS
+% ----------------------------------------------------------
+\textual
+
+% ----------------------------------------------------------
+% ----------------------------------------------------------
+% Corpo do TCC (Em outro arquivo)
+% ----------------------------------------------------------
+% ----------------------------------------------------------
+\input{RV-body}
+
+
+% ----------------------------------------------------------
+% ELEMENTOS PÓS-TEXTUAIS
+% ----------------------------------------------------------
+\postextual
+
+
+% ----------------------------------------------------------
+% Referências bibliográficas
+% ----------------------------------------------------------
+\bibliography{references}
+
+% ----------------------------------------------------------
+% Glossário
+% ----------------------------------------------------------
+%
+% Consulte o manual da classe abntex2 para orientações sobre o glossário.
+%
+%\glossary
+
+% ----------------------------------------------------------
+% Apêndices
+% ----------------------------------------------------------
+
+\begin{comment}
+    % ---
+    % Inicia os apêndices
+    % ---
+    \begin{apendicesenv}
+
+        % Imprime uma página indicando o início dos apêndices
+        \partapendices
+
+        % ----------------------------------------------------------
+        \chapter{Quisque libero justo}
+        % ----------------------------------------------------------
+
+            \lipsum[50]
+
+        % ----------------------------------------------------------
+        \chapter{Nullam elementum urna vel imperdiet sodales elit ipsum
+        pharetra ligula ac pretium ante justo a nulla curabitur
+        tristique arcu eu metus}
+        % ----------------------------------------------------------
+            \lipsum[55-57]
+
+    \end{apendicesenv}
+\end{comment}
+% ---
+
+
+% ----------------------------------------------------------
+% Anexos
+% ----------------------------------------------------------
+% ---
+% Inicia os anexos
+% ---
+\begin{anexosenv}
+
+% Imprime uma página indicando o início dos anexos
+\partanexos
+
+%\input{chap/comandosELM}
+
+%\input{chap/pesquisa}
+
+\end{anexosenv}
+
+
+%---------------------------------------------------------------------
+% INDICE REMISSIVO
+%---------------------------------------------------------------------
+
+\begin{comment}
+\printindex
+\end{comment}
+
+\end{document}
