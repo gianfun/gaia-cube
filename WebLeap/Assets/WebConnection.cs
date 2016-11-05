@@ -1,4 +1,5 @@
 ﻿using Leap;
+using SimpleJSON;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -122,6 +123,12 @@ namespace LeapInternal
             set;
         }
 
+        public CircularObjectBuffer<Frame> RealFrames
+        {
+            get;
+            set;
+        }
+
         public SynchronizationContext EventContext
         {
             get;
@@ -210,12 +217,14 @@ namespace LeapInternal
 
         protected WebConnection(int connectionKey)
         {
-            ws = new WebSocket(new Uri("ws://127.0.0.1:6437/v7.json"));
-            ws.Connect();
-            UnityEngine.Debug.Log("WebConnection Constructor");
+            //ws = new WebSocket(new Uri("ws://127.0.0.1:6437/v7.json"));
+            ws = new WebSocket(new Uri("ws://192.168.1.53:6437/v7.json"));
+            // ws.Connect();
+            //UnityEngine.Debug.Log("WebConnection Constructor");
             this.ConnectionKey = connectionKey;
             this._leapConnection = IntPtr.Zero;
             this.Frames = new CircularObjectBuffer<LEAP_TRACKING_EVENT>(this._frameBufferLength);
+            this.RealFrames = new CircularObjectBuffer<Frame>(this._frameBufferLength);
             this._imageDataCache = new ObjectPool<ImageData>(this._imageBufferLength, false);
             this._imageRawDataCache = new ObjectPool<ImageData>(this._imageBufferLength, false);
         }
@@ -224,7 +233,7 @@ namespace LeapInternal
         {
             if (!this._isRunning)
             {
-                
+
                 if (this._leapConnection == IntPtr.Zero)
                 {
                     eLeapRS eLeapRS = LeapC.CreateConnection(out this._leapConnection);
@@ -240,7 +249,10 @@ namespace LeapInternal
                         return;
                     }
                 }
-                
+
+                ws.ConnectSynchronous();
+
+
                 this._isRunning = true;
                 this._polster = new Thread(new ThreadStart(this.processMessages));
                 this._polster.IsBackground = true;
@@ -248,12 +260,13 @@ namespace LeapInternal
             }
         }
 
-        
+
 
         public void Stop()
         {
             if (this._isRunning)
             {
+                ws.Close();
                 this._isRunning = false;
                 this._polster.Join();
             }
@@ -261,17 +274,70 @@ namespace LeapInternal
 
         protected void processMessages()
         {
+            UnityEngine.Debug.Log("processMessages");
             try
             {
-                ws.ConnectSynchronous();
-                UnityEngine.Debug.Log("WS Connected");
-                UnityEngine.Debug.Log(ws.RecvString());
-
+                string stringMsg;
+                JSONNode genericEv;
                 this._leapInit.DispatchOnContext(this, this.EventContext, new LeapEventArgs(LeapEvent.EVENT_INIT));
+                UnityEngine.Debug.Log("Start");
+                ws.SendString("{\"focused\":true}");
                 while (this._isRunning)
                 {
-                    
-                    UnityEngine.Debug.Log(ws.RecvString());
+
+                    stringMsg = ws.RecvString();
+                    if (stringMsg != null)
+                    {
+                        //UnityEngine.Debug.Log("Rec: " + stringMsg);
+
+                        genericEv = JSON.Parse(stringMsg);
+                        eLeapEventType type2;
+                        if (genericEv["currentFrameRate"] != null)
+                        {
+                            type2 = eLeapEventType.eLeapEventType_Tracking;
+                        }
+                        else if (genericEv["event"]["type"].Value.Equals("deviceEvent"))
+                        {
+                            type2 = eLeapEventType.eLeapEventType_Device;
+                        }
+                        else if (genericEv["serviceVersion"] != null)
+                        {
+                            type2 = eLeapEventType.eLeapEventType_Connection;
+                        }
+                        else
+                        {
+                            UnityEngine.Debug.Log("Not Web Event: " + genericEv["event"]["type"].Value);
+                            type2 = eLeapEventType.eLeapEventType_None;
+                        }
+
+                        //UnityEngine.Debug.Log("type2: " + type2);
+                        switch (type2)
+                        {
+                            case eLeapEventType.eLeapEventType_Device:
+                                {
+                                    ws.SendString("{\"focused\":true}");
+                                    ws.SendString("{\"enableGestures\":false}");
+                                    break;
+                                }
+                            case eLeapEventType.eLeapEventType_Tracking:
+                                {
+                                    //DateTime Jan1St1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+                                    //double start = (long)((DateTime.UtcNow - Jan1St1970).TotalMilliseconds);
+                                    Frame frame = makeFrame(genericEv);
+                                    //double mid = (long)((DateTime.UtcNow - Jan1St1970).TotalMilliseconds);
+
+                                    this.RealFrames.Put(ref frame);
+                                    //double end = (long)((DateTime.UtcNow - Jan1St1970).TotalMilliseconds);
+                                    //UnityEngine.Debug.Log(start + " - " + mid + " - " + end + " : " + (double)(end-start));
+                                    //this.LeapFrame.DispatchOnContext(this, this.EventContext, new FrameEventArgs(makeFrame(genericEv)));
+
+                                    break;
+                                }
+                        }
+                    }
+                    continue;
+                    #region ORIGINAL_CONN
                     LEAP_CONNECTION_MESSAGE lEAP_CONNECTION_MESSAGE = default(LEAP_CONNECTION_MESSAGE);
                     uint timeout = 1000u;
                     eLeapRS eLeapRS = LeapC.PollConnection(this._leapConnection, timeout, ref lEAP_CONNECTION_MESSAGE);
@@ -281,7 +347,11 @@ namespace LeapInternal
                     }
                     else
                     {
-                        eLeapEventType type = lEAP_CONNECTION_MESSAGE.type;
+                        eLeapEventType type;
+
+                        type = lEAP_CONNECTION_MESSAGE.type;
+
+
                         UnityEngine.Debug.Log("Type: " + type);
 
                         switch (type)
@@ -305,6 +375,8 @@ namespace LeapInternal
                                     LEAP_DEVICE_EVENT lEAP_DEVICE_EVENT;
                                     StructMarshal<LEAP_DEVICE_EVENT>.PtrToStruct(lEAP_CONNECTION_MESSAGE.eventStructPtr, out lEAP_DEVICE_EVENT);
                                     this.handleDevice(ref lEAP_DEVICE_EVENT);
+
+
                                     break;
                                 }
                             case eLeapEventType.eLeapEventType_DeviceFailure:
@@ -329,6 +401,8 @@ namespace LeapInternal
                                             LEAP_TRACKING_EVENT lEAP_TRACKING_EVENT;
                                             StructMarshal<LEAP_TRACKING_EVENT>.PtrToStruct(lEAP_CONNECTION_MESSAGE.eventStructPtr, out lEAP_TRACKING_EVENT);
                                             this.handleTrackingMessage(ref lEAP_TRACKING_EVENT);
+
+
                                             break;
                                         }
                                     case eLeapEventType.eLeapEventType_ImageRequestError:
@@ -376,13 +450,294 @@ namespace LeapInternal
                                 break;
                         }
                     }
+                    #endregion
                 }
             }
             catch (Exception arg)
             {
+                UnityEngine.Debug.LogError("Exception: " + arg);
                 Logger.Log("Exception: " + arg);
                 this._isRunning = false;
             }
+        }
+
+        protected Frame makeFrame(JSONNode data)
+        {
+            InteractionBox interactionBox = new InteractionBox(new Vector(data["interactionBox"]["center"][0].AsFloat, data["interactionBox"]["center"][1].AsFloat, data["interactionBox"]["center"][2].AsFloat),
+                new Vector(data["interactionBox"]["size"][0].AsFloat, data["interactionBox"]["size"][1].AsFloat, data["interactionBox"]["size"][2].AsFloat)
+                );
+
+            //UnityEngine.Debug.Log(data["hands"].Count + " Hands!");
+            List<Hand> hands = new List<Hand>();
+            JSONNode node;
+            for (int i = 0; i < data["hands"].Count; i++)
+            {
+                node = data["hands"][i];
+                hands.Add(makeHand(node, i, data["pointables"], data["id"].AsInt));
+
+                //UnityEngine.Debug.Log("Hand!");
+            }
+            return new Frame(data["id"].AsInt, data["timestamp"].AsInt, data["currentFrameRate"].AsFloat, interactionBox, hands);
+        }
+
+        protected Hand makeHand(JSONNode node, int handCount, JSONNode pointables, int frameId)
+        {
+            int handId = node["id"].AsInt;
+            List<Finger> fingers = new List<Finger>();
+            for (int i = 0; i < pointables.Count; i++)
+            {
+                if (pointables[i]["handId"].AsInt == handId)
+                {
+                    fingers.Add(makeFinger(pointables[i], frameId, handId, GetJsonVector(node["palmNormal"])));
+                }
+            }
+            //UnityEngine.Debug.Log("Creating hand. Has " + fingers.Count + " fingers but should have (null:"+ (pointables == null )+ ") " + pointables.Count);
+
+            Hand hand = new Hand(
+                frameId,
+                handId,
+                node["confidence"].AsFloat,
+                node["grabStrength"].AsFloat,
+                node["grabAngle"].AsFloat,
+                node["pinchStrength"].AsFloat,
+                node["pinchDistance"].AsFloat,
+                node["palmWidth"].AsFloat,
+                node["type"].Value.Equals("left"),
+                node["timeVisible"].AsFloat,
+                makeArm(node, GetJsonVector(node["palmNormal"])),
+                fingers,
+                GetJsonVector(node["palmPosition"]),
+                GetJsonVector(node["stabilizedPalmPosition"]),
+                GetJsonVector(node["palmVelocity"]),
+                GetJsonVector(node["palmNormal"]),
+                GetJsonVector(node["direction"]),
+                GetJsonVector(node["wrist"])
+            );
+            //hand.Transform(new LeapTransform(GetJsonVector(node["t"]), getQuaternion(node["r"]) ));
+            return hand;
+        }
+
+        protected Arm makeArm(JSONNode node, Vector up)
+        {
+            Vector elbow = GetJsonVector(node["elbow"]);
+            Vector wrist = GetJsonVector(node["wrist"]);
+            Vector direction = SubtractVectors(elbow, wrist);
+
+            Arm arm = new Arm(
+                    elbow,
+                    wrist,
+                    GetBoneCenter(elbow, wrist),
+                    direction,
+                    GetVectorLength(direction),
+                    node["armWidth"].AsFloat,
+                    QuaternionToLeapQuaternion(
+                            UnityEngine.Quaternion.LookRotation(
+                                new UnityEngine.Vector3(
+                                    direction.x, 
+                                    direction.y, 
+                                    direction.z), 
+                                new UnityEngine.Vector3(up.x, up.y, up.z)
+                            
+                        ))//getQuaternion(node["armBasis"])
+                );
+            return arm;
+        }
+
+        protected Finger makeFinger(JSONNode node, int frameid, int handid, Vector up)
+        {
+            Bone[] bones = makeBones(node, up);
+            Finger finger = new Finger(
+                frameid,
+                handid,
+                node["id"].AsInt,
+                node["timeVisible"].AsFloat,
+                GetJsonVector(node["tipPosition"]),
+                GetJsonVector(node["tipVelocity"]),
+                GetJsonVector(node["direction"]),
+                GetJsonVector(node["stabilizedTipPosition"]),
+                node["width"].AsFloat,
+                node["length"].AsFloat,
+                node["extended"].AsBool,
+                (Finger.FingerType)node["type"].AsInt,
+                bones[0],
+                bones[1],
+                bones[2],
+                bones[3]
+                );
+
+            return finger;
+        }
+
+        protected Bone[] makeBones(JSONNode node, Vector up)
+        {
+            Vector prevJoint = GetJsonVector(node["carpPosition"]);
+            Vector nextJoint = GetJsonVector(node["mcpPosition"]);
+            Vector direction = GetBoneDirection(node["bases"][0]);
+            Bone metacarpal = new Bone(
+                prevJoint,
+                nextJoint,
+                GetBoneCenter(prevJoint, nextJoint),
+                direction,
+                GetVectorLength(SubtractVectors(nextJoint, prevJoint)),
+                node["width"].AsFloat,
+                (Bone.BoneType)0,
+                                QuaternionToLeapQuaternion(
+                            UnityEngine.Quaternion.LookRotation(
+                                new UnityEngine.Vector3(
+                                    direction.x,
+                                    direction.y,
+                                    direction.z),
+                                new UnityEngine.Vector3(up.x, up.y, up.z)
+
+                        )) //LeapQuaternion.Identity//getQuaternion(node["bases"][0])
+                );
+
+            prevJoint = GetJsonVector(node["mcpPosition"]);
+            nextJoint = GetJsonVector(node["pipPosition"]);
+            direction = GetBoneDirection(node["bases"][1]);
+            Bone proximal = new Bone(
+                prevJoint,
+                nextJoint,
+                GetBoneCenter(prevJoint, nextJoint),
+                direction,
+                GetVectorLength(SubtractVectors(nextJoint, prevJoint)),
+                node["width"].AsFloat,
+                (Bone.BoneType)1,
+                QuaternionToLeapQuaternion(
+                            UnityEngine.Quaternion.LookRotation(
+                                new UnityEngine.Vector3(
+                                    direction.x,
+                                    direction.y,
+                                    direction.z),
+                                new UnityEngine.Vector3(up.x, up.y, up.z)
+
+                        ))//LeapQuaternion.Identity//getQuaternion(node["bases"][1])
+                );
+
+            prevJoint = GetJsonVector(node["pipPosition"]);
+            nextJoint = GetJsonVector(node["dipPosition"]);
+            direction = GetBoneDirection(node["bases"][2]);
+            Bone medial = new Bone(
+                prevJoint,
+                nextJoint,
+                GetBoneCenter(prevJoint, nextJoint),
+                direction,
+                GetVectorLength(SubtractVectors(nextJoint, prevJoint)),
+                node["width"].AsFloat,
+                (Bone.BoneType)2,
+                QuaternionToLeapQuaternion(
+                            UnityEngine.Quaternion.LookRotation(
+                                new UnityEngine.Vector3(
+                                    direction.x,
+                                    direction.y,
+                                    direction.z),
+                                new UnityEngine.Vector3(up.x, up.y, up.z)
+
+                        ))//LeapQuaternion.Identity//getQuaternion(node["bases"][2])
+                );
+
+            prevJoint = GetJsonVector(node["dipPosition"]);
+            nextJoint = GetJsonVector(node["btipPosition"]);
+            direction = GetBoneDirection(node["bases"][3]);
+            Bone distal = new Bone(
+                prevJoint,
+                nextJoint,
+                GetBoneCenter(prevJoint, nextJoint),
+                direction,
+                GetVectorLength(SubtractVectors(nextJoint, prevJoint)),
+                node["width"].AsFloat,
+                (Bone.BoneType)3,
+                QuaternionToLeapQuaternion(
+                            UnityEngine.Quaternion.LookRotation(
+                                new UnityEngine.Vector3(
+                                    direction.x,
+                                    direction.y,
+                                    direction.z),
+                                new UnityEngine.Vector3(up.x, up.y, up.z)
+
+                        ))//LeapQuaternion.Identity// getQuaternion(node["bases"][3])
+                );
+
+            return new Bone[] { metacarpal, proximal, medial, distal };
+        }
+
+        protected Vector GetJsonVector(JSONNode node)
+        {
+            return new Vector(node[0].AsFloat, node[1].AsFloat, node[2].AsFloat);
+        }
+
+        protected Vector GetBoneCenter(Vector prevJoint, Vector nextJoint)
+        {
+            Vector aux = SumVectors(prevJoint, nextJoint);
+            return new Vector(aux[0] / 2, aux[1] / 2, aux[2] / 2);
+        }
+
+        protected Vector GetBoneDirection(JSONNode bases)
+        {
+            return new Vector(bases[2][0].AsFloat * -1, bases[2][1].AsFloat * -1, bases[2][2].AsFloat * -1);
+        }
+
+        public LeapQuaternion QuaternionToLeapQuaternion(UnityEngine.Quaternion q)
+        {
+            return new LeapQuaternion(q.x, q.y, q.z, q.w);
+        }
+
+        protected LeapQuaternion getQuaternion(JSONNode basis)
+        {
+            //UnityEngine.Matrix4x4 mat = UnityEngine.Matrix4x4;
+            //Leap.Unity.UnityQuaternionExtension
+            //UnityEngine.Quaternion.
+            float[,] A = getMatrixInverse(basis);
+            float w = (float) (0.5 * Math.Sqrt(1 + A[0, 0] + A[1, 1] + A[2, 2]));
+            float x = (A[2, 1] - A[1, 2]) / (4 * w);
+            float y = (A[0, 2] - A[2, 0]) / (4 * w);
+            float z = (A[1, 0] - A[0, 1]) / (4 * w);
+            LeapQuaternion quat = new LeapQuaternion((float)w, (float)x, (float)y, (float)z).Normalized;
+            UnityEngine.Debug.Log(w + "," + x + "," + y + "," + z + "  -  " + quat.Magnitude);
+            return quat;
+        }
+
+        protected float[,] getMatrixInverse(JSONNode basis)
+        {
+            float a11, a12, a13, a21, a22, a23, a31, a32, a33;
+            float b11, b12, b13, b21, b22, b23, b31, b32, b33;
+            float detA;
+
+            a11 = basis[0][0].AsFloat; a12 = basis[0][1].AsFloat; a13 = basis[0][2].AsFloat;
+            a21 = basis[1][0].AsFloat; a22 = basis[1][1].AsFloat; a23 = basis[1][2].AsFloat;
+            a31 = basis[2][0].AsFloat; a32 = basis[2][1].AsFloat; a33 = basis[2][2].AsFloat;
+
+            //a11 = basis[0][0].AsFloat; a12 = basis[1][0].AsFloat; a13 = basis[2][0].AsFloat;
+            //a21 = basis[0][1].AsFloat; a22 = basis[1][1].AsFloat; a23 = basis[2][1].AsFloat;
+            //a31 = basis[0][2].AsFloat; a32 = basis[1][2].AsFloat; a33 = basis[2][2].AsFloat;
+
+            detA = (a11*a22*a33 + a12*a23*a31 + a13*a21*a32) - (a31*a22*a13 + a32*a23*a11 + a33*a21*a12);
+
+            b11 = a22 * a33 - a32 * a23;    b12 = a13 * a32 - a33 * a12;    b13 = a12 * a23 - a22 * a13;
+            b21 = a23 * a31 - a33 * a21;    b22 = a11 * a33 - a31 * a13;    b23 = a13 * a21 - a23 * a11;
+            b31 = a21 * a32 - a31 * a22;    b32 = a12 * a31 - a32 * a11;    b33 = a11 * a22 - a21 * a12;
+
+            b11 = b11 / detA;               b12 = b12 / detA;               b13 = b13 / detA;
+            b21 = b21 / detA;               b22 = b22 / detA;               b23 = b23 / detA;
+            b31 = b31 / detA;               b32 = b32 / detA;               b33 = b33 / detA;
+
+
+            return new float[,] { { b11, b12, b13 }, { b21, b22, b23 }, { b31, b32, b33 } };
+        }
+
+        protected float GetVectorLength(Vector v)
+        {
+            return (float) Math.Sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+        }
+
+        protected Vector SumVectors(Vector v1, Vector v2)
+        {
+            return new Vector(v1[0] + v2[0], v1[1] + v2[1], v1[2] + v2[2]);
+        }
+
+        protected Vector SubtractVectors(Vector v1, Vector v2)
+        {
+            return new Vector(v1[0] - v2[0], v1[1] - v2[1], v1[2] - v2[2]);
         }
 
         protected void handleTrackingMessage(ref LEAP_TRACKING_EVENT trackingMsg)

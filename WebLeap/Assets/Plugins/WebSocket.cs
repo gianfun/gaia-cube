@@ -104,23 +104,25 @@ public class WebSocket
 	Queue<byte[]> m_Messages = new Queue<byte[]>();
 	bool m_IsConnected = false;
 	string m_Error = null;
+    private object _queueLock = new object();
 
-	public IEnumerator Connect()
+    public IEnumerator Connect()
 	{
 		m_Socket = new WebSocketSharp.WebSocket(mUrl.ToString());
-		m_Socket.OnMessage += (sender, e) => m_Messages.Enqueue (e.RawData);
-		m_Socket.OnOpen += (sender, e) => m_IsConnected = true;
-		m_Socket.OnError += (sender, e) => m_Error = e.Message;
+        m_Socket.OnMessage += (sender, e) => this.Enqueue(e.RawData);
+        m_Socket.OnOpen += (sender, e) => m_IsConnected = true;
+        m_Socket.OnError += (sender, e) => m_Error = e.Message;
 		m_Socket.ConnectAsync();
 		while (!m_IsConnected && m_Error == null)
 			yield return 0;
-	}
+        Debug.Log("Connected! isConnected? " + m_IsConnected + "  mError: " + m_Error);
+    }
 
     public void ConnectSynchronous()
     {
         m_Socket = new WebSocketSharp.WebSocket(mUrl.ToString());
-        m_Socket.OnMessage += (sender, e) => m_Messages.Enqueue(e.RawData);
-        m_Socket.OnOpen += (sender, e) => m_IsConnected = true;
+        m_Socket.OnMessage += (sender, e) => this.Enqueue(e.RawData);
+        m_Socket.OnOpen += (sender, e) =>  m_IsConnected = true;
         m_Socket.OnError += (sender, e) => m_Error = e.Message;
         m_Socket.Connect();
         return;
@@ -133,10 +135,23 @@ public class WebSocket
 
 	public byte[] Recv()
 	{
+        byte[] aux;
 		if (m_Messages.Count == 0)
 			return null;
-		return m_Messages.Dequeue();
+        //lock (_queueLock)
+        {
+            aux = m_Messages.Dequeue();
+        }
+        return aux;
 	}
+
+    private void Enqueue(byte[] data)
+    {
+        //lock (_queueLock)
+        {
+            m_Messages.Enqueue(data);
+        }
+    }
 
 	public void Close()
 	{

@@ -267,7 +267,6 @@ namespace LeapInternal
                     else
                     {
                         eLeapEventType type = lEAP_CONNECTION_MESSAGE.type;
-                        UnityEngine.Debug.Log("Type: " + type);
 
                         switch (type)
                         {
