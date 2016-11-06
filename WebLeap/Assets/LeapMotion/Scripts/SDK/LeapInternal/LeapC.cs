@@ -11,45 +11,123 @@ namespace LeapInternal
 		{
 		}
 
+        /*
 		[DllImport("LeapC", EntryPoint = "LeapGetNow")]
 		public static extern long GetNow();
+        */
+        public static long GetNow()
+        {
+            return 0;
+        }
 
+
+        /*
 		[DllImport("LeapC", EntryPoint = "LeapCreateClockRebaser")]
 		public static extern eLeapRS CreateClockRebaser(out IntPtr phClockRebaser);
+        */
+        //[DllImport("LeapC", EntryPoint = "LeapCreateClockRebaser")]
+        public static eLeapRS CreateClockRebaser(out IntPtr phClockRebaser)
+        {
+            phClockRebaser = IntPtr.Zero;
+            return eLeapRS.eLeapRS_Success;
+        }
 
-		[DllImport("LeapC", EntryPoint = "LeapDestroyClockRebaser")]
+        /*
+        [DllImport("LeapC", EntryPoint = "LeapDestroyClockRebaser")]
 		public static extern eLeapRS DestroyClockRebaser(IntPtr hClockRebaser);
+        */
+        public static eLeapRS DestroyClockRebaser(IntPtr hClockRebaser)
+        {
+            return eLeapRS.eLeapRS_Success;
+        }
 
-		[DllImport("LeapC", EntryPoint = "LeapUpdateRebase")]
+        /*
+        [DllImport("LeapC", EntryPoint = "LeapUpdateRebase")]
 		public static extern eLeapRS UpdateRebase(IntPtr hClockRebaser, long userClock, long leapClock);
+        */
+        public static eLeapRS UpdateRebase(IntPtr hClockRebaser, long userClock, long leapClock)
+        {
+            return eLeapRS.eLeapRS_Success;
+        }
 
-		[DllImport("LeapC", EntryPoint = "LeapRebaseClock")]
+        /*
+        [DllImport("LeapC", EntryPoint = "LeapRebaseClock")]
 		public static extern eLeapRS RebaseClock(IntPtr hClockRebaser, long userClock, out long leapClock);
+        */
+        public static eLeapRS RebaseClock(IntPtr hClockRebaser, long userClock, out long leapClock)
+        {
+            leapClock = userClock;
+            return eLeapRS.eLeapRS_Success;
+        }
 
-		[DllImport("LeapC", EntryPoint = "LeapCreateConnection")]
+        /*
+        [DllImport("LeapC", EntryPoint = "LeapCreateConnection")]
 		public static extern eLeapRS CreateConnection(ref LEAP_CONNECTION_CONFIG pConfig, out IntPtr pConnection);
+        */
+        public static eLeapRS CreateConnection(ref LEAP_CONNECTION_CONFIG pConfig, out IntPtr pConnection)
+        {
+            pConnection = IntPtr.Zero;
+            return eLeapRS.eLeapRS_Success;
+        }
 
+        /*
 		[DllImport("LeapC", EntryPoint = "LeapCreateConnection")]
 		private static extern eLeapRS CreateConnection(IntPtr nulled, out IntPtr pConnection);
+        */
+		private static eLeapRS CreateConnection(IntPtr nulled, out IntPtr pConnection){
+            pConnection = IntPtr.Zero;
+            return eLeapRS.eLeapRS_Success;
+        }
 
-		public static eLeapRS CreateConnection(out IntPtr pConnection)
+        public static eLeapRS CreateConnection(out IntPtr pConnection)
 		{
 			return LeapC.CreateConnection(IntPtr.Zero, out pConnection);
 		}
 
+        /*
 		[DllImport("LeapC", EntryPoint = "LeapGetConnectionInfo")]
 		public static extern eLeapRS GetConnectionInfo(IntPtr hConnection, out LEAP_CONNECTION_INFO pInfo);
+        */
+        public static eLeapRS GetConnectionInfo(IntPtr hConnection, out LEAP_CONNECTION_INFO pInfo)
+        {
+            pInfo = new LEAP_CONNECTION_INFO();
+            pInfo.size = 0;
+            pInfo.status = eLeapConnectionStatus.eLeapConnectionStatus_Connected;
+            return eLeapRS.eLeapRS_Success;
+        }
 
+
+        /*
 		[DllImport("LeapC", EntryPoint = "LeapOpenConnection")]
 		public static extern eLeapRS OpenConnection(IntPtr hConnection);
+        */
+        public static eLeapRS OpenConnection(IntPtr hConnection)
+        {
+            return eLeapRS.eLeapRS_Success;
+        }
 
+
+        /*
 		[DllImport("LeapC", EntryPoint = "LeapGetDeviceList")]
 		public static extern eLeapRS GetDeviceList(IntPtr hConnection, [In] [Out] LEAP_DEVICE_REF[] pArray, out uint pnArray);
-
+        */
+        public static eLeapRS GetDeviceList(IntPtr hConnection, [In] [Out] LEAP_DEVICE_REF[] pArray, out uint pnArray)
+        {
+            pnArray = 0;
+            return eLeapRS.eLeapRS_Success;
+        }
+        /*
 		[DllImport("LeapC", EntryPoint = "LeapGetDeviceList")]
 		private static extern eLeapRS GetDeviceList(IntPtr hConnection, [In] [Out] IntPtr pArray, out uint pnArray);
+        */
+        private static eLeapRS GetDeviceList(IntPtr hConnection, [In] [Out] IntPtr pArray, out uint pnArray)
+        {
+            pnArray = 0;
+            return eLeapRS.eLeapRS_Success;
+        }
 
-		public static eLeapRS GetDeviceCount(IntPtr hConnection, out uint deviceCount)
+
+        public static eLeapRS GetDeviceCount(IntPtr hConnection, out uint deviceCount)
 		{
 			return LeapC.GetDeviceList(hConnection, IntPtr.Zero, out deviceCount);
 		}

@@ -218,7 +218,11 @@ namespace LeapInternal
         protected WebConnection(int connectionKey)
         {
             //ws = new WebSocket(new Uri("ws://127.0.0.1:6437/v7.json"));
-            ws = new WebSocket(new Uri("ws://192.168.1.53:6437/v7.json"));
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN 
+            ws = new WebSocket(new Uri("ws://127.0.0.1:6437/v7.json"));
+#else
+            ws = new WebSocket(new Uri("ws://192.168.42.169:6437/v7.json"));
+#endif
             // ws.Connect();
             //UnityEngine.Debug.Log("WebConnection Constructor");
             this.ConnectionKey = connectionKey;
@@ -234,27 +238,11 @@ namespace LeapInternal
             if (!this._isRunning)
             {
 
-                if (this._leapConnection == IntPtr.Zero)
-                {
-                    eLeapRS eLeapRS = LeapC.CreateConnection(out this._leapConnection);
-                    if (eLeapRS != eLeapRS.eLeapRS_Success || this._leapConnection == IntPtr.Zero)
-                    {
-                        this.reportAbnormalResults("LeapC CreateConnection call was ", eLeapRS);
-                        return;
-                    }
-                    eLeapRS = LeapC.OpenConnection(this._leapConnection);
-                    if (eLeapRS != eLeapRS.eLeapRS_Success)
-                    {
-                        this.reportAbnormalResults("LeapC OpenConnection call was ", eLeapRS);
-                        return;
-                    }
-                }
-
                 ws.ConnectSynchronous();
-
 
                 this._isRunning = true;
                 this._polster = new Thread(new ThreadStart(this.processMessages));
+                this._polster.Name = "WebConnectionReceiver";
                 this._polster.IsBackground = true;
                 this._polster.Start();
             }
@@ -274,7 +262,7 @@ namespace LeapInternal
 
         protected void processMessages()
         {
-            UnityEngine.Debug.Log("processMessages");
+            UnityEngine.Debug.Log("processMessages. ThreadId: " + Thread.CurrentThread.ManagedThreadId);
             try
             {
                 string stringMsg;

@@ -258,38 +258,38 @@ namespace SimpleJSON
 
         internal static string Escape(string aText)
         {
-            string result = "";
+            System.Text.StringBuilder result = new System.Text.StringBuilder();
             foreach (char c in aText)
             {
                 switch (c)
                 {
                     case '\\':
-                        result += "\\\\";
+                        result.Append("\\\\");
                         break;
                     case '\"':
-                        result += "\\\"";
+                        result.Append("\\\"");
                         break;
                     case '\n':
-                        result += "\\n";
+                        result.Append("\\n");
                         break;
                     case '\r':
-                        result += "\\r";
+                        result.Append("\\r");
                         break;
                     case '\t':
-                        result += "\\t";
+                        result.Append("\\t");
                         break;
                     case '\b':
-                        result += "\\b";
+                        result.Append("\\b");
                         break;
                     case '\f':
-                        result += "\\f";
+                        result.Append("\\f");
                         break;
                     default:
-                        result += c;
+                        result.Append(c);
                         break;
                 }
             }
-            return result;
+            return result.ToString();
         }
 
         static JSONData Numberize(string token)
@@ -330,7 +330,7 @@ namespace SimpleJSON
                 if (ctx is JSONArray)
                     ctx.Add(null);
                 else
-                    ctx.Add(tokenName, null); // assume dictionary/object
+                    ctx.Add(tokenName, null);
             }
             else
             {
@@ -348,8 +348,8 @@ namespace SimpleJSON
             Stack<JSONNode> stack = new Stack<JSONNode>();
             JSONNode ctx = null;
             int i = 0;
-            string Token = "";
-            string TokenName = "";
+            System.Text.StringBuilder Token = new System.Text.StringBuilder();
+            string TokenName = string.Empty;
             bool QuoteMode = false;
             bool TokenIsString = false;
             while (i < aJSON.Length)
@@ -359,7 +359,7 @@ namespace SimpleJSON
                     case '{':
                         if (QuoteMode)
                         {
-                            Token += aJSON[i];
+                            Token.Append(aJSON[i]);
                             break;
                         }
                         stack.Push(new JSONClass());
@@ -368,18 +368,18 @@ namespace SimpleJSON
                             TokenName = TokenName.Trim();
                             if (ctx is JSONArray)
                                 ctx.Add(stack.Peek());
-                            else if (TokenName != "")
+                            else if (TokenName != string.Empty)
                                 ctx.Add(TokenName, stack.Peek());
                         }
-                        TokenName = "";
-                        Token = "";
+                        TokenName = string.Empty;
+                        Token.Length = 0;
                         ctx = stack.Peek();
                         break;
 
                     case '[':
                         if (QuoteMode)
                         {
-                            Token += aJSON[i];
+                            Token.Append(aJSON[i]);
                             break;
                         }
 
@@ -390,11 +390,11 @@ namespace SimpleJSON
 
                             if (ctx is JSONArray)
                                 ctx.Add(stack.Peek());
-                            else if (TokenName != "")
+                            else if (TokenName != string.Empty)
                                 ctx.Add(TokenName, stack.Peek());
                         }
-                        TokenName = "";
-                        Token = "";
+                        TokenName = string.Empty;
+                        Token.Length = 0;
                         ctx = stack.Peek();
                         break;
 
@@ -402,14 +402,14 @@ namespace SimpleJSON
                     case ']':
                         if (QuoteMode)
                         {
-                            Token += aJSON[i];
+                            Token.Append(aJSON[i]);
                             break;
                         }
                         if (stack.Count == 0)
                             throw new Exception("JSON Parse: Too many closing brackets");
 
                         stack.Pop();
-                        if (Token != "")
+                        if (Token.Length != 0)
                         {
                             TokenName = TokenName.Trim();
                             /*
@@ -418,11 +418,11 @@ namespace SimpleJSON
 							else if (TokenName != "")
 								ctx.Add (TokenName, Token);
 								*/
-                            AddElement(ctx, Token, TokenName, TokenIsString);
+                            AddElement(ctx, Token.ToString(), TokenName, TokenIsString);
                             TokenIsString = false;
                         }
-                        TokenName = "";
-                        Token = "";
+                        TokenName = string.Empty;
+                        Token.Length = 0;
                         if (stack.Count > 0)
                             ctx = stack.Peek();
                         break;
@@ -430,11 +430,11 @@ namespace SimpleJSON
                     case ':':
                         if (QuoteMode)
                         {
-                            Token += aJSON[i];
+                            Token.Append(aJSON[i]);
                             break;
                         }
-                        TokenName = Token;
-                        Token = "";
+                        TokenName = Token.ToString();
+                        Token.Length = 0;
                         TokenIsString = false;
                         break;
 
@@ -446,10 +446,10 @@ namespace SimpleJSON
                     case ',':
                         if (QuoteMode)
                         {
-                            Token += aJSON[i];
+                            Token.Append(aJSON[i]);
                             break;
                         }
-                        if (Token != "")
+                        if (Token.Length != 0)
                         {
                             /*
 							if (ctx is JSONArray) {
@@ -458,12 +458,12 @@ namespace SimpleJSON
 								ctx.Add (TokenName, Token);
 							}
 							*/
-                            AddElement(ctx, Token, TokenName, TokenIsString);
+                            AddElement(ctx, Token.ToString(), TokenName, TokenIsString);
                             TokenIsString = false;
 
                         }
-                        TokenName = "";
-                        Token = "";
+                        TokenName = string.Empty;
+                        Token.Length = 0;
                         TokenIsString = false;
                         break;
 
@@ -474,7 +474,7 @@ namespace SimpleJSON
                     case ' ':
                     case '\t':
                         if (QuoteMode)
-                            Token += aJSON[i];
+                            Token.Append(aJSON[i]);
                         break;
 
                     case '\\':
@@ -485,38 +485,36 @@ namespace SimpleJSON
                             switch (C)
                             {
                                 case 't':
-                                    Token += '\t';
+                                    Token.Append('\t');
                                     break;
                                 case 'r':
-                                    Token += '\r';
+                                    Token.Append('\r');
                                     break;
                                 case 'n':
-                                    Token += '\n';
+                                    Token.Append('\n');
                                     break;
                                 case 'b':
-                                    Token += '\b';
+                                    Token.Append('\b');
                                     break;
                                 case 'f':
-                                    Token += '\f';
+                                    Token.Append('\f');
                                     break;
                                 case 'u':
                                     {
                                         string s = aJSON.Substring(i + 1, 4);
-                                        Token += (char)int.Parse(
-                                            s,
-                                            System.Globalization.NumberStyles.AllowHexSpecifier);
+                                        Token.Append((char)int.Parse(s, System.Globalization.NumberStyles.AllowHexSpecifier));
                                         i += 4;
                                         break;
                                     }
                                 default:
-                                    Token += C;
+                                    Token.Append(C);
                                     break;
                             }
                         }
                         break;
 
                     default:
-                        Token += aJSON[i];
+                        Token.Append(aJSON[i]);
                         break;
                 }
                 ++i;

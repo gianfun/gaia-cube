@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Net.Sockets;
 using System.Text;
 using System.Collections;
 using UnityEngine;
-using System.Runtime.InteropServices;
 
 public class WebSocket
 {
@@ -135,22 +131,14 @@ public class WebSocket
 
 	public byte[] Recv()
 	{
-        byte[] aux;
 		if (m_Messages.Count == 0)
 			return null;
-        //lock (_queueLock)
-        {
-            aux = m_Messages.Dequeue();
-        }
-        return aux;
-	}
+        return m_Messages.Dequeue();
+    }
 
     private void Enqueue(byte[] data)
     {
-        //lock (_queueLock)
-        {
-            m_Messages.Enqueue(data);
-        }
+        m_Messages.Enqueue(data);
     }
 
 	public void Close()
