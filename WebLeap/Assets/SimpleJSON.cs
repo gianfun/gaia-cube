@@ -51,6 +51,9 @@ using System.Linq;
 
 namespace SimpleJSON
 {
+
+    
+
     public enum JSONBinaryTag
     {
         Array = 1,
@@ -292,323 +295,8 @@ namespace SimpleJSON
             return result.ToString();
         }
 
-        static JSONData Numberize(string token)
-        {
-            bool flag = false;
-            int integer = 0;
-            double real = 0;
-
-            if (int.TryParse(token, out integer))
-            {
-                return new JSONData(integer);
-            }
-
-            if (double.TryParse(token, out real))
-            {
-                return new JSONData(real);
-            }
-
-            if (bool.TryParse(token, out flag))
-            {
-                return new JSONData(flag);
-            }
-
-            throw new NotImplementedException(token);
-        }
-
-        static void AddElement(JSONNode ctx, string token, string tokenName, bool tokenIsString)
-        {
-            if (tokenIsString)
-            {
-                if (ctx is JSONArray)
-                    ctx.Add(token);
-                else
-                    ctx.Add(tokenName, token); // assume dictionary/object
-            }
-            else if (token.Equals("null"))
-            {
-                if (ctx is JSONArray)
-                    ctx.Add(null);
-                else
-                    ctx.Add(tokenName, null);
-            }
-            else
-            {
-                JSONData number = Numberize(token);
-                if (ctx is JSONArray)
-                    ctx.Add(number);
-                else
-                    ctx.Add(tokenName, number);
-
-            }
-        }
-
-        public static JSONNode Parse(string aJSON)
-        {
-            Stack<JSONNode> stack = new Stack<JSONNode>();
-            JSONNode ctx = null;
-            int i = 0;
-            System.Text.StringBuilder Token = new System.Text.StringBuilder();
-            string TokenName = string.Empty;
-            bool QuoteMode = false;
-            bool TokenIsString = false;
-            while (i < aJSON.Length)
-            {
-                switch (aJSON[i])
-                {
-                    case '{':
-                        if (QuoteMode)
-                        {
-                            Token.Append(aJSON[i]);
-                            break;
-                        }
-                        stack.Push(new JSONClass());
-                        if (ctx != null)
-                        {
-                            TokenName = TokenName.Trim();
-                            if (ctx is JSONArray)
-                                ctx.Add(stack.Peek());
-                            else if (TokenName != string.Empty)
-                                ctx.Add(TokenName, stack.Peek());
-                        }
-                        TokenName = string.Empty;
-                        Token.Length = 0;
-                        ctx = stack.Peek();
-                        break;
-
-                    case '[':
-                        if (QuoteMode)
-                        {
-                            Token.Append(aJSON[i]);
-                            break;
-                        }
-
-                        stack.Push(new JSONArray());
-                        if (ctx != null)
-                        {
-                            TokenName = TokenName.Trim();
-
-                            if (ctx is JSONArray)
-                                ctx.Add(stack.Peek());
-                            else if (TokenName != string.Empty)
-                                ctx.Add(TokenName, stack.Peek());
-                        }
-                        TokenName = string.Empty;
-                        Token.Length = 0;
-                        ctx = stack.Peek();
-                        break;
-
-                    case '}':
-                    case ']':
-                        if (QuoteMode)
-                        {
-                            Token.Append(aJSON[i]);
-                            break;
-                        }
-                        if (stack.Count == 0)
-                            throw new Exception("JSON Parse: Too many closing brackets");
-
-                        stack.Pop();
-                        if (Token.Length != 0)
-                        {
-                            TokenName = TokenName.Trim();
-                            /*
-							if (ctx is JSONArray)
-								ctx.Add (Token);
-							else if (TokenName != "")
-								ctx.Add (TokenName, Token);
-								*/
-                            AddElement(ctx, Token.ToString(), TokenName, TokenIsString);
-                            TokenIsString = false;
-                        }
-                        TokenName = string.Empty;
-                        Token.Length = 0;
-                        if (stack.Count > 0)
-                            ctx = stack.Peek();
-                        break;
-
-                    case ':':
-                        if (QuoteMode)
-                        {
-                            Token.Append(aJSON[i]);
-                            break;
-                        }
-                        TokenName = Token.ToString();
-                        Token.Length = 0;
-                        TokenIsString = false;
-                        break;
-
-                    case '"':
-                        QuoteMode ^= true;
-                        TokenIsString = QuoteMode == true ? true : TokenIsString;
-                        break;
-
-                    case ',':
-                        if (QuoteMode)
-                        {
-                            Token.Append(aJSON[i]);
-                            break;
-                        }
-                        if (Token.Length != 0)
-                        {
-                            /*
-							if (ctx is JSONArray) {
-								ctx.Add (Token);
-							} else if (TokenName != "") {
-								ctx.Add (TokenName, Token);
-							}
-							*/
-                            AddElement(ctx, Token.ToString(), TokenName, TokenIsString);
-                            TokenIsString = false;
-
-                        }
-                        TokenName = string.Empty;
-                        Token.Length = 0;
-                        TokenIsString = false;
-                        break;
-
-                    case '\r':
-                    case '\n':
-                        break;
-
-                    case ' ':
-                    case '\t':
-                        if (QuoteMode)
-                            Token.Append(aJSON[i]);
-                        break;
-
-                    case '\\':
-                        ++i;
-                        if (QuoteMode)
-                        {
-                            char C = aJSON[i];
-                            switch (C)
-                            {
-                                case 't':
-                                    Token.Append('\t');
-                                    break;
-                                case 'r':
-                                    Token.Append('\r');
-                                    break;
-                                case 'n':
-                                    Token.Append('\n');
-                                    break;
-                                case 'b':
-                                    Token.Append('\b');
-                                    break;
-                                case 'f':
-                                    Token.Append('\f');
-                                    break;
-                                case 'u':
-                                    {
-                                        string s = aJSON.Substring(i + 1, 4);
-                                        Token.Append((char)int.Parse(s, System.Globalization.NumberStyles.AllowHexSpecifier));
-                                        i += 4;
-                                        break;
-                                    }
-                                default:
-                                    Token.Append(C);
-                                    break;
-                            }
-                        }
-                        break;
-
-                    default:
-                        Token.Append(aJSON[i]);
-                        break;
-                }
-                ++i;
-            }
-            if (QuoteMode)
-            {
-                throw new Exception("JSON Parse: Quotation marks seems to be messed up.");
-            }
-            return ctx;
-        }
-
         public virtual void Serialize(System.IO.BinaryWriter aWriter)
         {
-        }
-
-        public void SaveToStream(System.IO.Stream aData)
-        {
-            var W = new System.IO.BinaryWriter(aData);
-            Serialize(W);
-        }
-
-#if USE_SharpZipLib
-		public void SaveToCompressedStream(System.IO.Stream aData)
-		{
-			using (var gzipOut = new ICSharpCode.SharpZipLib.BZip2.BZip2OutputStream(aData))
-			{
-				gzipOut.IsStreamOwner = false;
-				SaveToStream(gzipOut);
-				gzipOut.Close();
-			}
-		}
- 
-		public void SaveToCompressedFile(string aFileName)
-		{
- 
-#if USE_FileIO
-			System.IO.Directory.CreateDirectory((new System.IO.FileInfo(aFileName)).Directory.FullName);
-			using(var F = System.IO.File.OpenWrite(aFileName))
-			{
-				SaveToCompressedStream(F);
-			}
- 
-#else
-			throw new Exception("Can't use File IO stuff in webplayer");
-#endif
-		}
-		public string SaveToCompressedBase64()
-		{
-			using (var stream = new System.IO.MemoryStream())
-			{
-				SaveToCompressedStream(stream);
-				stream.Position = 0;
-				return System.Convert.ToBase64String(stream.ToArray());
-			}
-		}
- 
-#else
-        public void SaveToCompressedStream(System.IO.Stream aData)
-        {
-            throw new Exception("Can't use compressed functions. You need include the SharpZipLib and uncomment the define at the top of SimpleJSON");
-        }
-
-        public void SaveToCompressedFile(string aFileName)
-        {
-            throw new Exception("Can't use compressed functions. You need include the SharpZipLib and uncomment the define at the top of SimpleJSON");
-        }
-
-        public string SaveToCompressedBase64()
-        {
-            throw new Exception("Can't use compressed functions. You need include the SharpZipLib and uncomment the define at the top of SimpleJSON");
-        }
-#endif
-
-        public void SaveToFile(string aFileName)
-        {
-#if USE_FileIO
-            System.IO.Directory.CreateDirectory((new System.IO.FileInfo(aFileName)).Directory.FullName);
-            using (var F = System.IO.File.OpenWrite(aFileName))
-            {
-                SaveToStream(F);
-            }
-#else
-			throw new Exception ("Can't use File IO stuff in webplayer");
-#endif
-        }
-
-        public string SaveToBase64()
-        {
-            using (var stream = new System.IO.MemoryStream())
-            {
-                SaveToStream(stream);
-                stream.Position = 0;
-                return System.Convert.ToBase64String(stream.ToArray());
-            }
         }
 
         public static JSONNode Deserialize(System.IO.BinaryReader aReader)
@@ -664,74 +352,7 @@ namespace SimpleJSON
             }
         }
 
-#if USE_SharpZipLib
-		public static JSONNode LoadFromCompressedStream(System.IO.Stream aData)
-		{
-			var zin = new ICSharpCode.SharpZipLib.BZip2.BZip2InputStream(aData);
-			return LoadFromStream(zin);
-		}
-		public static JSONNode LoadFromCompressedFile(string aFileName)
-		{
-#if USE_FileIO
-			using(var F = System.IO.File.OpenRead(aFileName))
-			{
-				return LoadFromCompressedStream(F);
-			}
-#else
-			throw new Exception("Can't use File IO stuff in webplayer");
-#endif
-		}
-		public static JSONNode LoadFromCompressedBase64(string aBase64)
-		{
-			var tmp = System.Convert.FromBase64String(aBase64);
-			var stream = new System.IO.MemoryStream(tmp);
-			stream.Position = 0;
-			return LoadFromCompressedStream(stream);
-		}
-#else
-        public static JSONNode LoadFromCompressedFile(string aFileName)
-        {
-            throw new Exception("Can't use compressed functions. You need include the SharpZipLib and uncomment the define at the top of SimpleJSON");
-        }
 
-        public static JSONNode LoadFromCompressedStream(System.IO.Stream aData)
-        {
-            throw new Exception("Can't use compressed functions. You need include the SharpZipLib and uncomment the define at the top of SimpleJSON");
-        }
-
-        public static JSONNode LoadFromCompressedBase64(string aBase64)
-        {
-            throw new Exception("Can't use compressed functions. You need include the SharpZipLib and uncomment the define at the top of SimpleJSON");
-        }
-#endif
-
-        public static JSONNode LoadFromStream(System.IO.Stream aData)
-        {
-            using (var R = new System.IO.BinaryReader(aData))
-            {
-                return Deserialize(R);
-            }
-        }
-
-        public static JSONNode LoadFromFile(string aFileName)
-        {
-#if USE_FileIO
-            using (var F = System.IO.File.OpenRead(aFileName))
-            {
-                return LoadFromStream(F);
-            }
-#else
-			throw new Exception ("Can't use File IO stuff in webplayer");
-#endif
-        }
-
-        public static JSONNode LoadFromBase64(string aBase64)
-        {
-            var tmp = System.Convert.FromBase64String(aBase64);
-            var stream = new System.IO.MemoryStream(tmp);
-            stream.Position = 0;
-            return LoadFromStream(stream);
-        }
     }
     // End of JSONNode
 
@@ -1317,9 +938,249 @@ namespace SimpleJSON
 
     public static class JSON
     {
+        private static System.Text.StringBuilder Token;
+        private static Stack<JSONNode> stack;
+        public static void Init()
+        {
+            Token = new System.Text.StringBuilder();
+            stack = new Stack<JSONNode>();
+        }
+
+        static JSONData Numberize(string token)
+        {
+            bool flag = false;
+            int integer = 0;
+            double real = 0;
+
+            if (int.TryParse(token, out integer))
+            {
+                return new JSONData(integer);
+            }
+
+            if (double.TryParse(token, out real))
+            {
+                return new JSONData(real);
+            }
+
+            if (bool.TryParse(token, out flag))
+            {
+                return new JSONData(flag);
+            }
+
+            throw new NotImplementedException(token);
+        }
+
+        static void AddElement(JSONNode ctx, string token, string tokenName, bool tokenIsString)
+        {
+            if (tokenIsString)
+            {
+                if (ctx is JSONArray)
+                    ctx.Add(token);
+                else
+                    ctx.Add(tokenName, token); // assume dictionary/object
+            }
+            else if (token.Equals("null"))
+            {
+                if (ctx is JSONArray)
+                    ctx.Add(null);
+                else
+                    ctx.Add(tokenName, null);
+            }
+            else
+            {
+                JSONData number = Numberize(token);
+                if (ctx is JSONArray)
+                    ctx.Add(number);
+                else
+                    ctx.Add(tokenName, number);
+
+            }
+        }
+
         public static JSONNode Parse(string aJSON)
         {
-            return JSONNode.Parse(aJSON);
+            
+            JSONNode ctx = null;
+            int i = 0;
+            char C;
+            string TokenName = string.Empty;
+            bool QuoteMode = false;
+            bool TokenIsString = false;
+            Token.Length = 0;
+            stack.Clear();
+            while (i < aJSON.Length)
+            {
+                C = aJSON[i];
+                switch (C)
+                {
+                    case '{':
+                        if (QuoteMode)
+                        {
+                            Token.Append(C);
+                            break;
+                        }
+                        stack.Push(new JSONClass());
+                        if (ctx != null)
+                        {
+                            TokenName = TokenName.Trim();
+                            if (ctx is JSONArray)
+                                ctx.Add(stack.Peek());
+                            else if (TokenName != string.Empty)
+                                ctx.Add(TokenName, stack.Peek());
+                        }
+                        TokenName = string.Empty;
+                        Token.Length = 0;
+                        ctx = stack.Peek();
+                        break;
+
+                    case '[':
+                        if (QuoteMode)
+                        {
+                            Token.Append(C);
+                            break;
+                        }
+
+                        stack.Push(new JSONArray());
+                        if (ctx != null)
+                        {
+                            TokenName = TokenName.Trim();
+
+                            if (ctx is JSONArray)
+                                ctx.Add(stack.Peek());
+                            else if (TokenName != string.Empty)
+                                ctx.Add(TokenName, stack.Peek());
+                        }
+                        TokenName = string.Empty;
+                        Token.Length = 0;
+                        ctx = stack.Peek();
+                        break;
+
+                    case '}':
+                    case ']':
+                        if (QuoteMode)
+                        {
+                            Token.Append(C);
+                            break;
+                        }
+                        if (stack.Count == 0)
+                            throw new Exception("JSON Parse: Too many closing brackets");
+
+                        stack.Pop();
+                        if (Token.Length != 0)
+                        {
+                            TokenName = TokenName.Trim();
+                            /*
+							if (ctx is JSONArray)
+								ctx.Add (Token);
+							else if (TokenName != "")
+								ctx.Add (TokenName, Token);
+								*/
+                            AddElement(ctx, Token.ToString(), TokenName, TokenIsString);
+                            TokenIsString = false;
+                        }
+                        TokenName = string.Empty;
+                        Token.Length = 0;
+                        if (stack.Count > 0)
+                            ctx = stack.Peek();
+                        break;
+
+                    case ':':
+                        if (QuoteMode)
+                        {
+                            Token.Append(C);
+                            break;
+                        }
+                        TokenName = Token.ToString();
+                        Token.Length = 0;
+                        TokenIsString = false;
+                        break;
+
+                    case '"':
+                        QuoteMode ^= true;
+                        TokenIsString = QuoteMode == true ? true : TokenIsString;
+                        break;
+
+                    case ',':
+                        if (QuoteMode)
+                        {
+                            Token.Append(C);
+                            break;
+                        }
+                        if (Token.Length != 0)
+                        {
+                            /*
+							if (ctx is JSONArray) {
+								ctx.Add (Token);
+							} else if (TokenName != "") {
+								ctx.Add (TokenName, Token);
+							}
+							*/
+                            AddElement(ctx, Token.ToString(), TokenName, TokenIsString);
+                            TokenIsString = false;
+
+                        }
+                        TokenName = string.Empty;
+                        Token.Length = 0;
+                        TokenIsString = false;
+                        break;
+
+                    case '\r':
+                    case '\n':
+                        break;
+
+                    case ' ':
+                    case '\t':
+                        if (QuoteMode)
+                            Token.Append(C);
+                        break;
+
+                    case '\\':
+                        ++i;
+                        if (QuoteMode)
+                        {
+                            C = aJSON[i];
+                            switch (C)
+                            {
+                                case 't':
+                                    Token.Append('\t');
+                                    break;
+                                case 'r':
+                                    Token.Append('\r');
+                                    break;
+                                case 'n':
+                                    Token.Append('\n');
+                                    break;
+                                case 'b':
+                                    Token.Append('\b');
+                                    break;
+                                case 'f':
+                                    Token.Append('\f');
+                                    break;
+                                case 'u':
+                                    {
+                                        string s = aJSON.Substring(i + 1, 4);
+                                        Token.Append((char)int.Parse(s, System.Globalization.NumberStyles.AllowHexSpecifier));
+                                        i += 4;
+                                        break;
+                                    }
+                                default:
+                                    Token.Append(C);
+                                    break;
+                            }
+                        }
+                        break;
+
+                    default:
+                        Token.Append(C);
+                        break;
+                }
+                ++i;
+            }
+            if (QuoteMode)
+            {
+                throw new Exception("JSON Parse: Quotation marks seems to be messed up.");
+            }
+            return ctx;
         }
     }
 }
