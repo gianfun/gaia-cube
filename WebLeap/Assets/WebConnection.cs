@@ -2,6 +2,7 @@
 using SimpleJSON;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 
@@ -17,19 +18,7 @@ namespace LeapInternal
 
         protected FailedDeviceList _failedDevices;
 
-        protected PendingImages _pendingImageRequestList = new PendingImages();
-
-        protected ObjectPool<ImageData> _imageDataCache;
-
-        protected ObjectPool<ImageData> _imageRawDataCache;
-
-        protected int _frameBufferLength = 60;
-
-        protected int _imageBufferLength = 80;
-
-        protected ulong _standardImageBufferSize = 307200uL;
-
-        protected ulong _standardRawBufferSize = 2457600uL;
+        protected int _frameBufferLength = 30;
 
         protected DistortionData _currentDistortionData = new DistortionData();
 
@@ -115,12 +104,6 @@ namespace LeapInternal
         {
             get;
             protected set;
-        }
-
-        public CircularObjectBuffer<LEAP_TRACKING_EVENT> Frames
-        {
-            get;
-            set;
         }
 
         public CircularObjectBuffer<Frame> RealFrames
@@ -219,18 +202,17 @@ namespace LeapInternal
         {
             //ws = new WebSocket(new Uri("ws://127.0.0.1:6437/v7.json"));
 #if UNITY_EDITOR || UNITY_STANDALONE_WIN 
-            ws = new WebSocket(new Uri("ws://127.0.0.1:6437/v7.json"));
+            ws = new WebSocket(new Uri("ws://192.168.1.53:6437/v7.json"));
 #else
-            ws = new WebSocket(new Uri("ws://192.168.42.169:6437/v7.json"));
+            ws = new WebSocket(new Uri("ws://192.168.1.53:6437/v7.json"));
+
+            //ws = new WebSocket(new Uri("ws://192.168.42.169:6437/v7.json"));
 #endif
             // ws.Connect();
             //UnityEngine.Debug.Log("WebConnection Constructor");
             this.ConnectionKey = connectionKey;
             this._leapConnection = IntPtr.Zero;
-            this.Frames = new CircularObjectBuffer<LEAP_TRACKING_EVENT>(this._frameBufferLength);
             this.RealFrames = new CircularObjectBuffer<Frame>(this._frameBufferLength);
-            this._imageDataCache = new ObjectPool<ImageData>(this._imageBufferLength, false);
-            this._imageRawDataCache = new ObjectPool<ImageData>(this._imageBufferLength, false);
         }
 
         public void Start()
@@ -262,6 +244,11 @@ namespace LeapInternal
 
         protected void processMessages()
         {
+            int i = 0;
+            JSON.Init();
+
+            Stopwatch sw1 = new Stopwatch(), sw2 = new Stopwatch(), sw3 = new Stopwatch(), sw4 = new Stopwatch(), tot = new Stopwatch();
+            tot.Start();
             UnityEngine.Debug.Log("processMessages. ThreadId: " + Thread.CurrentThread.ManagedThreadId);
             try
             {
@@ -272,13 +259,29 @@ namespace LeapInternal
                 ws.SendString("{\"focused\":true}");
                 while (this._isRunning)
                 {
+                    //Thread.Sleep(100);
 
-                    stringMsg = ws.RecvString();
+                    sw4.Start();
+                    stringMsg = ws.Recv();
+                    sw4.Stop();
+
                     if (stringMsg != null)
                     {
+
+
                         //UnityEngine.Debug.Log("Rec: " + stringMsg);
 
+                        //continue;
+                        sw1.Start();
+                        //JSONObject test = new JSONObject(stringMsg);
+                        sw1.Stop();
+                        
+                        sw3.Start();
                         genericEv = JSON.Parse(stringMsg);
+                        sw3.Stop();
+                        
+                        //continue;
+                        sw2.Start();
                         eLeapEventType type2;
                         if (genericEv["currentFrameRate"] != null)
                         {
@@ -294,7 +297,7 @@ namespace LeapInternal
                         }
                         else
                         {
-                            UnityEngine.Debug.Log("Not Web Event: " + genericEv["event"]["type"].Value);
+                            UnityEngine.Debug.Log("Not Web Event: " + genericEv["event"]["type"]);
                             type2 = eLeapEventType.eLeapEventType_None;
                         }
 
@@ -309,6 +312,8 @@ namespace LeapInternal
                                 }
                             case eLeapEventType.eLeapEventType_Tracking:
                                 {
+                                    i++;
+
                                     //DateTime Jan1St1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
                                     //double start = (long)((DateTime.UtcNow - Jan1St1970).TotalMilliseconds);
@@ -319,13 +324,22 @@ namespace LeapInternal
                                     //double end = (long)((DateTime.UtcNow - Jan1St1970).TotalMilliseconds);
                                     //UnityEngine.Debug.Log(start + " - " + mid + " - " + end + " : " + (double)(end-start));
                                     //this.LeapFrame.DispatchOnContext(this, this.EventContext, new FrameEventArgs(makeFrame(genericEv)));
-
+                                    if(i > 200)
+                                    {
+                                        //this._isRunning = false;
+                                        //_polster.Abort();
+                                    }
                                     break;
                                 }
                         }
+                        sw2.Stop();
+                        if (i % 1000 == 0)
+                        {
+                            UnityEngine.Debug.Log(sw1.ElapsedMilliseconds + " | " + sw2.ElapsedMilliseconds + "|" + sw3.ElapsedMilliseconds + "|" + sw4.ElapsedMilliseconds + "(" + tot.ElapsedMilliseconds + ")");
+                        }
                     }
                     continue;
-                    #region ORIGINAL_CONN
+#region ORIGINAL_CONN
                     LEAP_CONNECTION_MESSAGE lEAP_CONNECTION_MESSAGE = default(LEAP_CONNECTION_MESSAGE);
                     uint timeout = 1000u;
                     eLeapRS eLeapRS = LeapC.PollConnection(this._leapConnection, timeout, ref lEAP_CONNECTION_MESSAGE);
@@ -438,8 +452,8 @@ namespace LeapInternal
                                 break;
                         }
                     }
-                    #endregion
-                }
+#endregion
+                }   
             }
             catch (Exception arg)
             {
@@ -730,7 +744,6 @@ namespace LeapInternal
 
         protected void handleTrackingMessage(ref LEAP_TRACKING_EVENT trackingMsg)
         {
-            this.Frames.Put(ref trackingMsg);
             if (this.LeapInternalFrame != null)
             {
                 this.LeapInternalFrame.DispatchOnContext(this, this.EventContext, new InternalFrameEventArgs(ref trackingMsg));
@@ -773,153 +786,27 @@ namespace LeapInternal
 
         public Image RequestImages(long frameId, Image.ImageType imageType)
         {
-            ImageData imageData;
-            int num;
-            if (imageType == Image.ImageType.DEFAULT)
-            {
-                imageData = this._imageDataCache.CheckOut();
-                imageData.type = eLeapImageType.eLeapImageType_Default;
-                num = (int)this._standardImageBufferSize;
-            }
-            else
-            {
-                imageData = this._imageRawDataCache.CheckOut();
-                imageData.type = eLeapImageType.eLeapImageType_Raw;
-                num = (int)this._standardRawBufferSize;
-            }
-            if (imageData.pixelBuffer == null || imageData.pixelBuffer.Length != num)
-            {
-                imageData.pixelBuffer = new byte[num];
-            }
-            imageData.frame_id = frameId;
-            return this.RequestImages(imageData);
+            return null;
         }
 
         public Image RequestImages(long frameId, Image.ImageType imageType, byte[] buffer)
         {
-            ImageData imageData = new ImageData();
-            if (imageType == Image.ImageType.DEFAULT)
-            {
-                imageData.type = eLeapImageType.eLeapImageType_Default;
-            }
-            else
-            {
-                imageData.type = eLeapImageType.eLeapImageType_Raw;
-            }
-            imageData.frame_id = frameId;
-            imageData.pixelBuffer = buffer;
-            return this.RequestImages(imageData);
+            return null;
         }
 
         protected Image RequestImages(ImageData imageData)
         {
-            Image result;
-            if (!this._isRunning)
-            {
-                result = Image.Invalid;
-            }
-            else
-            {
-                LEAP_IMAGE_FRAME_DESCRIPTION lEAP_IMAGE_FRAME_DESCRIPTION = default(LEAP_IMAGE_FRAME_DESCRIPTION);
-                lEAP_IMAGE_FRAME_DESCRIPTION.frame_id = imageData.frame_id;
-                lEAP_IMAGE_FRAME_DESCRIPTION.type = imageData.type;
-                lEAP_IMAGE_FRAME_DESCRIPTION.pBuffer = imageData.getPinnedHandle();
-                lEAP_IMAGE_FRAME_DESCRIPTION.buffer_len = (ulong)imageData.pixelBuffer.LongLength;
-                LEAP_IMAGE_FRAME_REQUEST_TOKEN token;
-                eLeapRS eLeapRS = LeapC.RequestImages(this._leapConnection, ref lEAP_IMAGE_FRAME_DESCRIPTION, out token);
-                if (eLeapRS == eLeapRS.eLeapRS_Success)
-                {
-                    imageData.isComplete = false;
-                    imageData.index = (ulong)token.requestID;
-                    Image image = new Image(imageData);
-                    this._pendingImageRequestList.Add(new ImageFuture(image, imageData, LeapC.GetNow(), token));
-                    result = image;
-                }
-                else
-                {
-                    imageData.unPinHandle();
-                    this.reportAbnormalResults("LeapC Image Request call was ", eLeapRS);
-                    result = Image.Invalid;
-                }
-            }
-            return result;
+            return null;
         }
 
         protected void handleImageCompletion(ref LEAP_IMAGE_COMPLETE_EVENT imageMsg)
         {
-            LEAP_IMAGE_PROPERTIES lEAP_IMAGE_PROPERTIES;
-            StructMarshal<LEAP_IMAGE_PROPERTIES>.PtrToStruct(imageMsg.properties, out lEAP_IMAGE_PROPERTIES);
-            ImageFuture imageFuture = this._pendingImageRequestList.FindAndRemove(imageMsg.token);
-            if (imageFuture != null)
-            {
-                if (this._currentDistortionData.Version != imageMsg.matrix_version || !this._currentDistortionData.IsValid)
-                {
-                    this._currentDistortionData = new DistortionData();
-                    this._currentDistortionData.Version = imageMsg.matrix_version;
-                    this._currentDistortionData.Width = (float)LeapC.DistortionSize;
-                    this._currentDistortionData.Height = (float)LeapC.DistortionSize;
-                    if (this._currentDistortionData.Data == null || (float)this._currentDistortionData.Data.Length != 2f * this._currentDistortionData.Width * this._currentDistortionData.Height * 2f)
-                    {
-                        this._currentDistortionData.Data = new float[(int)(2f * this._currentDistortionData.Width * this._currentDistortionData.Height * 2f)];
-                    }
-                    LEAP_DISTORTION_MATRIX lEAP_DISTORTION_MATRIX;
-                    StructMarshal<LEAP_DISTORTION_MATRIX>.PtrToStruct(imageMsg.distortionMatrix, out lEAP_DISTORTION_MATRIX);
-                    Array.Copy(lEAP_DISTORTION_MATRIX.matrix_data, this._currentDistortionData.Data, lEAP_DISTORTION_MATRIX.matrix_data.Length);
-                    if (this.LeapDistortionChange != null)
-                    {
-                        this.LeapDistortionChange.DispatchOnContext(this, this.EventContext, new DistortionEventArgs(this._currentDistortionData));
-                    }
-                }
-                imageFuture.imageData.CompleteImageData(lEAP_IMAGE_PROPERTIES.type, lEAP_IMAGE_PROPERTIES.format, lEAP_IMAGE_PROPERTIES.bpp, lEAP_IMAGE_PROPERTIES.width, lEAP_IMAGE_PROPERTIES.height, imageMsg.info.timestamp, imageMsg.info.frame_id, lEAP_IMAGE_PROPERTIES.x_offset, lEAP_IMAGE_PROPERTIES.y_offset, lEAP_IMAGE_PROPERTIES.x_scale, lEAP_IMAGE_PROPERTIES.y_scale, this._currentDistortionData, LeapC.DistortionSize, imageMsg.matrix_version);
-                Image imageObject = imageFuture.imageObject;
-                if (this.LeapImageReady != null)
-                {
-                    this.LeapImageReady.DispatchOnContext(this, this.EventContext, new ImageEventArgs(imageObject));
-                }
-            }
+            return;
         }
 
         protected void handleFailedImageRequest(ref LEAP_IMAGE_FRAME_REQUEST_ERROR_EVENT failed_image_evt)
         {
-            ImageFuture imageFuture = this._pendingImageRequestList.FindAndRemove(failed_image_evt.token);
-            if (imageFuture != null)
-            {
-                imageFuture.imageData.CheckIn();
-                ImageRequestFailedEventArgs imageRequestFailedEventArgs = new ImageRequestFailedEventArgs(failed_image_evt.description.frame_id, imageFuture.imageObject.Type);
-                switch (failed_image_evt.error)
-                {
-                    case eLeapImageRequestError.eLeapImageRequestError_ImagesDisabled:
-                        imageRequestFailedEventArgs.message = "Images are disabled by the current configuration settings.";
-                        imageRequestFailedEventArgs.reason = Image.RequestFailureReason.Images_Disabled;
-                        break;
-                    case eLeapImageRequestError.eLeapImageRequestError_Unavailable:
-                        imageRequestFailedEventArgs.message = "The image was request too late and is no longer available.";
-                        imageRequestFailedEventArgs.reason = Image.RequestFailureReason.Image_Unavailable;
-                        break;
-                    case eLeapImageRequestError.eLeapImageRequestError_InsufficientBuffer:
-                        imageRequestFailedEventArgs.message = "The buffer specified for the request was too small.";
-                        imageRequestFailedEventArgs.reason = Image.RequestFailureReason.Insufficient_Buffer;
-                        if (failed_image_evt.description.type == eLeapImageType.eLeapImageType_Default && this._standardImageBufferSize < failed_image_evt.required_buffer_len)
-                        {
-                            this._standardImageBufferSize = failed_image_evt.required_buffer_len;
-                        }
-                        else if (failed_image_evt.description.type == eLeapImageType.eLeapImageType_Raw && this._standardRawBufferSize < failed_image_evt.required_buffer_len)
-                        {
-                            this._standardRawBufferSize = failed_image_evt.required_buffer_len;
-                        }
-                        break;
-                    default:
-                        imageRequestFailedEventArgs.message = "The image request failed for an undetermined reason.";
-                        imageRequestFailedEventArgs.reason = Image.RequestFailureReason.Unknown_Error;
-                        break;
-                }
-                imageRequestFailedEventArgs.requiredBufferSize = (long)failed_image_evt.required_buffer_len;
-                if (this.LeapImageRequestFailed != null)
-                {
-                    this.LeapImageRequestFailed.DispatchOnContext(this, this.EventContext, imageRequestFailedEventArgs);
-                }
-            }
-            this._pendingImageRequestList.purgeOld(this._leapConnection);
+            return;
         }
 
         protected void handleConnection(ref LEAP_CONNECTION_EVENT connectionMsg)
@@ -1204,20 +1091,6 @@ namespace LeapInternal
             this.reportAbnormalResults("LeapC SaveConfigValue call was ", result);
             this._configRequests[num] = config_key;
             return num;
-        }
-
-        public Vector PixelToRectilinear(Image.PerspectiveType camera, Vector pixel)
-        {
-            LEAP_VECTOR pixel2 = new LEAP_VECTOR(pixel);
-            LEAP_VECTOR lEAP_VECTOR = LeapC.LeapPixelToRectilinear(this._leapConnection, (camera == Image.PerspectiveType.STEREO_LEFT) ? eLeapPerspectiveType.eLeapPerspectiveType_stereo_left : eLeapPerspectiveType.eLeapPerspectiveType_stereo_right, pixel2);
-            return new Vector(lEAP_VECTOR.x, lEAP_VECTOR.y, lEAP_VECTOR.z);
-        }
-
-        public Vector RectilinearToPixel(Image.PerspectiveType camera, Vector ray)
-        {
-            LEAP_VECTOR rectilinear = new LEAP_VECTOR(ray);
-            LEAP_VECTOR lEAP_VECTOR = LeapC.LeapRectilinearToPixel(this._leapConnection, (camera == Image.PerspectiveType.STEREO_LEFT) ? eLeapPerspectiveType.eLeapPerspectiveType_stereo_left : eLeapPerspectiveType.eLeapPerspectiveType_stereo_right, rectilinear);
-            return new Vector(lEAP_VECTOR.x, lEAP_VECTOR.y, lEAP_VECTOR.z);
         }
 
         protected void reportAbnormalResults(string context, eLeapRS result)

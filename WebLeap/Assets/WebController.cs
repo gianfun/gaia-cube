@@ -348,18 +348,7 @@ namespace Leap
         public Frame Frame(int history)
         {
             Frame frame;
-
-            if (true)
-            {
-                this._connection.RealFrames.Get(out frame, history);
-            }
-            else
-            {
-                frame = new Frame();
-                LEAP_TRACKING_EVENT lEAP_TRACKING_EVENT;
-                this._connection.Frames.Get(out lEAP_TRACKING_EVENT, history);
-                frame.CopyFrom(ref lEAP_TRACKING_EVENT);
-            }
+            this._connection.RealFrames.Get(out frame, history);
             return frame;
         }
 
@@ -368,9 +357,6 @@ namespace Leap
             Frame newFrame;
             this._connection.RealFrames.Get(out newFrame, history);
             toFill.CopyFrom(newFrame);
-            //LEAP_TRACKING_EVENT lEAP_TRACKING_EVENT;
-            //this._connection.Frames.Get(out lEAP_TRACKING_EVENT, history);
-            //toFill.CopyFrom(ref lEAP_TRACKING_EVENT);
         }
 
         public Frame Frame()
