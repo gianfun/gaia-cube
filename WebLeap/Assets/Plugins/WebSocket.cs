@@ -116,6 +116,10 @@ public class WebSocket
     public void ConnectSynchronous()
     {
         m_Socket = new WebSocketSharp.WebSocket(mUrl.ToString());
+
+        m_Socket.Log.Level = WebSocketSharp.LogLevel.Debug;
+        m_Socket.Log.Output += (sender, e) => { UnityEngine.Debug.Log("BlahL: " + sender + "-" + e); };
+
         m_Socket.OnMessage += (sender, e) => this.Enqueue(e.Data);
         m_Socket.OnOpen += (sender, e) =>  m_IsConnected = true;
         m_Socket.OnError += (sender, e) => m_Error = e.Message;

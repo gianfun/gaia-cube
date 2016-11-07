@@ -335,7 +335,7 @@ namespace LeapInternal
                         sw2.Stop();
                         if (i % 1000 == 0)
                         {
-                            UnityEngine.Debug.Log(sw1.ElapsedMilliseconds + " | " + sw2.ElapsedMilliseconds + "|" + sw3.ElapsedMilliseconds + "|" + sw4.ElapsedMilliseconds + "(" + tot.ElapsedMilliseconds + ")");
+                            //UnityEngine.Debug.Log(sw1.ElapsedMilliseconds + " | " + sw2.ElapsedMilliseconds + "|" + sw3.ElapsedMilliseconds + "|" + sw4.ElapsedMilliseconds + "(" + tot.ElapsedMilliseconds + ")");
                         }
                     }
                     continue;
