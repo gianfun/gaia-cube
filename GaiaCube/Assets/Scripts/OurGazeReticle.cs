@@ -9,6 +9,8 @@ using System.Collections;
 [RequireComponent(typeof(Renderer))]
 public class OurGazeReticle : MonoBehaviour, IGvrGazePointer, IGazeClicker
 {
+    private const float triggerCooldown = 1f; //in Seconds
+
     /// Number of segments making the reticle circle.
     public int reticleSegments = 20;
 
@@ -50,6 +52,7 @@ public class OurGazeReticle : MonoBehaviour, IGvrGazePointer, IGazeClicker
     // before distance multiplication.
     private float reticleInnerDiameter = 0.0f;
     private float reticleOuterDiameter = 0.0f;
+    private float lastTriggerTime;
 
     void Start()
     {
@@ -240,9 +243,10 @@ public class OurGazeReticle : MonoBehaviour, IGvrGazePointer, IGazeClicker
         materialComp.SetFloat("_DistanceInMeters", reticleDistanceInMeters);
 
         float maxSize = 2.0f * Mathf.Tan(Mathf.Deg2Rad * (kReticleMinOuterAngle + kReticleGrowthAngle) * 0.5f);
-        if (reticleOuterDiameter / maxSize > 0.99f)
+        if (reticleOuterDiameter / maxSize > 0.99f && Time.realtimeSinceStartup > lastTriggerTime + triggerCooldown)
         {
             shouldTrigger = true;
+            lastTriggerTime = Time.realtimeSinceStartup;
         }
     }
 

@@ -23,54 +23,61 @@ public class PlayerController : MonoBehaviour {
 	public bool moveEarthUp = false;
 	public bool doWind = false;
 
+    private const float TRIGGER_COOLDOWN = 1f;
+    private float lastTriggerTime;
+
 	public Ray ray_topleft;
 	public Ray ray_bottomright;
 	// Use this for initialization
 	void Start () {
 		cameraTrans = GameObject.FindWithTag ("MainCamera").GetComponent<Transform>() ;
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		if (!somethingTriggered) {
-			setAllAsFalse ();
-		} 
+
+    // Update is called once per frame
+    void Update() {
+        if (!somethingTriggered) {
+            setAllAsFalse();
+        } else
+        {
+            lastTriggerTime = Time.time;
+        }
 		somethingTriggered = false;
+        if(lastTriggerTime + TRIGGER_COOLDOWN > Time.time)
+        {
+            print("boop");
+            //Don't do anything... Wait cooldown
+            return;
+        }
 
 		if (shouldUseLeap) {
-			if (GM.left.isPinching && GM.right.isPinching) {
-				print ("GM.left&right.pinching");
+            lastTriggerTime = Time.time;
+            if (GM.left.isPinching && GM.right.isPinching) {
 				doSelect = true;
 				ray_topleft = new Ray (cameraTrans.position, GM.left.pinchPosition - cameraTrans.position);
 				ray_bottomright = new Ray (cameraTrans.position, GM.right.pinchPosition - cameraTrans.position);
-			} else if (GM.left.doRotate) {
-				print ("GM.left.doRotate");
+                lastTriggerTime = 0;
+            } else if (GM.left.doRotate) {
 				turnLeft = true;
 			} else if (GM.right.doRotate) {
-				print ("GM.right.doRotate");
 				turnRight = true;
 			} else if (GM.right.doRotate) {		
-				print ("GM.enterBirdsEye");
 				goToBirdsEye = true;
 			} else if (GM.right.doRotate) {
-				print ("GM.leaveBirdsEye");
 				leaveBirdsEye = true;
 			} else if (GM.moveEarthDown) {
-				print ("GM.moveEarthUp");
 				moveEarthDown = true;
 			} else if (GM.moveEarthUp) {
-				print ("GM.moveEarthUp");
 				moveEarthUp = true;
 			} else if (GM.doWater) {
-				print ("GM.doWater");
 				doWater = true;
 			} else if (GM.doFire) {
-				print ("GM.doFire");
 				doFire = true;
 			} else if (GM.doWind) {
-				print ("GM.doWind");
 				doWind = true;
-			}
+			} else
+            {
+                lastTriggerTime = 0;
+            }
 		} else {
 			if (Input.GetButtonDown ("Fire1")) {
 				//if (!doSelect) {

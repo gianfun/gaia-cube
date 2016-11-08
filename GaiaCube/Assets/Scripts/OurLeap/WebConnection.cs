@@ -163,12 +163,12 @@ namespace LeapInternal
             }
         }
 
-        public static WebConnection GetConnection(int connectionKey = 0)
+        public static WebConnection GetConnection(int connectionKey, string connectionIP)
         {
             WebConnection connection;
             if (!WebConnection.connectionDictionary.TryGetValue(connectionKey, out connection))
             {
-                connection = new WebConnection(connectionKey);
+                connection = new WebConnection(connectionKey, connectionIP);
                 WebConnection.connectionDictionary.Add(connectionKey, connection);
             }
             return connection;
@@ -198,18 +198,10 @@ namespace LeapInternal
             this.Dispose(false);
         }
 
-        protected WebConnection(int connectionKey)
+        protected WebConnection(int connectionKey, string connectionIP)
         {
-            //ws = new WebSocket(new Uri("ws://127.0.0.1:6437/v7.json"));
-#if UNITY_EDITOR || UNITY_STANDALONE_WIN 
-            ws = new WebSocket(new Uri("ws://192.168.1.53:6437/v7.json"));
-#else
-            ws = new WebSocket(new Uri("ws://192.168.1.53:6437/v7.json"));
-
-            //ws = new WebSocket(new Uri("ws://192.168.42.169:6437/v7.json"));
-#endif
-            // ws.Connect();
-            //UnityEngine.Debug.Log("WebConnection Constructor");
+            ws = new WebSocket(new Uri("ws://"+ connectionIP + ":6437/v7.json"));
+            UnityEngine.Debug.Log("Connecting WebSocket to ws://"+ connectionIP + ":6437/v7.json");
             this.ConnectionKey = connectionKey;
             this._leapConnection = IntPtr.Zero;
             this.RealFrames = new CircularObjectBuffer<Frame>(this._frameBufferLength);
@@ -219,7 +211,6 @@ namespace LeapInternal
         {
             if (!this._isRunning)
             {
-
                 ws.ConnectSynchronous();
 
                 this._isRunning = true;
@@ -259,7 +250,9 @@ namespace LeapInternal
                 ws.SendString("{\"focused\":true}");
                 while (this._isRunning)
                 {
-                    //Thread.Sleep(100);
+#if UNITY_EDITOR
+                    Thread.Sleep(1);
+#endif
 
                     sw4.Start();
                     stringMsg = ws.Recv();
@@ -336,117 +329,6 @@ namespace LeapInternal
                         }
                     }
                     continue;
-#region ORIGINAL_CONN
-                    LEAP_CONNECTION_MESSAGE lEAP_CONNECTION_MESSAGE = default(LEAP_CONNECTION_MESSAGE);
-                    uint timeout = 1000u;
-                    eLeapRS eLeapRS = LeapC.PollConnection(this._leapConnection, timeout, ref lEAP_CONNECTION_MESSAGE);
-                    if (eLeapRS != eLeapRS.eLeapRS_Success)
-                    {
-                        this.reportAbnormalResults("LeapC PollConnection call was ", eLeapRS);
-                    }
-                    else
-                    {
-                        eLeapEventType type;
-
-                        type = lEAP_CONNECTION_MESSAGE.type;
-
-                        switch (type)
-                        {
-                            case eLeapEventType.eLeapEventType_Connection:
-                                {
-                                    LEAP_CONNECTION_EVENT lEAP_CONNECTION_EVENT;
-                                    StructMarshal<LEAP_CONNECTION_EVENT>.PtrToStruct(lEAP_CONNECTION_MESSAGE.eventStructPtr, out lEAP_CONNECTION_EVENT);
-                                    this.handleConnection(ref lEAP_CONNECTION_EVENT);
-                                    break;
-                                }
-                            case eLeapEventType.eLeapEventType_ConnectionLost:
-                                {
-                                    LEAP_CONNECTION_LOST_EVENT lEAP_CONNECTION_LOST_EVENT;
-                                    StructMarshal<LEAP_CONNECTION_LOST_EVENT>.PtrToStruct(lEAP_CONNECTION_MESSAGE.eventStructPtr, out lEAP_CONNECTION_LOST_EVENT);
-                                    this.handleConnectionLost(ref lEAP_CONNECTION_LOST_EVENT);
-                                    break;
-                                }
-                            case eLeapEventType.eLeapEventType_Device:
-                                {
-                                    LEAP_DEVICE_EVENT lEAP_DEVICE_EVENT;
-                                    StructMarshal<LEAP_DEVICE_EVENT>.PtrToStruct(lEAP_CONNECTION_MESSAGE.eventStructPtr, out lEAP_DEVICE_EVENT);
-                                    this.handleDevice(ref lEAP_DEVICE_EVENT);
-
-
-                                    break;
-                                }
-                            case eLeapEventType.eLeapEventType_DeviceFailure:
-                                {
-                                    LEAP_DEVICE_FAILURE_EVENT lEAP_DEVICE_FAILURE_EVENT;
-                                    StructMarshal<LEAP_DEVICE_FAILURE_EVENT>.PtrToStruct(lEAP_CONNECTION_MESSAGE.eventStructPtr, out lEAP_DEVICE_FAILURE_EVENT);
-                                    this.handleFailedDevice(ref lEAP_DEVICE_FAILURE_EVENT);
-                                    break;
-                                }
-                            case eLeapEventType.eLeapEventType_PolicyChange:
-                                {
-                                    LEAP_POLICY_EVENT lEAP_POLICY_EVENT;
-                                    StructMarshal<LEAP_POLICY_EVENT>.PtrToStruct(lEAP_CONNECTION_MESSAGE.eventStructPtr, out lEAP_POLICY_EVENT);
-                                    this.handlePolicyChange(ref lEAP_POLICY_EVENT);
-                                    break;
-                                }
-                            default:
-                                switch (type)
-                                {
-                                    case eLeapEventType.eLeapEventType_Tracking:
-                                        {
-                                            LEAP_TRACKING_EVENT lEAP_TRACKING_EVENT;
-                                            StructMarshal<LEAP_TRACKING_EVENT>.PtrToStruct(lEAP_CONNECTION_MESSAGE.eventStructPtr, out lEAP_TRACKING_EVENT);
-                                            this.handleTrackingMessage(ref lEAP_TRACKING_EVENT);
-
-
-                                            break;
-                                        }
-                                    case eLeapEventType.eLeapEventType_ImageRequestError:
-                                        {
-                                            LEAP_IMAGE_FRAME_REQUEST_ERROR_EVENT lEAP_IMAGE_FRAME_REQUEST_ERROR_EVENT;
-                                            StructMarshal<LEAP_IMAGE_FRAME_REQUEST_ERROR_EVENT>.PtrToStruct(lEAP_CONNECTION_MESSAGE.eventStructPtr, out lEAP_IMAGE_FRAME_REQUEST_ERROR_EVENT);
-                                            this.handleFailedImageRequest(ref lEAP_IMAGE_FRAME_REQUEST_ERROR_EVENT);
-                                            break;
-                                        }
-                                    case eLeapEventType.eLeapEventType_ImageComplete:
-                                        {
-                                            LEAP_IMAGE_COMPLETE_EVENT lEAP_IMAGE_COMPLETE_EVENT;
-                                            StructMarshal<LEAP_IMAGE_COMPLETE_EVENT>.PtrToStruct(lEAP_CONNECTION_MESSAGE.eventStructPtr, out lEAP_IMAGE_COMPLETE_EVENT);
-                                            this.handleImageCompletion(ref lEAP_IMAGE_COMPLETE_EVENT);
-                                            break;
-                                        }
-                                    case eLeapEventType.eLeapEventType_LogEvent:
-                                        {
-                                            LEAP_LOG_EVENT lEAP_LOG_EVENT;
-                                            StructMarshal<LEAP_LOG_EVENT>.PtrToStruct(lEAP_CONNECTION_MESSAGE.eventStructPtr, out lEAP_LOG_EVENT);
-                                            this.reportLogMessage(ref lEAP_LOG_EVENT);
-                                            break;
-                                        }
-                                    case eLeapEventType.eLeapEventType_DeviceLost:
-                                        {
-                                            LEAP_DEVICE_EVENT lEAP_DEVICE_EVENT2;
-                                            StructMarshal<LEAP_DEVICE_EVENT>.PtrToStruct(lEAP_CONNECTION_MESSAGE.eventStructPtr, out lEAP_DEVICE_EVENT2);
-                                            this.handleLostDevice(ref lEAP_DEVICE_EVENT2);
-                                            break;
-                                        }
-                                    case eLeapEventType.eLeapEventType_ConfigResponse:
-                                        this.handleConfigResponse(ref lEAP_CONNECTION_MESSAGE);
-                                        break;
-                                    case eLeapEventType.eLeapEventType_ConfigChange:
-                                        {
-                                            LEAP_CONFIG_CHANGE_EVENT lEAP_CONFIG_CHANGE_EVENT;
-                                            StructMarshal<LEAP_CONFIG_CHANGE_EVENT>.PtrToStruct(lEAP_CONNECTION_MESSAGE.eventStructPtr, out lEAP_CONFIG_CHANGE_EVENT);
-                                            this.handleConfigChange(ref lEAP_CONFIG_CHANGE_EVENT);
-                                            break;
-                                        }
-                                    default:
-                                        Logger.Log("Unhandled message type " + Enum.GetName(typeof(eLeapEventType), lEAP_CONNECTION_MESSAGE.type));
-                                        break;
-                                }
-                                break;
-                        }
-                    }
-#endregion
                 }   
             }
             catch (Exception arg)

@@ -26,7 +26,7 @@ public class WorldLoader {
 		string json;
 		
 		Debug.Log ("Load Level " + level);
-		string path = "file://" + Application.streamingAssetsPath + "/Levels/level" + level + ".json";
+		string path = Application.streamingAssetsPath + "/Levels/level" + level + ".json";
 		Debug.Log ("Loading " + path);
 
 		#if UNITY_EDITOR

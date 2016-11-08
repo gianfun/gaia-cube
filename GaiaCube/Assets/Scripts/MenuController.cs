@@ -8,22 +8,35 @@ public class MenuController : MonoBehaviour {
 
     public GameObject levelButton;
     public RectTransform drawArea;
-	private StateManager sm;
+
+    public GameObject configOverlay;
+    public UnityEngine.UI.InputField configInputText;
+
+    private StateManager sm;
     private VRManager vrManager;
+
+    private GameObject uiCrossVR;
+    private GameObject uiCrossLEAP;
 
     public UnityEngine.UI.Toggle VRToggle;
     void Awake()
     {
         sm = StateManager.getInstance();
         vrManager = VRManager.getInstance();
+        vrManager.OnToggleVR += (e) => onToggleVR(e); 
         levels = sm.levelCount;
 
         CreateLevelButtons();
-		sm.shouldUseVR = false;
         Debug.Log("Menu Controller Awake. sm.shouldUseVR: " + sm.shouldUseVR);
-        vrManager.toggleVR(sm.shouldUseVR);
-        VRToggle.isOn = !sm.shouldUseVR;
+    }
 
+    void Start()
+    {
+        uiCrossVR = GameObject.Find("CrossVR");
+        uiCrossLEAP = GameObject.Find("CrossLEAP");
+        vrManager.toggleVR(sm.shouldUseVR);
+        uiCrossLEAP.SetActive(sm.shouldUseLeap);
+        HideIPConfig();
     }
 
     void CreateLevelButtons()
@@ -53,13 +66,44 @@ public class MenuController : MonoBehaviour {
         }
     }
 
-	public void disableVRMode(bool pleaseDisable){
-        
-        bool turnVROn = !pleaseDisable;
-        Debug.Log("pleaseDisable: turnOn? " + turnVROn);
-        sm.SetVRUsage (turnVROn);
-        vrManager.toggleVR(turnVROn);
-		//FindObjectOfType<GvrReticle> ().gameObject.SetActive(turnVROn);
-		//GvrViewer.Instance.VRModeEnabled = turnVROn;
+    public void onToggleVR(bool turnOn)
+    {
+        //Save value
+        sm.SetVRUsage(turnOn);
+
+        //Display on button
+        uiCrossVR.SetActive(turnOn);
+
+        Camera.main.transform.localRotation = Quaternion.identity;
+
+        //active when turnOn
+        Camera.main.GetComponent<GvrHead>().trackRotation = turnOn; //Stop turning with head movement
+    }
+
+    public void onButtonToggleVR(){
+        vrManager.toggleVR(!sm.shouldUseVR);
 	}
+
+    public void onButtonToggleLeap()
+    {
+        sm.SetLeapUsage(!sm.shouldUseLeap);
+        uiCrossLEAP.SetActive(sm.shouldUseLeap);
+    }
+
+    public void ShowIPConfig()
+    {
+        configOverlay.SetActive(true);
+        configInputText.text = sm.leapIP;
+    }
+
+    public void HideIPConfig()
+    {
+        configOverlay.SetActive(false);
+    }
+
+    public void SubmitIPConfig()
+    {
+        HideIPConfig();
+        sm.SetLeapIP(configInputText.text);
+    }
 }

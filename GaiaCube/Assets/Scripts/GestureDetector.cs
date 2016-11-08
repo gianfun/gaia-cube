@@ -7,11 +7,10 @@ public class GestureDetector : MonoBehaviour {
 	public Leap.Unity.IHandModel _handModel;
 
 	[SerializeField]
-	protected GameObject _controller;
-
-	public Transform parentTransform;
+	protected Transform _controllerTransform;
 
 	public int handednessFactor = 0;
+    public bool isLeft;
 
 	public Leap.Hand hand;
 	public bool isPinching 					= false;
@@ -63,9 +62,9 @@ public class GestureDetector : MonoBehaviour {
 
 	void Awake(){
 		hand = _handModel.GetLeapHand ();
-		//Some directions need to change depending if this is the left or right hand.
-		handednessFactor = (hand.IsLeft) ? 1 : -1;
-		parentTransform = GetComponentInParent<Transform> ();
+        isLeft = (_handModel.Handedness == Leap.Unity.Chirality.Left);
+        //Some directions need to change depending if this is the left or right hand.
+        handednessFactor = isLeft ? 1 : -1;
 	}
 	
 	// Update is called once per frame
@@ -84,9 +83,9 @@ public class GestureDetector : MonoBehaviour {
 			//Vector3 pos = hand.PalmPosition.ToVector3(); 	
 			pinchPosition = Vector3.zero;
 			handNormal = hand.PalmNormal.ToVector3 ();  //Normal vector from hand palm (in world coords)
-			c = _controller.transform.rotation.eulerAngles;
-			c2 = (_controller.transform.rotation * handNormal).normalized; //new Vector3(Mathf.Sin(c.y/360f*Mathf.PI),Mathf.Cos(c.y/360f*Mathf.PI), Mathf.Tan(c.y/360f*Mathf.PI));
-			Quaternion inv = Quaternion.Inverse(parentTransform.rotation);
+			c = _controllerTransform.rotation.eulerAngles;
+			c2 = (_controllerTransform.rotation * handNormal).normalized; //new Vector3(Mathf.Sin(c.y/360f*Mathf.PI),Mathf.Cos(c.y/360f*Mathf.PI), Mathf.Tan(c.y/360f*Mathf.PI));
+			Quaternion inv = Quaternion.Inverse(_controllerTransform.rotation);
 			cntrlHandNormal = (inv * handNormal).normalized; // Normal vector in camera coords
 			//float p = _controller.transform.rotation.eulerAngles.y;
 			//print(_controller.transform.rotation.eulerAngles.y); 
@@ -96,19 +95,19 @@ public class GestureDetector : MonoBehaviour {
 			//if (_controller.transform.rotation.eulerAngles.y == 135 || _controller.transform.rotation.eulerAngles.y == 315) {
 			//	cntrlHandNormal *= -1;
 			//}
-			littleFingerVelocity = (inv * (hand.Fingers[4].TipVelocity.ToVector3() - parentTransform.position));
+			littleFingerVelocity = inv * hand.Fingers[4].TipVelocity.ToVector3();
 			lastTipVelocitySum += littleFingerVelocity.sqrMagnitude;
 			lastTipVelocitySum -= lastTipVelocities [lastTipVelocityIndex % 20];
 			lastTipVelocities [lastTipVelocityIndex % 20] = littleFingerVelocity.sqrMagnitude;
 
-			palmVelocity = inv * (hand.PalmVelocity.ToVector3() - parentTransform.position);// - leapControllerTransform.localPosition; // Palm velocity vector
+            palmVelocity = inv * hand.PalmVelocity.ToVector3() ; // Palm velocity vector
 			lastPalmVelocitySum -= lastPalmVelocities [lastTipVelocityIndex % 20];
 			lastPalmVelocitySum += palmVelocity.sqrMagnitude;
 			lastPalmVelocities [lastTipVelocityIndex % 20] = palmVelocity.sqrMagnitude;
 
 			lastTipVelocityIndex++;
 
-			palmwidth = hand.PalmWidth	; // Palm velocity vector
+			palmwidth = hand.PalmWidth	; // Palm width vector
 			//Positive if going to 'center' (if left hand going right or vice versa)
 			palmVelocityWithHandedness = new Vector3(palmVelocity.x, palmVelocity.y, palmVelocity.z*handednessFactor);
 			palmPosition = hand.PalmPosition.ToVector3 ();	
@@ -116,7 +115,7 @@ public class GestureDetector : MonoBehaviour {
 
 			//*-- Pinch Check --*//
 			//If we are pinching, calculate pinch position.
-			if (hand.PinchDistance < 30f) {
+			if (hand.PinchDistance < 30f && cntrlHandNormal.y < 0) {
 				for (int i = 0; i < fingers.Count; i++) {
 					var finger = fingers [i];
 					//Get position of thumb and index
@@ -154,9 +153,6 @@ public class GestureDetector : MonoBehaviour {
 					finger.Type == Leap.Finger.FingerType.TYPE_PINKY) {
 					fingerDistance += Vector3.Distance (finger.TipPosition.ToVector3(), fingers [i - 1].TipPosition.ToVector3());
 				}
-
-
-
 			}
 			fingerDistance /= 3;
 

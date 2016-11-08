@@ -26,6 +26,11 @@ namespace Leap.Unity
         [SerializeField]
         protected bool isWebController = false;
 
+        [Tooltip("Who gives us an IP for the WebSocket connection.")]
+        [SerializeField]
+        public GameObject connectionGuruObject;
+        public IConnectionGuru connectionGuru;
+
         [AutoFind]
         [SerializeField]
         protected LeapVRTemporalWarping _temporalWarping;
@@ -199,6 +204,7 @@ namespace Leap.Unity
 
         protected virtual void Start()
         {
+            connectionGuru = connectionGuruObject.GetComponent<IConnectionGuru>();
             createController();
             _transformedUpdateFrame = new Frame();
             _transformedFixedFrame = new Frame();
@@ -337,7 +343,15 @@ namespace Leap.Unity
 
             if (isWebController)
             {
-                leap_controller_ = new WebController();
+                if (connectionGuru != null)
+                {
+                    leap_controller_ = new WebController(connectionGuru.GetIP());
+                }
+                else
+                {
+                    leap_controller_ = new WebController();
+                }
+
             }
             else
             {

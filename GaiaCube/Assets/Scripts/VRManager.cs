@@ -10,6 +10,8 @@ public class VRManager : MonoBehaviour {
     public GvrViewer VR_viewer;
     public OurGazeReticle VR_reticle;
 
+    public event System.Action<bool> OnToggleVR;
+
     public static VRManager getInstance()
     {
         if (instance == null)
@@ -46,6 +48,7 @@ public class VRManager : MonoBehaviour {
             
             GameObject viewer = Instantiate(prefabVRViewer);
             VR_viewer = viewer.GetComponent<GvrViewer>();
+           
         }
         if (VR_reticle == null)
         {
@@ -62,7 +65,15 @@ public class VRManager : MonoBehaviour {
         Debug.Log("VR Manager. Toggling VR to: " + turnOn);
         VR_viewer.VRModeEnabled = turnOn;
         VR_reticle.GetComponent<MeshRenderer>().enabled = turnOn;
+        if(OnToggleVR != null)
+        {
+            OnToggleVR(turnOn);
+        }
         //VRreticle.enabled = !turnOn;
     }
 
+    public void toggleReticle(bool turnOn)
+    {
+        VR_reticle.GetComponent<MeshRenderer>().enabled = turnOn;
+    }
 }

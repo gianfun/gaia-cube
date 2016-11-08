@@ -7,6 +7,8 @@ namespace Leap
 {
     public class WebController : IDisposable, ILeapController
     {
+        private const string DEFAULT_CONNECTION_IP = "192.168.1.53";
+
         public enum PolicyFlag
         {
             POLICY_DEFAULT,
@@ -294,13 +296,17 @@ namespace Leap
             }
         }
 
-        public WebController() : this(0)
+        public WebController() : this(0, DEFAULT_CONNECTION_IP)
 		{
         }
 
-        public WebController(int connectionKey)
+        public WebController(string connectionIP) : this(0, connectionIP)
         {
-            this._connection = WebConnection.GetConnection(connectionKey);
+        }
+
+        public WebController(int connectionKey, string connectionIP)
+        {
+            this._connection = WebConnection.GetConnection(connectionKey, connectionIP);
             this._connection.EventContext = SynchronizationContext.Current;
             this._connection.LeapInit += new EventHandler<LeapEventArgs>(this.OnInit);
             this._connection.LeapConnection += new EventHandler<ConnectionEventArgs>(this.OnConnect);

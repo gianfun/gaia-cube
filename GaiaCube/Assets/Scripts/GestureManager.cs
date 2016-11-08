@@ -35,18 +35,25 @@ public class GestureManager : MonoBehaviour {
 
 	private float extrudedLength = 0f;
 
+    void Start()
+    {
+        if (gd1.isLeft)
+        {
+            left = gd1;
+            right = gd2;
+        }
+        else
+        {
+            left = gd2;
+            right = gd1;
+        }
+    }
 	// Update is called once per frame
 	void Update () {
 		SetBoolsToFalse ();
 
-		if (gd1.hand != null && gd2.hand != null) {
-			if (gd1.hand.IsLeft) {
-				left = gd1;
-				right = gd2;
-			} else {
-				left = gd2;
-				right = gd1;
-			}
+        if (gd1.hand != null && gd2.hand != null) {
+			
 
 			Vector3 a = (transform.rotation * left.hand.PalmNormal.ToVector3 ()).normalized;
 

@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.SceneManagement;
+using System;
 
-public class UniverseController : MonoBehaviour {
+public class UniverseController : MonoBehaviour, IConnectionGuru {
     int[,,] clayState, goalState;
     Vector3 dimensions;
     public bool moveCameraLeft { get; set; }
@@ -24,6 +25,8 @@ public class UniverseController : MonoBehaviour {
     public GameObject WinMessage;
 	public bool goBackToMenu;
 
+    private GameObject cameraScroller;
+
 	IEnumerator StartLevel(int level){
 		WorldLoader worldLoader = new WorldLoader ();
 		yield return worldLoader.LoadLevel(level);
@@ -37,9 +40,16 @@ public class UniverseController : MonoBehaviour {
 		goalWorld.CreateBlocks (goalState, dimensions);
 	}
 
-	void Start() {
-		sm = StateManager.getInstance();
+    void Awake()
+    {
+        sm = StateManager.getInstance();
+    }
+
+    void Start() {
         vrManager = VRManager.getInstance();
+        vrManager.OnToggleVR += (e) => onToggleVR(e);
+
+        cameraScroller = GameObject.FindWithTag("CanvasScroller");
 
         clayWorldTrans = GameObject.FindWithTag ("ClayWorld").GetComponent<Transform>();
 		goalWorldTrans = GameObject.FindWithTag ("GoalWorld").GetComponent<Transform>();
@@ -50,12 +60,6 @@ public class UniverseController : MonoBehaviour {
         lookAtGoalWorld = Quaternion.Euler(45, 90, 0);
 
         vrManager.toggleVR(sm.shouldUseVR);
-        if (sm.shouldUseVR)
-        {
-            GameObject.FindWithTag("Player").GetComponent<Transform>().rotation = Quaternion.Euler(0, 90, 0);
-            GameObject.FindWithTag("CanvasScroller").SetActive(false);
-            
-        }
 
         Color skyBlue = new Color(0.2f, 0.3f, 0.4f, 0.7f);
 		Color sunYellow = new Color(0.8f, 0.6f, 0.2f, 0.3f);
@@ -66,6 +70,36 @@ public class UniverseController : MonoBehaviour {
 
 		StartCoroutine(StartLevel (sm.currentLevel));
 	}
+
+    public void onToggleVR(bool turnOn)
+    {
+        //active when !turnOn
+        cameraScroller.SetActive(!turnOn); //Disable scroller
+        //active when turnOn
+        Camera.main.GetComponent<GvrHead>().trackRotation = turnOn; //Stop turning with head movement
+        if (turnOn)
+        {
+            GameObject.FindWithTag("Canvas").GetComponent<Canvas>().renderMode = RenderMode.WorldSpace;
+            GameObject.FindWithTag("Canvas").GetComponent<RectTransform>().localPosition = new Vector3(444, -235, 0);
+            GameObject.FindWithTag("Canvas").GetComponent<RectTransform>().localRotation = Quaternion.Euler(0, 90, 0);
+            GameObject.FindWithTag("Canvas").GetComponent<RectTransform>().sizeDelta = new Vector2(888, 470);
+            GameObject.FindWithTag("Player").GetComponent<Transform>().localRotation = Quaternion.Euler(0, 90, 0);
+            GameObject.FindWithTag("BoundingGrid").GetComponent<Transform>().localPosition = new Vector3(7, 11, 0);
+            GameObject.FindWithTag("World").GetComponent<Transform>().localPosition = new Vector3(7, 0, 0);
+        }
+        else
+        {
+            cameraTime = 0;
+            GameObject.FindWithTag("Player").GetComponent<Transform>().localRotation = Quaternion.Euler(0, 45, 0);
+            GameObject.FindWithTag("Canvas").GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
+            Camera.main.GetComponent<Transform>().localRotation = Quaternion.Euler(45, 0, 0);
+            GameObject.FindWithTag("BoundingGrid").GetComponent<Transform>().localPosition = new Vector3(0, 11, 0);
+            GameObject.FindWithTag("World").GetComponent<Transform>().localPosition = new Vector3(0, 0, 0);
+        }
+
+        vrManager.toggleReticle(!sm.shouldUseLeap);
+        GameObject.FindWithTag("EventSystem").GetComponent<OurGazeInputModule>().enabled = !sm.shouldUseLeap;
+    }
 
     public void CheckForWinningCondition()
     {
@@ -108,6 +142,18 @@ public class UniverseController : MonoBehaviour {
 
     void Update()
     {
+        if (Input.GetKeyUp(KeyCode.O))
+        {
+            vrManager.toggleVR(!sm.shouldUseVR);
+            sm.SetVRUsage(!sm.shouldUseVR);
+
+        }
+        if (Input.GetKeyUp(KeyCode.P))
+        {
+            vrManager.toggleReticle(sm.shouldUseLeap);
+            sm.SetLeapUsage(!sm.shouldUseLeap);
+        }
+
         if (moveCameraLeft || moveCameraRight)
         {
             if (moveCameraLeft)
@@ -296,6 +342,11 @@ public class UniverseController : MonoBehaviour {
 
 		MoveSelectorPlane ();
 		*/
+    }
+
+    public string GetIP()
+    {
+        return sm.leapIP;
     }
 
     /*

@@ -16,7 +16,7 @@ public class StateManager : MonoBehaviour {
 
 	public bool shouldUseVR;
 	public bool shouldUseLeap;
-
+    public string leapIP;
 
 	public GameState gs;
 
@@ -79,7 +79,17 @@ public class StateManager : MonoBehaviour {
 			SetPlayerPrefsBool ("useLeap", shouldUseLeap);
 		}
 
-		levelCount = gs.levels;
+        if (PlayerPrefs.HasKey("LeapIP"))
+        {
+            leapIP = PlayerPrefs.GetString("LeapIP");
+        }
+        else
+        {
+            leapIP = "192.168.1.53";
+            PlayerPrefs.SetString("LeapIP", leapIP);
+        }
+
+        levelCount = gs.levels;
 		completedLevels = gs.completedLevels;
 		unlockedLevels = gs.unlockedLevels;
 	}
@@ -94,7 +104,13 @@ public class StateManager : MonoBehaviour {
 		shouldUseLeap = newValue;
 	}
 
-	private bool Load(){
+    public void SetLeapIP(string newIP)
+    {
+        PlayerPrefs.SetString("LeapIP", newIP);
+        leapIP = newIP;
+    }
+
+    private bool Load(){
 		Debug.Log ("Loading save file.");
 		if(File.Exists(Application.persistentDataPath + "/gameprogess.dat")) {
 			BinaryFormatter bf = new BinaryFormatter();
