@@ -6270,6 +6270,11 @@ MonoBehaviour:
   fireSprite: {fileID: 21300000, guid: c1c4d0673bb52e349be3ccee1f22a57f, type: 3}
   earthUpSprite: {fileID: 21300000, guid: b739bd2a99876e14c879b6cd150aa7d1, type: 3}
   earthDownSprite: {fileID: 21300000, guid: 11ee96b3074fc93458cf0a363ee30a9c, type: 3}
+  earthUpButton: {fileID: 1967922877}
+  earthDownButton: {fileID: 259892121}
+  waterButton: {fileID: 1163516083}
+  fireButton: {fileID: 1739357951}
+  windButton: {fileID: 1814731309}
 --- !u!4 &1649143269
 Transform:
   m_ObjectHideFlags: 0
