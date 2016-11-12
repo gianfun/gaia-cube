@@ -58,7 +58,7 @@ public class BlockColumn : MonoBehaviour {
 	}
 
 	public void MoveEarthDown(){
-		if (selected && topmost > 0 && myBlocks [topmost].element == BlockController.Element.EARTH) {
+		if (selected && topmost > 0 && (myBlocks [topmost].element == BlockController.Element.EARTH || myBlocks[topmost].element == BlockController.Element.SAND)) {
 			myBlocks [topmost].Deselect ();
 			myBlocks [topmost].SetElement(BlockController.Element.AIR);
 			myBlocks [topmost].SetTopmost(false);
