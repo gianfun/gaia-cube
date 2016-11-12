@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour {
 	public bool shouldUseLeap = false;
@@ -39,6 +40,7 @@ public class PlayerController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		cameraTrans = GameObject.FindWithTag ("MainCamera").GetComponent<Transform>() ;
+		SceneManager.LoadScene ("AnimationTest", LoadSceneMode.Additive);
 	}
 
     // Update is called once per frame
