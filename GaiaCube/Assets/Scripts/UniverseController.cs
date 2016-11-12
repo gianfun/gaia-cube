@@ -162,6 +162,10 @@ public class UniverseController : MonoBehaviour, IConnectionGuru {
             vrManager.toggleReticle(sm.leapMode == StateManager.LeapMode.None);
             sm.IncrementLeapMode();
         }
+        if (Input.GetKeyUp(KeyCode.I))
+        {
+            GoToMenu();
+        }
 
         if (playerController.lateralMovementDistance != 0f)
         {
@@ -229,18 +233,9 @@ public class UniverseController : MonoBehaviour, IConnectionGuru {
         return sm.leapIP;
     }
 
-    /*
-	void ShowElementAction(CanvasManager.PlayerAction action){
-		StartCoroutine(ShowElementActionCoroutine(action));
-	}
-
-	IEnumerator ShowElementActionCoroutine(CanvasManager.PlayerAction action){
-		
-		canvas.ShowElement (action);
-		yield return new WaitForSeconds (0.8f);
-		canvas.ShowElement (CanvasManager.PlayerAction.NONE);
-
-	}
-	*/
+    public void GoToMenu()
+    {
+        goBackToMenu = true;
+    }
 
 }
