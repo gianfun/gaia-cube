@@ -28,8 +28,11 @@ public class PlayerController : MonoBehaviour {
 	public bool moveEarthUp = false;
 	public bool doWind = false;
 
+    public float lateralMovementDistance;
+    public bool changedLateralMovement;
+
     private const float TRIGGER_COOLDOWN = 1f;
-    private float lastTriggerTime;
+    private float lastTriggerTime = -TRIGGER_COOLDOWN;
 
 	public Ray ray_topleft;
 	public Ray ray_bottomright;
@@ -56,12 +59,15 @@ public class PlayerController : MonoBehaviour {
 
 		if (shouldUseLeap) {
             lastTriggerTime = Time.time;
-            if (GM.left.isPinching && GM.right.isPinching) {
+            if(GM.changedLateralMovement) {
+                changedLateralMovement = true;
+                lateralMovementDistance = GM.lateralMovementDistance;
+                lastTriggerTime = -TRIGGER_COOLDOWN;
             } else if (GM.left.isPinching && GM.right.isPinching) {
 				doSelect = true;
 				ray_topleft = new Ray (cameraTrans.position, GM.left.pinchPosition - cameraTrans.position);
 				ray_bottomright = new Ray (cameraTrans.position, GM.right.pinchPosition - cameraTrans.position);
-                lastTriggerTime = 0;
+                lastTriggerTime = -TRIGGER_COOLDOWN;
             } else if (GM.left.doRotate) {
 				turnLeft = true;
 			} else if (GM.right.doRotate) {
@@ -80,9 +86,8 @@ public class PlayerController : MonoBehaviour {
 				doFire = true;
 			} else if (GM.doWind && canUseWind) {
 				doWind = true;
-			} else
-            {
-                lastTriggerTime = 0;
+			} else {
+                lastTriggerTime = -TRIGGER_COOLDOWN;
             }
 		} else {
 			if (Input.GetButtonDown ("Fire1")) {
@@ -182,5 +187,9 @@ public class PlayerController : MonoBehaviour {
 		moveEarthDown = false;
 		moveEarthUp = false;
 		doWind = false;
-	}
+
+        lateralMovementDistance = 0f;
+        changedLateralMovement = false;
+
+    }
 }

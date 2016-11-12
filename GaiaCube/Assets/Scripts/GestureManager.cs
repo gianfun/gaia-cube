@@ -24,7 +24,13 @@ public class GestureManager : MonoBehaviour {
 	public bool doWater;
 	public bool doWind;
 
-	public float moveEarthYThreshold = 2f;
+    bool bothHandsWereFists;
+    public bool changedLateralMovement;
+    public float lateralMovementDistance = 0;
+    private Vector3 initialLeftFistPosition, initialRightFistPosition;
+
+
+    public float moveEarthYThreshold = 2f;
 	public Leap.Unity.LeapHandController leapController;
 
 	[SerializeField]
@@ -109,7 +115,34 @@ public class GestureManager : MonoBehaviour {
 			} else {
 				extrudedLength = 0f;
 			}
-		}
+
+
+
+
+            if (left.isFist && right.isFist)
+            {
+                changedLateralMovement = true;
+                if (!bothHandsWereFists)
+                {
+                    initialLeftFistPosition = left.palmPosition;
+                    initialRightFistPosition = right.palmPosition;
+                }
+                else
+                {
+                    lateralMovementDistance = (left.palmPosition - initialLeftFistPosition).x + (right.palmPosition - initialRightFistPosition).x;
+                }
+                bothHandsWereFists = true;
+            }
+            else
+            {
+                if (bothHandsWereFists)
+                {
+                    changedLateralMovement = true;
+                }
+                lateralMovementDistance = 0f;
+                bothHandsWereFists = false;
+            }
+        }
 	}
 
 	private void SetBoolsToFalse(){
@@ -118,7 +151,9 @@ public class GestureManager : MonoBehaviour {
 		doFire			= false;
 		doWater			= false;
 		doWind			= false;
-	}
+
+        changedLateralMovement = false;
+    }
 
 
 }

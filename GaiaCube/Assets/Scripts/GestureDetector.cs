@@ -15,7 +15,8 @@ public class GestureDetector : MonoBehaviour {
 	public Leap.Hand hand;
 	public bool isPinching 					= false;
 	public bool isOpenHand 					= false;
-	public bool isPaw 						= false;
+	public bool isFist 	        			= false;
+    public bool isPaw 						= false;
 	public bool wasPaw 						= false;
 	public bool facingInwards 				= false;
 	public bool startedMovingForRotation 	= false;
@@ -46,6 +47,9 @@ public class GestureDetector : MonoBehaviour {
 	public float startedMovingForRotationTime;
 	public float startedElementalActionTime;
 	public Action currentAction;
+    public float middleFingerToPalmDistance;
+    public float angleMiddleFingerAndPalmNormal;
+    public float angleMiddleFingerProximalAndIntermediate;
 
 
 	public int pawLeeway = 0;
@@ -110,7 +114,7 @@ public class GestureDetector : MonoBehaviour {
 			palmwidth = hand.PalmWidth	; // Palm width vector
 			//Positive if going to 'center' (if left hand going right or vice versa)
 			palmVelocityWithHandedness = new Vector3(palmVelocity.x, palmVelocity.y, palmVelocity.z*handednessFactor);
-			palmPosition = hand.PalmPosition.ToVector3 ();	
+			palmPosition = inv * hand.PalmPosition.ToVector3 ();	
 			var fingers = hand.Fingers;
 
 			//*-- Pinch Check --*//
@@ -153,7 +157,18 @@ public class GestureDetector : MonoBehaviour {
 					finger.Type == Leap.Finger.FingerType.TYPE_PINKY) {
 					fingerDistance += Vector3.Distance (finger.TipPosition.ToVector3(), fingers [i - 1].TipPosition.ToVector3());
 				}
-			}
+
+                if (finger.Type == Leap.Finger.FingerType.TYPE_MIDDLE)
+                {
+                    middleFingerToPalmDistance = Vector3.Distance(finger.TipPosition.ToVector3(), palmPosition);
+                    angleMiddleFingerAndPalmNormal = Vector3.Dot(finger.Bone(Leap.Bone.BoneType.TYPE_PROXIMAL).Direction.ToVector3(), handNormal);
+                    angleMiddleFingerProximalAndIntermediate = Vector3.Dot(finger.Bone(Leap.Bone.BoneType.TYPE_INTERMEDIATE).Direction.ToVector3(), finger.Bone(Leap.Bone.BoneType.TYPE_PROXIMAL).Direction.ToVector3());
+                    if (angleMiddleFingerAndPalmNormal > 0.9f && angleMiddleFingerProximalAndIntermediate < 0.15)
+                    {
+                        isFist = true;
+                    }
+                }
+            }
 			fingerDistance /= 3;
 
 			//Draw debug line
@@ -233,7 +248,8 @@ public class GestureDetector : MonoBehaviour {
 			doRotate = false;
 			isPinching = false;
 			isOpenHand = false;
-			isPaw = false;
+            isFist = false;
+            isPaw = false;
 			makeItRain  = false;
 			extendedFingers = 0;
 			rawExtendedFingers = 0;
@@ -241,5 +257,19 @@ public class GestureDetector : MonoBehaviour {
 
 		}
 	}
+
+    void OnDisable()
+    {
+        wasPaw = isPaw;
+        doRotate = false;
+        isPinching = false;
+        isOpenHand = false;
+        isFist = false;
+        isPaw = false;
+        makeItRain = false;
+        extendedFingers = 0;
+        rawExtendedFingers = 0;
+        fingerDistance = 0f;
+    }
 }
 

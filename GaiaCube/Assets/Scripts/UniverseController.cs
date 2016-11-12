@@ -8,8 +8,7 @@ using System;
 public class UniverseController : MonoBehaviour, IConnectionGuru {
     int[,,] clayState, goalState;
     Vector3 dimensions;
-    public bool moveCameraLeft { get; set; }
-    public bool moveCameraRight { get; set; }
+    public float cameraSpeed;
     float cameraDuration = 0.8f;
     float cameraTime = 0;
 
@@ -164,24 +163,23 @@ public class UniverseController : MonoBehaviour, IConnectionGuru {
             sm.IncrementLeapMode();
         }
 
-        if (moveCameraLeft || moveCameraRight)
+        if (playerController.lateralMovementDistance != 0f)
         {
-            if (moveCameraLeft)
+            cameraSpeed = Mathf.Clamp(playerController.lateralMovementDistance*2, -1.5f, +1.5f);
+        }
+
+        if (cameraSpeed != 0)
+        {
+            cameraTime += Time.deltaTime * cameraSpeed;
+            if (cameraTime < 0f)
             {
-                cameraTime -= Time.deltaTime;
-                if (cameraTime < 0f)
-                {
-                    cameraTime = 0f;
-                }
+                cameraTime = 0f;
             }
-            else
+            if (cameraTime > cameraDuration)
             {
-                cameraTime += Time.deltaTime;
-                if (cameraTime > cameraDuration)
-                {
-                    cameraTime = cameraDuration;
-                }
+                cameraTime = cameraDuration;
             }
+
             Camera.main.transform.localRotation = Quaternion.Slerp(lookAtClayWorld, lookAtGoalWorld, cameraTime / cameraDuration);
         }
     
@@ -352,6 +350,32 @@ public class UniverseController : MonoBehaviour, IConnectionGuru {
 
 		MoveSelectorPlane ();
 		*/
+    }
+
+
+    public void MoveCameraLeft(bool start)
+    {
+        if (start)
+        {
+            cameraSpeed = -1f;
+        }
+        else
+        {
+            cameraSpeed = 0f;
+        }
+    }
+
+		
+    public void MoveCameraRight(bool start)
+    {
+        if (start)
+        {
+            cameraSpeed = 1f;
+        }
+        else
+        {
+            cameraSpeed = 0f;
+        }
     }
 
     public bool ShouldUseWebLeap()

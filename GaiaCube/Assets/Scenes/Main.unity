@@ -1009,7 +1009,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 465008036}
-          m_MethodName: set_moveCameraLeft
+          m_MethodName: MoveCameraLeft
           m_Mode: 6
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -1026,7 +1026,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 465008036}
-          m_MethodName: set_moveCameraLeft
+          m_MethodName: MoveCameraLeft
           m_Mode: 6
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -2624,6 +2624,7 @@ MonoBehaviour:
         w: 0
   isPinching: 0
   isOpenHand: 0
+  isFist: 0
   isPaw: 0
   wasPaw: 0
   facingInwards: 0
@@ -2649,6 +2650,9 @@ MonoBehaviour:
   startedMovingForRotationTime: 0
   startedElementalActionTime: 0
   currentAction: 0
+  middleFingerToPalmDistance: 0
+  angleMiddleFingerAndPalmNormal: 0
+  angleMiddleFingerProximalAndIntermediate: 0
   pawLeeway: 0
   delayBetweenActions: 1
 --- !u!114 &461787096
@@ -2773,6 +2777,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af3e195e6a1f7254d845e869e96c1440, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cameraSpeed: 0
   playerController: {fileID: 695587392}
   canvasManager: {fileID: 1649143268}
   leapController: {fileID: 1008686133}
@@ -2820,7 +2825,7 @@ Prefab:
     - target: {fileID: 114000011770715706, guid: 5ecf8db066b433e4baa2078c711b16c8,
         type: 2}
       propertyPath: currentLevel
-      value: 6
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5ecf8db066b433e4baa2078c711b16c8, type: 2}
@@ -4499,6 +4504,7 @@ MonoBehaviour:
         w: 0
   isPinching: 0
   isOpenHand: 0
+  isFist: 0
   isPaw: 0
   wasPaw: 0
   facingInwards: 0
@@ -4524,6 +4530,9 @@ MonoBehaviour:
   startedMovingForRotationTime: 0
   startedElementalActionTime: 0
   currentAction: 0
+  middleFingerToPalmDistance: 0
+  angleMiddleFingerAndPalmNormal: 0
+  angleMiddleFingerProximalAndIntermediate: 0
   pawLeeway: 0
   delayBetweenActions: 1
 --- !u!114 &659980541
@@ -5403,6 +5412,10 @@ Prefab:
 Transform:
   m_PrefabParentObject: {fileID: 432918, guid: b9c7aaf0d314cb847a3b2a20e893f1b6, type: 2}
   m_PrefabInternal: {fileID: 1008686131}
+--- !u!1 &1008686133 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 166326, guid: b9c7aaf0d314cb847a3b2a20e893f1b6, type: 2}
+  m_PrefabInternal: {fileID: 1008686131}
 --- !u!1 &1018413010
 GameObject:
   m_ObjectHideFlags: 0
@@ -5715,7 +5728,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 465008036}
-          m_MethodName: set_moveCameraRight
+          m_MethodName: MoveCameraRight
           m_Mode: 6
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -5732,7 +5745,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 465008036}
-          m_MethodName: set_moveCameraRight
+          m_MethodName: MoveCameraRight
           m_Mode: 6
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -6002,6 +6015,8 @@ MonoBehaviour:
   doFire: 0
   doWater: 0
   doWind: 0
+  changedLateralMovement: 0
+  lateralMovementDistance: 0
   moveEarthYThreshold: 2
   leapController: {fileID: 0}
   infoText: {fileID: 0}
