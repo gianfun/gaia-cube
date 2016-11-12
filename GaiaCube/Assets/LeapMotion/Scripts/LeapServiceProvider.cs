@@ -22,11 +22,7 @@ namespace Leap.Unity
         [SerializeField]
         protected bool _isHeadMounted = false;
 
-        [Tooltip("Set true if the Controller should read from WebSocket.")]
-        [SerializeField]
-        protected bool isWebController = false;
-
-        [Tooltip("Who gives us an IP for the WebSocket connection.")]
+        [Tooltip("Who tells us to use a Web or USB connection, and gives us an IP for the WebSocket connection.")]
         [SerializeField]
         public GameObject connectionGuruObject;
         public IConnectionGuru connectionGuru;
@@ -341,7 +337,7 @@ namespace Leap.Unity
                 destroyController();
             }
 
-            if (isWebController)
+            if (connectionGuru.ShouldUseWebLeap())
             {
                 if (connectionGuru != null)
                 {

@@ -22,6 +22,7 @@ public class UniverseController : MonoBehaviour, IConnectionGuru {
 
     private StateManager sm;
 
+    public GameObject leapController;
     public GameObject WinMessage;
 	public bool goBackToMenu;
 
@@ -43,6 +44,10 @@ public class UniverseController : MonoBehaviour, IConnectionGuru {
     void Awake()
     {
         sm = StateManager.getInstance();
+        if (!ShouldUseLeap())
+        {
+            leapController.SetActive(false);
+        }
     }
 
     void Start() {
@@ -97,8 +102,8 @@ public class UniverseController : MonoBehaviour, IConnectionGuru {
             GameObject.FindWithTag("World").GetComponent<Transform>().localPosition = new Vector3(0, 0, 0);
         }
 
-        vrManager.toggleReticle(!sm.shouldUseLeap);
-        GameObject.FindWithTag("EventSystem").GetComponent<OurGazeInputModule>().enabled = !sm.shouldUseLeap;
+        vrManager.toggleReticle(sm.leapMode == StateManager.LeapMode.None);
+        GameObject.FindWithTag("EventSystem").GetComponent<OurGazeInputModule>().enabled = (sm.leapMode == StateManager.LeapMode.None);
     }
 
     public void CheckForWinningCondition()
@@ -150,8 +155,8 @@ public class UniverseController : MonoBehaviour, IConnectionGuru {
         }
         if (Input.GetKeyUp(KeyCode.P))
         {
-            vrManager.toggleReticle(sm.shouldUseLeap);
-            sm.SetLeapUsage(!sm.shouldUseLeap);
+            vrManager.toggleReticle(sm.leapMode == StateManager.LeapMode.None);
+            sm.IncrementLeapMode();
         }
 
         if (moveCameraLeft || moveCameraRight)
@@ -342,6 +347,16 @@ public class UniverseController : MonoBehaviour, IConnectionGuru {
 
 		MoveSelectorPlane ();
 		*/
+    }
+
+    public bool ShouldUseWebLeap()
+    {
+        return sm.leapMode == StateManager.LeapMode.Web;
+    }
+
+    public bool ShouldUseLeap()
+    {
+        return !(sm.leapMode == StateManager.LeapMode.None);
     }
 
     public string GetIP()

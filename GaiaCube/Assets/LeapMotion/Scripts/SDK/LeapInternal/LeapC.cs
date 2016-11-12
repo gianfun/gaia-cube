@@ -12,12 +12,12 @@ namespace LeapInternal
 		}
 
 
+    #if UNITY_ANDROID
         public static long GetNow()
         {
             return 0;
         }
 
-	#if UNITY_ANDROID
 		public static eLeapRS CreateClockRebaser(out IntPtr phClockRebaser)
 		{
 		phClockRebaser = IntPtr.Zero;
@@ -56,12 +56,6 @@ namespace LeapInternal
 		return eLeapRS.eLeapRS_Success;
 		}
 
-		public static eLeapRS CreateConnection(out IntPtr pConnection)
-		{
-		return LeapC.CreateConnection(IntPtr.Zero, out pConnection);
-		}
-
-
 		public static eLeapRS GetConnectionInfo(IntPtr hConnection, out LEAP_CONNECTION_INFO pInfo)
 		{
 		pInfo = new LEAP_CONNECTION_INFO();
@@ -69,8 +63,6 @@ namespace LeapInternal
 		pInfo.status = eLeapConnectionStatus.eLeapConnectionStatus_Connected;
 		return eLeapRS.eLeapRS_Success;
 		}
-
-
 
 		public static eLeapRS OpenConnection(IntPtr hConnection)
 		{
@@ -91,46 +83,111 @@ namespace LeapInternal
 		}
 
 
-		public static eLeapRS GetDeviceCount(IntPtr hConnection, out uint deviceCount)
-		{
-		return LeapC.GetDeviceList(hConnection, IntPtr.Zero, out deviceCount);
-		}
-	#else
-		[DllImport("LeapC", EntryPoint = "LeapGetNow")]
-		public static extern long GetNow();
+#else
+
+        public  static long GetNow()
+        {
+            return DllGetNow();
+        }
+                
+        public  static eLeapRS CreateClockRebaser(out IntPtr phClockRebaser)
+        {
+            return DllCreateClockRebaser(out phClockRebaser);
+        }
+                
+        public  static eLeapRS DestroyClockRebaser(IntPtr hClockRebaser)
+        {
+            return DllDestroyClockRebaser(hClockRebaser);
+        }
+
+        public static eLeapRS UpdateRebase(IntPtr hClockRebaser, long userClock, long leapClock)
+        {
+            return DllUpdateRebase(hClockRebaser, userClock, leapClock);
+        }
+
+        public static eLeapRS RebaseClock(IntPtr hClockRebaser, long userClock, out long leapClock)
+        {
+            return DllRebaseClock(hClockRebaser, userClock, out leapClock);
+        }
+
+        public static eLeapRS CreateConnection(ref LEAP_CONNECTION_CONFIG pConfig, out IntPtr pConnection)
+        {
+            return DllCreateConnection(ref pConfig, out pConnection);
+        }
+
+        private static eLeapRS CreateConnection(IntPtr nulled, out IntPtr pConnection)
+        {
+            return DllCreateConnection(nulled, out pConnection);
+        }
+
+        public static eLeapRS GetConnectionInfo(IntPtr hConnection, out LEAP_CONNECTION_INFO pInfo)
+        {
+            return DllGetConnectionInfo(hConnection, out pInfo);
+        }
+
+        public static eLeapRS OpenConnection(IntPtr hConnection)
+        {
+            return DllOpenConnection(hConnection);
+        }
+
+        public static eLeapRS GetDeviceList(IntPtr hConnection, [In] [Out] LEAP_DEVICE_REF[] pArray, out uint pnArray)
+        {
+            return DllGetDeviceList(hConnection, pArray, out pnArray);
+        }
+
+        private static eLeapRS GetDeviceList(IntPtr hConnection, [In] [Out] IntPtr pArray, out uint pnArray)
+        {
+            return DllGetDeviceList(hConnection, pArray, out pnArray);
+        }
+
+        //---------------------------------------- DLL funcs
+
+        [DllImport("LeapC", EntryPoint = "LeapGetNow")]
+		public static extern long DllGetNow();
 
 		[DllImport("LeapC", EntryPoint = "LeapCreateClockRebaser")]
-		public static extern eLeapRS CreateClockRebaser(out IntPtr phClockRebaser);
+		public static extern eLeapRS DllCreateClockRebaser(out IntPtr phClockRebaser);
 
 		[DllImport("LeapC", EntryPoint = "LeapDestroyClockRebaser")]
-		public static extern eLeapRS DestroyClockRebaser(IntPtr hClockRebaser);
+		public static extern eLeapRS DllDestroyClockRebaser(IntPtr hClockRebaser);
 
 		[DllImport("LeapC", EntryPoint = "LeapUpdateRebase")]
-		public static extern eLeapRS UpdateRebase(IntPtr hClockRebaser, long userClock, long leapClock);
+		public static extern eLeapRS DllUpdateRebase(IntPtr hClockRebaser, long userClock, long leapClock);
 
 		[DllImport("LeapC", EntryPoint = "LeapRebaseClock")]
-		public static extern eLeapRS RebaseClock(IntPtr hClockRebaser, long userClock, out long leapClock);
+		public static extern eLeapRS DllRebaseClock(IntPtr hClockRebaser, long userClock, out long leapClock);
 
 		[DllImport("LeapC", EntryPoint = "LeapCreateConnection")]
-		public static extern eLeapRS CreateConnection(ref LEAP_CONNECTION_CONFIG pConfig, out IntPtr pConnection);
+		public static extern eLeapRS DllCreateConnection(ref LEAP_CONNECTION_CONFIG pConfig, out IntPtr pConnection);
 
 		[DllImport("LeapC", EntryPoint = "LeapCreateConnection")]
-		private static extern eLeapRS CreateConnection(IntPtr nulled, out IntPtr pConnection);
+		private static extern eLeapRS DllCreateConnection(IntPtr nulled, out IntPtr pConnection);
 
 		[DllImport("LeapC", EntryPoint = "LeapGetConnectionInfo")]
-		public static extern eLeapRS GetConnectionInfo(IntPtr hConnection, out LEAP_CONNECTION_INFO pInfo);
+		public static extern eLeapRS DllGetConnectionInfo(IntPtr hConnection, out LEAP_CONNECTION_INFO pInfo);
 
 		[DllImport("LeapC", EntryPoint = "LeapOpenConnection")]
-		public static extern eLeapRS OpenConnection(IntPtr hConnection);
+		public static extern eLeapRS DllOpenConnection(IntPtr hConnection);
 
 		[DllImport("LeapC", EntryPoint = "LeapGetDeviceList")]
-		public static extern eLeapRS GetDeviceList(IntPtr hConnection, [In] [Out] LEAP_DEVICE_REF[] pArray, out uint pnArray);
+		public static extern eLeapRS DllGetDeviceList(IntPtr hConnection, [In] [Out] LEAP_DEVICE_REF[] pArray, out uint pnArray);
 
 		[DllImport("LeapC", EntryPoint = "LeapGetDeviceList")]
-		private static extern eLeapRS GetDeviceList(IntPtr hConnection, [In] [Out] IntPtr pArray, out uint pnArray);
+		private static extern eLeapRS DllGetDeviceList(IntPtr hConnection, [In] [Out] IntPtr pArray, out uint pnArray);
 #endif
 
-		[DllImport("LeapC", EntryPoint = "LeapOpenDevice")]
+        public static eLeapRS CreateConnection(out IntPtr pConnection)
+        {
+            return LeapC.CreateConnection(IntPtr.Zero, out pConnection);
+        }
+
+
+        public static eLeapRS GetDeviceCount(IntPtr hConnection, out uint deviceCount)
+        {
+            return LeapC.GetDeviceList(hConnection, IntPtr.Zero, out deviceCount);
+        }
+
+        [DllImport("LeapC", EntryPoint = "LeapOpenDevice")]
 		public static extern eLeapRS OpenDevice(LEAP_DEVICE_REF rDevice, out IntPtr pDevice);
 
 		[DllImport("LeapC", CharSet = CharSet.Ansi, EntryPoint = "LeapGetDeviceInfo")]

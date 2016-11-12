@@ -5,6 +5,8 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 
 public class StateManager : MonoBehaviour {
+    public enum LeapMode { None, USB, Web };
+
 	public static StateManager instance;
 
 	public const int defaultLevelCount = 10;
@@ -15,7 +17,7 @@ public class StateManager : MonoBehaviour {
 	public bool[] unlockedLevels;
 
 	public bool shouldUseVR;
-	public bool shouldUseLeap;
+	public LeapMode leapMode;
     public string leapIP;
 
 	public GameState gs;
@@ -72,11 +74,11 @@ public class StateManager : MonoBehaviour {
 			SetPlayerPrefsBool ("useVR", shouldUseVR);
 		}
 
-		if (PlayerPrefs.HasKey ("useLeap")) {
-			shouldUseLeap = GetPlayerPrefsBool ("useLeap");
+		if (PlayerPrefs.HasKey ("leapMode")) {
+			leapMode = (LeapMode)PlayerPrefs.GetInt("leapMode");
 		} else {
-			shouldUseLeap = false;
-			SetPlayerPrefsBool ("useLeap", shouldUseLeap);
+            leapMode = LeapMode.USB;
+            PlayerPrefs.SetInt("leapMode", (int)leapMode);
 		}
 
         if (PlayerPrefs.HasKey("LeapIP"))
@@ -99,10 +101,16 @@ public class StateManager : MonoBehaviour {
 		shouldUseVR = newValue;
 	}
 
-	public void SetLeapUsage(bool newValue){
-		SetPlayerPrefsBool ("useLeap", newValue);
-		shouldUseLeap = newValue;
+	public void SetLeapMode(LeapMode newMode){
+        PlayerPrefs.SetInt("leapMode",(int)newMode);
+        leapMode = newMode;
 	}
+
+    public void IncrementLeapMode()
+    {
+        leapMode = (LeapMode) (((int)leapMode + 1) % 3);
+        PlayerPrefs.SetInt("leapMode", (int)leapMode);
+    }
 
     public void SetLeapIP(string newIP)
     {

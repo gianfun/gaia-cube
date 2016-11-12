@@ -16,7 +16,11 @@ public class MenuController : MonoBehaviour {
     private VRManager vrManager;
 
     private GameObject uiCrossVR;
-    private GameObject uiCrossLEAP;
+    private GameObject uiTickVR;
+
+    public GameObject[] leapModeGUIImages;
+
+    private GameObject configLeapButton;
 
     public UnityEngine.UI.Toggle VRToggle;
     void Awake()
@@ -33,10 +37,17 @@ public class MenuController : MonoBehaviour {
     void Start()
     {
         uiCrossVR = GameObject.Find("CrossVR");
-        uiCrossLEAP = GameObject.Find("CrossLEAP");
+        uiTickVR = GameObject.Find("TickVR");
+        configLeapButton = GameObject.Find("ConfigLeap");
+        configLeapButton.SetActive(sm.leapMode == StateManager.LeapMode.Web);
         vrManager.toggleVR(sm.shouldUseVR);
-        uiCrossLEAP.SetActive(sm.shouldUseLeap);
         HideIPConfig();
+
+        for (int i = 0; i < leapModeGUIImages.Length; i++)
+        {
+            leapModeGUIImages[i].SetActive(false);
+        }
+        leapModeGUIImages[(int)sm.leapMode].SetActive(true);
     }
 
     void CreateLevelButtons()
@@ -72,7 +83,8 @@ public class MenuController : MonoBehaviour {
         sm.SetVRUsage(turnOn);
 
         //Display on button
-        uiCrossVR.SetActive(turnOn);
+        uiCrossVR.SetActive(!turnOn);
+        uiTickVR.SetActive(turnOn);
 
         Camera.main.transform.localRotation = Quaternion.identity;
 
@@ -86,8 +98,10 @@ public class MenuController : MonoBehaviour {
 
     public void onButtonToggleLeap()
     {
-        sm.SetLeapUsage(!sm.shouldUseLeap);
-        uiCrossLEAP.SetActive(sm.shouldUseLeap);
+        leapModeGUIImages[(int)sm.leapMode].SetActive(false);
+        sm.IncrementLeapMode();
+        leapModeGUIImages[(int)sm.leapMode].SetActive(true);
+        configLeapButton.SetActive(sm.leapMode == StateManager.LeapMode.Web);
     }
 
     public void ShowIPConfig()

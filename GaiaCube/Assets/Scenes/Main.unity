@@ -2773,6 +2773,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af3e195e6a1f7254d845e869e96c1440, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  leapController: {fileID: 1008686133}
   WinMessage: {fileID: 440308833}
   goBackToMenu: 0
 --- !u!1001 &492160217
