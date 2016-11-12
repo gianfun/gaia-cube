@@ -4,6 +4,12 @@
 		"height": 6,
 		"numRowsPerHeight": 5
 	},
+	"elements": {
+		"earth": true,
+		"water": true,
+		"fire": true,
+		"wind": true
+	},
 	"start": [
 				4,4,4,4,4,
 				4,4,4,4,4,

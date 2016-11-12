@@ -22,6 +22,8 @@ public class UniverseController : MonoBehaviour, IConnectionGuru {
 
     private StateManager sm;
 
+    public PlayerController playerController;
+    public CanvasManager canvasManager;
     public GameObject leapController;
     public GameObject WinMessage;
 	public bool goBackToMenu;
@@ -35,7 +37,10 @@ public class UniverseController : MonoBehaviour, IConnectionGuru {
 		goalState = worldLoader.getGoalState ();
 		dimensions = worldLoader.getDimensions ();
 
-		clayWorld.Init ();
+        playerController.setUsableElements(worldLoader.usableElements);
+        canvasManager.showUsableElements(worldLoader.usableElements);
+
+        clayWorld.Init ();
 		goalWorld.Init ();
 		clayWorld.CreateBlocks (clayState, dimensions);
 		goalWorld.CreateBlocks (goalState, dimensions);

@@ -5,7 +5,15 @@ using System.Collections;
 public class CanvasManager : MonoBehaviour {
 	public Canvas canvas;
 	public Image elementShower;
-	public Sprite windSprite, waterSprite, fireSprite, earthUpSprite, earthDownSprite;
+
+    //They are in two different lines so Unity shows them nicely
+    [Header("Sprites")]
+    public Sprite windSprite;
+    public Sprite waterSprite, fireSprite, earthUpSprite, earthDownSprite;
+
+    [Header("GameObjects")]
+    public GameObject earthUpButton;
+    public GameObject earthDownButton, waterButton, fireButton, windButton;
 
 	public void ShowElement(PlayerAction action){
 		switch(action){
@@ -35,6 +43,15 @@ public class CanvasManager : MonoBehaviour {
 		}
 
 	}
+
+    public void showUsableElements(UsableElements elements)
+    {
+        earthUpButton.SetActive(elements.earth);
+        earthDownButton.SetActive(elements.earth);
+        waterButton.SetActive(elements.water);
+        fireButton.SetActive(elements.fire);
+        windButton.SetActive(elements.wind);
+    }
 
 	public enum PlayerAction {
 		WIND, WATER, FIRE, EARTH_UP, EARTH_DOWN, NONE

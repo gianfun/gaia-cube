@@ -9,15 +9,26 @@ public class WorldDimension{
 }
 
 [System.Serializable]
+public class UsableElements
+{
+    public bool earth;
+    public bool water;
+    public bool fire;
+    public bool wind;
+}
+
+[System.Serializable]
 public class WorldJson {
 	public WorldDimension dimensions;
-	public int[] start;
+    public UsableElements elements;
+    public int[] start;
 	public int[] goal;
 }
 
 public class WorldLoader {
 	private WorldDimension dimens;
 	private int[,,] clayState, goalState;
+    public UsableElements usableElements;
 
 	public WorldLoader(){
 		//LoadLevel (level);
@@ -43,6 +54,7 @@ public class WorldLoader {
 		WorldJson worldjson = JsonUtility.FromJson<WorldJson> (json);
 		dimens = worldjson.dimensions;
 
+        usableElements = worldjson.elements;
 		clayState = new int[dimens.rowLen, dimens.height, dimens.numRowsPerHeight];
 		goalState = new int[dimens.rowLen, dimens.height, dimens.numRowsPerHeight];
 

@@ -9,6 +9,11 @@ public class PlayerController : MonoBehaviour {
 	[SerializeField]
 	private GestureManager GM;
 
+    private bool canUseEarth;
+    private bool canUseWater;
+    private bool canUseFire;
+    private bool canUseWind;
+
 	public bool somethingTriggered = false;
 
 	public bool doSelect = false;
@@ -52,6 +57,7 @@ public class PlayerController : MonoBehaviour {
 		if (shouldUseLeap) {
             lastTriggerTime = Time.time;
             if (GM.left.isPinching && GM.right.isPinching) {
+            } else if (GM.left.isPinching && GM.right.isPinching) {
 				doSelect = true;
 				ray_topleft = new Ray (cameraTrans.position, GM.left.pinchPosition - cameraTrans.position);
 				ray_bottomright = new Ray (cameraTrans.position, GM.right.pinchPosition - cameraTrans.position);
@@ -64,15 +70,15 @@ public class PlayerController : MonoBehaviour {
 				goToBirdsEye = true;
 			} else if (GM.right.doRotate) {
 				leaveBirdsEye = true;
-			} else if (GM.moveEarthDown) {
+			} else if (GM.moveEarthDown && canUseEarth) {
 				moveEarthDown = true;
-			} else if (GM.moveEarthUp) {
+			} else if (GM.moveEarthUp && canUseEarth) {
 				moveEarthUp = true;
-			} else if (GM.doWater) {
+			} else if (GM.doWater && canUseWater) {
 				doWater = true;
-			} else if (GM.doFire) {
+			} else if (GM.doFire && canUseFire) {
 				doFire = true;
-			} else if (GM.doWind) {
+			} else if (GM.doWind && canUseWind) {
 				doWind = true;
 			} else
             {
@@ -156,6 +162,13 @@ public class PlayerController : MonoBehaviour {
 	}
 			
 
+    public void setUsableElements(UsableElements usable)
+    {
+        canUseEarth = usable.earth;
+        canUseWater = usable.water;
+        canUseFire  = usable.fire;
+        canUseWind  = usable.wind;
+    }
 
 	void setAllAsFalse(){
 		doSelect = false;
