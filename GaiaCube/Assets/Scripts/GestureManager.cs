@@ -63,29 +63,6 @@ public class GestureManager : MonoBehaviour {
 
 			Vector3 a = (transform.rotation * left.hand.PalmNormal.ToVector3 ()).normalized;
 
-			if (left.hand != null && right.hand != null && false) {
-				infoText.text = "Confidence\t\t\t: Left: " + left.hand.Confidence + "  Right: " + right.hand.Confidence + "\n";
-				infoText.text += "Extended Fingers \t: Left: " + left.extendedFingers + "  Right: " + right.extendedFingers + "\n";
-				infoText.text += "Extended Fingers (raw): Left: " + left.rawExtendedFingers + "  Right: " + right.rawExtendedFingers + "\n";
-				infoText.text += "Finger distance\t\t: Left: " + left.fingerDistance + "  Right: " + right.fingerDistance + "\n";
-				infoText.text += "Paw      \t\t\t\t\t: Left: " + left.isPaw + "  Right: " + right.isPaw + "\n";
-				infoText.text += "Paw position \t\t\t: Left: " + left.pawStartPosition + "  Right: " + right.pawStartPosition + "\n";
-				infoText.text += "Palm position\t\t\t: Left: " + left.hand.PalmPosition.ToVector3 () + "  Right: " + right.hand.PalmPosition.ToVector3 () + "\n";
-				infoText.text += "Palm velocity\t\t\t: Left: " + left.palmVelocity + "  Right: " + right.palmVelocity + "\n";
-				infoText.text += "Palm velocity (raw)\t\t\t: Left: " + left.hand.PalmVelocity.ToVector3() + "  Right: " + right.hand.PalmVelocity.ToVector3() + "\n";
-				infoText.text += "Palm Normal\t\t\t: Left: " + left.handNormal.normalized + "  Right: " + right.handNormal.normalized + "\n";
-				infoText.text += "Palm Normal (cntrl)\t\t: Left: " + left.cntrlHandNormal.normalized + "  Right: " + right.cntrlHandNormal.normalized + "\n";
-				infoText.text += "Palm Roll\t\t\t: Left: " + a + "  Right: " + right.hand.PalmNormal.Roll + "\n";
-				infoText.text += "Palm Yaw\t\t\t: Left: " + left.hand.PalmNormal.Yaw + "  Right: " + right.hand.PalmNormal.Yaw + "\n";
-				infoText.text += "Palm Pitch\t\t\t: Left: " + left.hand.PalmNormal.Pitch + "  Right: " + right.hand.PalmNormal.Pitch + "\n";
-				infoText.text += "Small Finger velocity\t\t\t: Left: " + left.littleFingerVelocity + "  Right: " + right.littleFingerVelocity + "\n";
-				infoText.text += "LastTipVelocity Sum\t\t\t: Left: " + left.lastTipVelocitySum + "  Right: " + right.lastTipVelocitySum + "\n";
-				infoText.text += "lastPalmVelocity Sum\t\t\t: Left: " + left.lastPalmVelocitySum + "  Right: " + right.lastPalmVelocitySum + "\n";
-				infoText.text += "palm - finger velocity\t\t\t: Left: " + (left.lastTipVelocitySum - left.lastPalmVelocitySum) + "  Right: " + (right.lastTipVelocitySum - right.lastPalmVelocitySum) + "\n";
-				infoText.text += "palm / finger velocity\t\t\t: Left: " + (left.lastTipVelocitySum / left.lastPalmVelocitySum) + "  Right: " + (right.lastTipVelocitySum / right.lastPalmVelocitySum) + "\n";
-			}
-
-
 			if (left.currentAction != GestureDetector.Action.None) {
 				if (left.currentAction == GestureDetector.Action.Fire) {
 					doFire = true;
