@@ -115,3 +115,51 @@ Nesta iteração, haveria dois gestos que deveriam ser captados e interpretados 
 Durante a implementação dessas mecânicas, ficou clara a necessidade de uma mecânica de seleção que permitisse a manipulação de grandes áreas do terreno simultaneamente, então um terceiro gesto foi adicionado: pinçar e arrastar para delimitar áreas.
 
 Também nessa etapa, percebeu-se que, devido à posição do Leap Motion, alguns dos gestos imaginados para as diferentes mecânicas do jogo - sobretudo o associado a chuva - não poderiam ser captados com a precisão necessária, nos levando a precisar reimaginar uma parte significativa da interação.
+
+
+% ---
+\section{Arquitetura}\label{sec-desenvolvimento-arquitetura}
+% ---
+
+Para se definir a arquitetura do sistema, é antes necessário identificar e entender cada um dos principais elementos, assim como suas interfaces.
+
+% ---
+\subsection{Identificação dos elementos}\label{subsec-identificacao-elementos}
+% ---
+
+% ---
+\subsubsection{Controlador Leap Motion}\label{subsubsec-elemento-leapmotion}
+% ---
+
+Conforme visto em \ref{subsubsec-teo-leap-motion}, o controlador pode ser dividido em 2 elementos diferentes: O \textbf{hardware do controlador} e o \textbf{software} que aplica algoritmos de visão computacional nas imagens vindas do hardware, transformando-as em dados estruturados.
+
+A parte de software pode ser executada no computador ou, no caso de se utilizar a versão 2 do SDK do Leap Motion, é possível utilizar a biblioteca beta para o Android.
+
+% ---
+\subsubsection{Lógica do jogo}\label{subsubsec-elemento-logica-jogo}
+% ---
+
+Este é o elemento que age sobre o ambiente virtual a partir de dados de entrada do controlador e do movimento do \textit{headset} de realidade virtual. Este elemento estará implementado no Unity, e pode ser executado ou no computador ou no próprio celular.
+
+% ---
+\subsubsection{Processamento de saída do video}\label{subsubsec-elemento-video}
+% ---
+
+Este elemento é controlado pelo SDK do Google Cardboard, e cuida de toda a parte de gerar a visão estereoscópica necessária para a visão 3D, além de movimentar a visão do jogo de acordo com o movimento do \textit{headset} de realidade virtual. Este elemento pode ser executado ou no computador ou no próprio celular.
+
+% ---
+\subsection{Arquiteturas estudadas}\label{subsec-arquiteturas-estudadas}
+% ---
+
+% ---
+\subsubsection{Controlador diretamente conectado no celular}\label{subsubsec-arquiteturas-leapmotion-android}
+% ---
+
+A arquitetura que provê a maior mobilidade e que tem o menor número de subsistemas diferentes é aquele aonde se conecta o controlador Leap Motion diretamente ao celular, conforme mostrado na figura %TODO: Continue
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{images/Arquitetura-leap-android}
+	\caption{}
+	\label{fig:arquitetura-leap-android}
+\end{figure}
