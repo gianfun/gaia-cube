@@ -27,3 +27,14 @@ ExportedObj/
 sysinfo.txt
 
 *.apk
+
+# Latex stuff - Auxiliary files created but unnecessary
+Latex/meta.aux
+Latex/meta.bbl
+Latex/meta.blg
+Latex/meta.idx
+Latex/meta.lof
+Latex/meta.log
+Latex/meta.lot
+Latex/meta.synctex.gz
+Latex/meta.toc
