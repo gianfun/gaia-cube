@@ -61,7 +61,7 @@ Para \cite{kirner:2011:evolucao_RV}, Um mundo virtual visto através de uma tela
 As competências e habilidades de raciocínio lógico consideradas para análise consistem de um subconjunto dos PCN, em especial, daqueles relativos ao raciocínio lógico, e são apresentados na Tabela \ref{tabela:PCN}, retirado de \cite{Tabuti:2015:tabela_habilidades}.
 
 \renewcommand{\arraystretch}{1.2}
-\begin{table}[h] \scriptsize
+\begin{table}[ht] \scriptsize
 	\centering
 	\begin{tabular} {| >{\centering\arraybackslash} m{2cm} | >{\centering\arraybackslash} m{1.5cm} | m{7cm} |}
 		\hline
@@ -103,6 +103,13 @@ Pretendeu-se então projetar um jogo voltado para alunos do ensino fundamental, 
 \section{Tecnologia}\label{sec-tecnologia}
 % ---
 
+% ---
+\subsection{Protocolo WebSocket}\label{subsec-teo-websocket}
+% ---
+
+O WebSocket é um protocolo de comunicação full-duplex que pode ser implementado sobre uma conexão TCP, e foi padronizado em 2011 conforme descrito no RFC 6455 \cite{RFC:2011:websocket}. Ele foi desenvolvido para ser implementado em navegadores e servidores web, com o intuito de ampliar as possibilidades de interação entre um navegador e um servidor. O protocolo permite que ambos os lados enviem mensagens ao outro a qualquer momento, sem a necessidade de um lado solicitar a mensagem. Mesmo tendo sido desenvolvido para uso em navegadores, o protocolo pode ser utilizado por qualquer aplicação de cliente e servidor.
+
+Outro termo bastante relacionado ao WebSocket é o conceito de \textit{Push Notifications}, que são as mensagens enviadas de um servidor para um aplicativo executando em um celular para notificar o usuário de algum evento. O interessante é que o aplicativo não precisa ficar consultando o servidor (ex. \textit{polling}) para conseguir receber a mensagem, pois esta é enviada ao cliente quando o servidor quiser.
 
 % ---
 \subsection{Controlador Leap Motion}\label{subsubsec-teo-leap-motion}

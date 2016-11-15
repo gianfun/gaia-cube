@@ -54,7 +54,7 @@ Neste jogo, as crianças se deparariam com um terreno digital composto por acide
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.5\textwidth]{draft1}
-	\caption{conceitos iniciais}
+	\caption{Conceitos iniciais}
 \end{figure}
 
 
@@ -63,7 +63,7 @@ Foram então imaginados cenários que extrapolassem os usoss básicos das mecân
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.5\textwidth]{draft2}
-	\caption{primeiro rascunho do jogo}
+	\caption{Primeiro rascunho do jogo}
 \end{figure}
 
 % ---
@@ -77,7 +77,7 @@ O protótipo deveria se ater apenas a uma mecânica básica da especificação d
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.5\textwidth]{ss1}
-	\caption{prova de conceito do jogo}
+	\caption{Prova de conceito do jogo}
 \end{figure}
 
 Apesar da simples implementação, algumas  primeiras dificuldades já puderam ser percebidas nesta iteração, sobretudo na integração dos dispositivos de realidade virtual.
@@ -95,13 +95,13 @@ Tendo em mente as facilidades e desafios percebidos durante a criação da prova
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.5\textwidth]{water_mechanics1}
-	\caption{mecânicas da água 1}
+	\caption{Mecânicas da água 1}
 \end{figure}
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.5\textwidth]{water_mechanics2}
-	\caption{mecânicas da água 2}
+	\caption{Mecânicas da água 2}
 \end{figure}
 
 Nesta iteração, haveria dois gestos que deveriam ser captados e interpretados pelo Leap Motion: abaixar e elevar a mão com a palma aberta para alterar a elevação do terreno e apontar todos os dedos para baixo para fazer chover em uma área específica.
@@ -109,7 +109,7 @@ Nesta iteração, haveria dois gestos que deveriam ser captados e interpretados 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.5\textwidth]{ss2}
-	\caption{prova de conceito do jogo}
+	\caption{Prova de conceito do jogo}
 \end{figure}
 
 Durante a implementação dessas mecânicas, ficou clara a necessidade de uma mecânica de seleção que permitisse a manipulação de grandes áreas do terreno simultaneamente, então um terceiro gesto foi adicionado: pinçar e arrastar para delimitar áreas.
@@ -159,7 +159,9 @@ As três arquiteturas estudadas têm como entrada as imagens vindas do controlad
 
 Nesta opção, conecta-se o controlador a um computador que esteja rodando o serviço do Leap Motion, transformando as imagens do controlador em dados estruturados. Estes são, então, enviados a um celular que esteja rodando a lógica do jogo e fazendo as transformações necessárias para a saída de vídeo. Esta opção é demonstrada na figura \ref{fig:arquitetura-leap-pc-leapdata-android}.
 
-As vantagens desta opção é que podemos utilizar a versão mais recente do SDK do Leap Motion, que melhorou muito o rastreamento das mãos, comparada à versão 2. Adicionalmente, o serviço já expõe uma interface web para a leitura dos dados estruturados. Uma desvantagen desta opção, porém, é a necessidade de modificar a biblioteca do Leap Motion do Unity para que esta aceite conexões web, já que, nativamente, ela aceita apenas conexões via USB. Outra desvantagem é a latência adicionada entre o movimento das mãos do usuário e o momento em que a lógica do jogo recebe tais informações. Se esta latência for alta demais, cria-se uma dissociação entre a mão do jogador e a mão virtual, diminuindo a imersão no jogo.
+As vantagens desta opção é que podemos utilizar a versão mais recente do SDK do Leap Motion, que melhorou muito o rastreamento das mãos, comparada à versão 2. Adicionalmente, o serviço já expõe uma interface web para a leitura dos dados estruturados. 
+
+Uma desvantagen desta opção, porém, é a necessidade de modificar a biblioteca do Leap Motion do Unity para que esta aceite conexões web, já que, nativamente, ela aceita apenas conexões via USB. Outra desvantagem é a latência adicionada entre o movimento das mãos do usuário e o momento em que a lógica do jogo recebe tais informações. Se esta latência for alta demais, cria-se uma dissociação entre a mão do jogador e a mão virtual, diminuindo a imersão no jogo.
 
 \begin{figure}
 	\centering
@@ -174,7 +176,9 @@ As vantagens desta opção é que podemos utilizar a versão mais recente do SDK
 
 O diferencial desta opção é que a lógica do jogo roda no computador, e a saída de vídeo é transmitida para o celular via algum software, como o Riftcat(pago) ou o TrinusVR(gratuíto). Desta forma, o controlador é conectado diretamente ao computador, que está rodando o serviço do Leap Motion e lê diretamente dele os dados estruturados.
 
-As vantagens desta opção são que, por rodar num computador, o poder de processamento é mais alto e, portanto, existem mais possibilidades quanto a algoritmos utilizados, mecânicas do jogo e processamento gráfico. A conexão com o controlador, por ser direta, também significa uma latência baixa. O principal contraponto desta opção é o aumento da latência entre o movimento da cabeça do usuário e o movimento da cabeça virtual. Esta latência é maior do que a da opção 1 pois é necessário enviar os dados referentes ao movimento da cabeça do celular para o computador, que então deve enviar as imagens de volta para o celular. Essa latência adicional não apenas cria uma dissociação entre o jogador e o mundo virtual, mas também pode causar tontura e enjoo.
+As vantagens desta opção são que, por rodar num computador, o poder de processamento é mais alto e, portanto, existem mais possibilidades quanto a algoritmos utilizados, mecânicas do jogo e processamento gráfico. A conexão com o controlador, por ser direta, também significa uma latência baixa. 
+
+O principal contraponto desta opção é o aumento da latência entre o movimento da cabeça do usuário e o movimento da cabeça virtual. Esta latência é maior do que a da opção 1 pois é necessário enviar os dados referentes ao movimento da cabeça do celular para o computador, que então deve enviar as imagens de volta para o celular. Essa latência adicional não apenas cria uma dissociação entre o jogador e o mundo virtual, mas também pode causar tontura e enjoo.
 
 \begin{figure}
 	\centering
@@ -199,29 +203,65 @@ As desvantagens, porém, são a dependência do serviço do Leap nativo do Andro
 \end{figure}
 
 % ---
-\subsubsection{Comparação das alternativa}\label{subsubsec-arquiteturas-comparacao}
+\subsubsection{Comparação das alternativas}\label{subsubsec-arquiteturas-comparacao}
 % ---
 
-\begin{tabular}{|c|c|c|}
-	\hline 
-	\textbf{Alternativa} & \textbf{Pros} & \textbf{Contras} \\
-	\hline 
-	Servidor Websocket&  &  \\ 
-	\hline 
-	Streaming de Video&  &  \\ 
-	\hline 
-	Conexão Direta& Menor latência &  \\ 
-	\hline 
-\end{tabular} 
+A comparação das alternativas pode ser vista na tabela \ref{tabela:alternativas-arquiteturas}.
 
-\begin{table}[h] \scriptsize
+\begin{table}[!h] \scriptsize
 	\centering
-	\begin{tabular} {| >{\centering\arraybackslash} m{2cm} | >{\centering\arraybackslash} m{3cm} | >{\centering\arraybackslash}m{3cm} |}
-		\\ \hline
-		Alternativa & Pros & Contras \\
-		 & b & c \\ \hline
-		d & e & f \\
-	\end{tabular}
+	\begin{tabular}{|m{2.1cm}|>{\centering\arraybackslash}m{6cm}|>{\centering\arraybackslash}m{6cm}|}
+		\hline 
+		\textbf{Alternativa} & \textbf{Pros} & \textbf{Contras} \\
+		\hline 
+		Servidor Websocket
+		&\begin{itemize}[label={--},noitemsep,topsep=0pt,leftmargin=4mm]
+			\item Versão mais recente do SDK do Leap.
+			\item Servidor WebSocket já disponível com o serviço Leap Motion.
+		\end{itemize}
+		&\begin{itemize}[label={--},noitemsep,topsep=1pt,leftmargin=4mm]
+			\item Maior latência entre o movimento da mão e da mão do jogador, pode diminuir imersão.
+			\item Necessidade de modificação da biblioteca do Leap no Unity.
+		\end{itemize}
+		\\ \hline 
+		Streaming de Video
+		&\begin{itemize}[label={--},noitemsep,topsep=0pt,leftmargin=4mm]
+			\item Processamento feito no computador
+			\item Conexão direta da lógica do jogo com controlador
+		\end{itemize}
+		&\begin{itemize}[label={--},noitemsep,topsep=0pt,leftmargin=4mm]
+			\item Latência entre movimento da cabeça do jogador e movimento da cabeça virtual, podendo causar desconforto e náusea.
+			\item Dependência de mais software, podendo ser pago.
+		\end{itemize}
+	    \\ \hline 
+		Conexão Direta
+		&\begin{itemize}[label={--},noitemsep,topsep=0pt,leftmargin=4mm]
+				\item Menor latência dentre as opções
+			\end{itemize}
+		&\begin{itemize}[label={--},noitemsep,topsep=0pt,leftmargin=4mm]
+				\item Utiliza a versão v2 do SDK do Leap, que tem precisão pior.
+				\item Necessita da versão beta do serviço para o Android, de difícil acesso.
+			\end{itemize}
+		\\ 
+		\hline 
+	\end{tabular} 
 	\caption[Comparação das alternativas de arquitetura]{Comparação das alternativas de arquitetura}
-	\label{tabela:alternativas-arquiteturas}
+\label{tabela:alternativas-arquiteturas}
 \end{table}
+
+% ---
+\subsection{Escolha da arquitetura}\label{subsec-arquitetura-escolha}
+% ---
+
+Inicialmente, se optou pela alternativa do streaming de video, visto que a sua implementação não necessitaria de mudanças no código. Bastaria gerar o executável do jogo no windows e rodar um software de streaming, como o Riftcat. Durante o desenvolvimento inicial, esta foi a alternativa utilizada, mesmo sendo necessário inicializar o software várias vezes, devido a bugs e falta de documentação do Rifcat.
+
+Porém, descobriu-se posteriormente que para que esta alternativa funcionasse, era necessário uma placa de video relativamente potente, de acordo com as especificações mínimas do software, encontrada em \cite{riftcat:2016:requirements}. Inclusive, o software do Riftcat só funcionava em um dos 5 computadores testados. Por esta razão, optou-se por abandonar esta alternativa, visto que dificultaria a acessibilidade do jogo.
+
+Dado este contratempo, decidiu-se testar as outras duas alternativas para verificar suas viabilidades. 
+
+A alternativa da conexão direta necessitava a obtenção da versão do serviço do Leap Motion para o Android, que não estava mais disponível no website da empresa. Afortunadamente, a co-orientadora deste projeto havia trabalhado anteriormente com o Leap Motion no Android, e conseguiu uma cópia dos arquivos necessários. Entretanto, nos testes preliminares feitos, não se obteve sucesso na utilização do serviço: O aplicativo do software no celular reconhecia o controlador conectado, mas aplicativos 'clientes' que utilizariam os dados do controlador não conseguiam se conectar ao controlador. Por este motivo, esta alternativa foi descartada.
+
+Optou-se então pela alternativa que restou, que utiliza o servidor WebSocket gerado pelo serviço do Leap Motion no computador. A principal dificuldade desta alternativa é que o plugin disponibilizado pela empresa para o Unity só conseguia receber os dados do controlador por meio da conexão direta, e não pelo servidor WebSocket. Portanto, foi necessário modificar o plugin distrubuído, que é software livre e tem seu código fonte disponível, para que ele se conectasse ao servidor WebSocket, recebesse os dados estruturados em mensagens JSON, parseasse-as e então as transformasse na estrutura de dados utilizada pelo Unity.
+
+Para implementar tais mudanças no código do plugin, foi necessário encontrar e testar bibliotecas que se conectassem a um servidor WebSocket (visto que o Unity não consegue fazer isto nativamente) e parseasse JSON (pois o \textit{parser} JSON nativo do Unity só funciona em casos de uso muito limitados). Visto que é necessário que movimentos das mãos sejam refletidos o mais rapidamente o possível no jogo (para se manter a impressão de que as mãos virtuais são as mãos reais do usuário, para manter a imersão), é essencial que estas bibliotecas fossem rápidas o suficiente para não serem um gargalo, além de serem eficientes em questão de memória e objetos alocados, visto que rodam com frequencia alta e é o Unity que gere a sua memória (ou seja, o Unity roda o coletor de lixo de tempos em tempos, algo que pode causar travamentos dependendo de quantos objetos 'mortos' existirem).
+
