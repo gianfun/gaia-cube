@@ -9,14 +9,20 @@
 
 \chapter{Desenvolvimento}\label{cap-desenvolvimento}
 
-Segundo o processo iterativo de desenvolvimento descrito na metodologia, este projeto evoluiu ao longo de várias etapas de crescente complexidade.
+Segundo o processo iterativo de desenvolvimento descrito na metodologia, 
+este projeto evoluiu ao longo de várias etapas de crescente complexidade.
 
 
 % ---
 \section{Objetivo e formulação do problema}\label{sec-objetivos-formulacao-problema}
 % ---
 
-Foi inicialmente elaborada uma enunciação geral do problema a ser resolvido: a criação de um jogo digital que, valendo-se de técnicas de realidade virtual, oferecesse uma experiência imersiva e educativa a crianças de 8 a 12 anos de idade, de acordo com o recorte selecionado descrito na Seção \ref{cap-teoria} de Teoria. Tendo essa enunciação como base, pôde-se decidir a respeito de restrições, e do escopo que guiariam as etapas seguintes de conceituação do projeto.
+Foi inicialmente elaborada uma enunciação geral do problema a ser resolvido: 
+a criação de um jogo digital que, valendo-se de técnicas de realidade 
+virtual, oferecesse uma experiência imersiva e educativa a crianças de 8 a 12 
+anos de idade, de acordo com o recorte selecionado descrito no \autoref{cap-teoria}.
+Tendo essa enunciação como base, pôde-se decidir a respeito de restrições, e 
+do escopo que guiariam as etapas seguintes de conceituação do projeto.
 
 % ---
 \subsection{Delimitação do escopo}\label{subsec-delimitacao-escopo}
@@ -27,19 +33,49 @@ TODO
 \subsection{Recorte do público alvo}\label{subsec-recorte-publico-alvo}
 % ---
 
-Em primeiro lugar, optou-se por restringir os equipamentos e tecnologias a serem empregados, de modo a facilitar a acessibilidade e adoção em sala de aula e diminuir os custos de implantação, sem que a experiência desejada tivesse de ser sacrificada. Isso levou à escolha do uso do \textit{Google Cardboard} como dispositivo principal de realidade virtual, por seu baixo custo comparado a demais alternativas de mercado, e sua integração a dispositivos móveis que, em muitos casos, já estariam ao alcance dos alunos, ou poderiam ser providenciados sem um grande impacto orçamentário.
+Em primeiro lugar, optou-se por restringir os equipamentos e tecnologias a 
+serem empregados, de modo a facilitar a acessibilidade e adoção em sala de aula 
+e diminuir os custos de implantação, sem que a experiência desejada tivesse de 
+ser sacrificada. Isso levou à escolha do uso do \textit{Google Cardboard} 
+como dispositivo principal de realidade virtual, por seu baixo custo comparado 
+a demais alternativas de mercado, e sua integração a dispositivos móveis que, 
+em muitos casos, já estariam ao alcance dos alunos, ou poderiam ser 
+providenciados sem um grande impacto orçamentário.
 
-Em adição ao \textit{Cardboard}, optou-se pela implementação do dispositivo detector de gestos manuais \textit{Leap Motion} como forma de \textit{input} principal para o jogo, com a vantagem de ser uma alternativa de custo aceitável, capaz de providenciar uma experiência bastante direta na interação do aluno com o mundo do jogo, uma vez que permite que movimentos do jogador no mundo real sejam traduzidos em ações do mundo virtual, permitindo abstrair os dispositivos de entrada e saída por completo, e mantendo a imersão e engajamento.
+Em adição ao \textit{Cardboard}, optou-se pela implementação do dispositivo 
+detector de gestos manuais \textit{Leap Motion} como forma de \textit{input}
+principal para o jogo, com a vantagem de ser uma alternativa de custo 
+aceitável, capaz de providenciar uma experiência bastante direta na interação 
+do aluno com o mundo do jogo, uma vez que permite que movimentos do jogador no 
+mundo real sejam traduzidos em ações do mundo virtual, permitindo abstrair os 
+dispositivos de entrada e saída por completo, e mantendo a imersão e engajamento.
 
-Por fim, como restrição adicional, a ferramenta \textit{Unity} foi escolhida como \textit{engine} de desenvolvimento do jogo, por sua fácil integração ao hardware escolhido, e seu paradigma de desenvolvimento em mais alto nível do que as demais alternativas disponíveis, o que permitiria ao grupo focar-se na conceituação e implementação do jogo em si, sem prender-se a eventuais problemas relativos à configuração e uso do hardware, criação de APIs próprias ou preocupações com elementos mais elementares da criação de um jogo digital.
+Por fim, como restrição adicional, a ferramenta \textit{Unity} foi escolhida 
+como \textit{engine} de desenvolvimento do jogo, por sua fácil integração 
+ao hardware escolhido, e seu paradigma de desenvolvimento em mais alto nível do 
+que as demais alternativas disponíveis, o que permitiria ao grupo focar-se 
+na conceituação e implementação do jogo em si, sem prender-se a eventuais 
+problemas relativos à configuração e uso do hardware, criação de APIs próprias 
+ou preocupações com elementos mais elementares da criação de um jogo digital.
 
 % ---
 \section{\textit{Brainstorming} e seleção do conceito do jogo}\label{sec-brainstorming-conceito}
 % ---
 
-Com a enunciação do problema e as restrições de implementação bem definidas e acordadas pelo grupo, pôde-se passar para a etapa seguinte do desenvolvimento, o \textit{brainstorm}, durante o qual várias ideias foram debatidas e exploradas pelos membros do grupo. Nesta fase, diversas propostas foram feitas para uma solução que fizesse um bom uso dos recursos de realidade virtual disponíveis e gerasse um projeto adequado ao público alvo selecionado, resultando em um jogo intuitivo, divertido que capaz de transmitir os conceitos de lógicos e cognitivos relevantes.
+Com a enunciação do problema e as restrições de implementação bem definidas 
+e acordadas pelo grupo, pôde-se passar para a etapa seguinte do desenvolvimento, 
+o \textit{brainstorm}, durante o qual várias ideias foram debatidas e 
+exploradas pelos membros do grupo. Nesta fase, diversas propostas foram feitas 
+para uma solução que fizesse um bom uso dos recursos de realidade 
+virtual disponíveis e gerasse um projeto adequado ao público alvo 
+selecionado, resultando em um jogo intuitivo, divertido que capaz de transmitir 
+os conceitos de lógicos e cognitivos relevantes.
 
-As ideias geradas variaram desde jogos de um ritmo mais acelerado, no qual um jogador teria que categorizar elementos abstratos o mais rápido que pudesse - segundo características como cor, formato e tamanho - até experiências nas quais pressões de tempo e condições de falha estavam completamente ausentes, como jogos de resolução de quebra-cabeças tridimensionais.
+As ideias geradas variaram desde jogos de um ritmo mais acelerado, no qual 
+um jogador teria que categorizar elementos abstratos o mais rápido que 
+pudesse - segundo características como cor, formato e tamanho - até experiências 
+nas quais pressões de tempo e condições de falha estavam completamente 
+ausentes, como jogos de resolução de quebra-cabeças tridimensionais.
 
 \begin{figure}[h]
 	\centering
@@ -49,9 +85,21 @@ As ideias geradas variaram desde jogos de um ritmo mais acelerado, no qual um jo
 \end{figure}
 \TODO{Ref. figura 2! "Queria que vocês explicassem as ideias dos jogos apresentados na Figura 2, acho que isso é importante. Precisa escrever também, porque a escolha final do jogo que vocês escolheram. Porque desse jogo e não dos demais pensados."}
 
-Por fim, uma análise cuidadosa das limitações das tecnologias escolhidas, aliada a uma preocupação em manter o jogo intuitivo e imersivo levaram o grupo a um \textit{design} mais diretamente análogo ao mundo real, gerando um jogo no qual o jogador manipularia características de uma pequena configuração geológica tridimensional, de forma a manipulá-la para chegar a um determinado estado pré-definido.
+Por fim, uma análise cuidadosa das limitações das tecnologias escolhidas, aliada 
+a uma preocupação em manter o jogo intuitivo e imersivo levaram o grupo a 
+um \textit{design} mais diretamente análogo ao mundo real, gerando um jogo no 
+qual o jogador manipularia características de uma pequena configuração 
+geológica tridimensional, de forma a manipulá-la para chegar a um determinado 
+estado pré-definido.
 
-Neste jogo, as crianças deparariam-se com um terreno digital composto por acidentes geográficos como planaltos, depressões, corpos d'água e formações magmáticas, e poderiam modificá-lo a partir de gestos manuais simples que controlassem a elevação, precipitação, movimentação do ar, entre outros. Este terreno seria subdivido em unidades cúbicas que poderiam ser manipuladas individualmente, fornecendo uma resolução suficiente para que configurações diversas e interessantes pudessem ser construídas, mas sem exigir uma precisão incompatível com os dispositivos de entrada e saída escolhidos.
+Neste jogo, as crianças deparariam-se com um terreno digital composto por acidentes
+geográficos como planaltos, depressões, corpos d'água e formações magmáticas, 
+e poderiam modificá-lo a partir de gestos manuais simples que controlassem 
+a elevação, precipitação, movimentação do ar, entre outros. Este terreno 
+seria subdivido em unidades cúbicas que poderiam ser manipuladas individualmente,
+fornecendo uma resolução suficiente para que configurações diversas e 
+interessantes pudessem ser construídas, mas sem exigir uma precisão incompatível 
+com os dispositivos de entrada e saída escolhidos.
 
 \begin{figure}[h]
 	\centering
@@ -61,7 +109,16 @@ Neste jogo, as crianças deparariam-se com um terreno digital composto por acide
 \end{figure}
 \TODO{Ref. figura 3!}
 
-Foram então imaginados cenários que extrapolassem os usos básicos das mecânicas propostas, de maneiras que se alinhassem aos conceitos pedagógicos que deveriam ser transmitidos pelo jogo: desafios que dependessem da execução de tarefas em uma determinada ordem, em combinação com outras tarefas paralelas, ou dentro de um determinado limite de tempo. Nestes cenários, era esperado que jogadores conseguissem imaginar soluções mais sofisticadas, indo além das interações básicas às quais teriam acesso direto. Seria necessário movimentar massas de ar para jogar água contra blocos de terra, formando praias; escavar o solo para alcançar câmaras magmáticos e formar vulcões; ou alterar o curso de corpos d'água para formar cascatas.
+Foram então imaginados cenários que extrapolassem os usos básicos das 
+mecânicas propostas, de maneiras que se alinhassem aos conceitos pedagógicos 
+que deveriam ser transmitidos pelo jogo: desafios que dependessem da execução 
+de tarefas em uma determinada ordem, em combinação com outras tarefas paralelas, 
+ou dentro de um determinado limite de tempo. Nestes cenários, era esperado 
+que jogadores conseguissem imaginar soluções mais sofisticadas, indo além 
+das interações básicas às quais teriam acesso direto. Seria necessário 
+movimentar massas de ar para jogar água contra blocos de terra, formando 
+praias; escavar o solo para alcançar câmaras magmáticos e formar vulcões; ou 
+alterar o curso de corpos d'água para formar cascatas.
 
 
 \begin{figure}[htb]
@@ -76,9 +133,19 @@ Foram então imaginados cenários que extrapolassem os usos básicos das mecâni
 \section{Primeira iteração: prova de conceito}\label{sec-primeira-iteracao-prova-conceito}
 % ---
 
-Uma vez decidido o conceito a ser explorado, um pequeno protótipo foi proposto para dar ao grupo uma noção mais palpável de como esse jogo se pareceria, como seria controlá-lo, que dificuldades imprevistas apareceriam e quais as medidas que precisariam ser tomadas para suplantá-las. Este protótipo inicial tinha como objetivo tanto familiarizar o grupo às ferramentas e tecnologias escolhidas para a realização do trabalho quanto ajudar a nivelar de maneira mais concreta a complexidade de sua implementação.
+Uma vez decidido o conceito a ser explorado, um pequeno protótipo foi proposto 
+para dar ao grupo uma noção mais palpável de como esse jogo se pareceria, como 
+seria controlá-lo, que dificuldades imprevistas apareceriam e quais as medidas 
+que precisariam ser tomadas para suplantá-las. Este protótipo inicial tinha 
+como objetivo tanto familiarizar o grupo às ferramentas e tecnologias 
+escolhidas para a realização do trabalho quanto ajudar a nivelar de maneira 
+mais concreta a complexidade de sua implementação.
 
-O protótipo deveria se ater apenas a uma mecânica básica da especificação do conceito: controle da elevação do terreno. O jogador teria acesso direto ao jogo - sem passar por telas de menu ou tutoriais - no qual se depararia com uma grade tridimensional de 5x5x5 cubos de terra, os quais poderia elevar ou rebaixar livremente.
+O protótipo deveria se ater apenas a uma mecânica básica da especificação 
+do conceito: controle da elevação do terreno. O jogador teria acesso direto ao 
+jogo - sem passar por telas de menu ou tutoriais - no qual se depararia com 
+uma grade tridimensional de 5x5x5 cubos de terra, os quais poderia elevar 
+ou rebaixar livremente.
 
 \begin{figure}[h]
 	\centering
@@ -88,20 +155,34 @@ O protótipo deveria se ater apenas a uma mecânica básica da especificação d
 \end{figure}
 \TODO{Ref. figura 5!}
 
-Apesar da simples implementação, algumas  primeiras dificuldades já puderam ser percebidas nesta iteração, sobretudo na integração dos dispositivos de realidade virtual.
+Apesar da simples implementação, algumas  primeiras dificuldades já puderam 
+ser percebidas nesta iteração, sobretudo na integração dos dispositivos de 
+realidade virtual.
 
-A primeira barreira a ser percebida foi a falta de compatibilidade com dispositivos \textit{Android} da versão mais recente do \textit{SDK} do controlador \textit{Leap Motion}, como havia nas versões anteriores. Isso, aliado ao fato de que a versão anterior do \textit{SDK} não estava mais disponível para download, significou que uma interação direta entre o \textit{Leap Motion} e o jogo compilado para dispositivos móveis não seria possível nessa etapa inicial do projeto.
+A primeira barreira a ser percebida foi a falta de compatibilidade com 
+dispositivos \textit{Android} da versão mais recente do \textit{SDK} do 
+controlador \textit{Leap Motion}, como havia nas versões anteriores. Isso, aliado 
+ao fato de que a versão anterior do \textit{SDK} não estava mais disponível 
+para download, significou que uma interação direta entre o \textit{Leap Motion} 
+e o jogo compilado para dispositivos móveis não seria possível nessa etapa 
+inicial do projeto.
 
-Apesar deste empecilho, \textit{Unity} se mostrou uma plataforma robusta e flexível o suficiente para a continuação do projeto, e as mecânicas básicas puderam ser implementadas rapidamente e sem grandes problemas.
+Apesar deste empecilho, \textit{Unity} se mostrou uma plataforma robusta e 
+flexível o suficiente para a continuação do projeto, e as mecânicas básicas 
+puderam ser implementadas rapidamente e sem grandes problemas.
 
 
-\TODO{" vocês falam das dificuldades, mas não falam o que fizeram para resolver essa dificuldade. Falar de como foi resolvido no começo da secao da segunda iteracao"	}
+\TODO{" vocês falam das dificuldades, mas não falam o que fizeram para resolver 
+	essa dificuldade. Falar de como foi resolvido no começo da secao da segunda iteracao"	}
 
 % ---
 \section{Segunda iteração: mecânicas básicas}\label{sec-segunda-iteracao-mecanicas-basicas}
 % ---
 
-Tendo em mente as facilidades e desafios percebidos durante a criação da prova de conceito, um segundo protótipo foi desenvolvido, desta vez com o intuito de acrescentar uma segunda mecânica básica - controle da precipitação - de modo a permitir que o jogador experimentasse com a interação entre as duas.
+Tendo em mente as facilidades e desafios percebidos durante a criação da prova 
+de conceito, um segundo protótipo foi desenvolvido, desta vez com o intuito 
+de acrescentar uma segunda mecânica básica - controle da precipitação - de modo
+a permitir que o jogador experimentasse com a interação entre as duas.
 
 \begin{figure}[ht]
 	\centering
@@ -119,7 +200,10 @@ Tendo em mente as facilidades e desafios percebidos durante a criação da prova
 \end{figure}
 \TODO{Ref. figura 7!}
 
-Nesta iteração, haveria dois gestos que deveriam ser captados e interpretados pelo \textit{Leap Motion}: abaixar e elevar a mão com a palma aberta para alterar a elevação do terreno e apontar todos os dedos para baixo para fazer chover em uma área específica.
+Nesta iteração, haveria dois gestos que deveriam ser captados e interpretados 
+pelo \textit{Leap Motion}: abaixar e elevar a mão com a palma aberta para alterar 
+a elevação do terreno e apontar todos os dedos para baixo para fazer chover em 
+uma área específica.
 
 \begin{figure}[ht]
 	\centering
@@ -129,9 +213,15 @@ Nesta iteração, haveria dois gestos que deveriam ser captados e interpretados 
 \end{figure}
 \TODO{Ref. figura 8!}
 
-Durante a implementação dessas mecânicas, ficou clara a necessidade de uma mecânica de seleção que permitisse a manipulação de grandes áreas do terreno simultaneamente, então um terceiro gesto foi adicionado: pinçar e arrastar para delimitar áreas.
+Durante a implementação dessas mecânicas, ficou clara a necessidade de uma 
+mecânica de seleção que permitisse a manipulação de grandes áreas do terreno
+simultaneamente, então um terceiro gesto foi adicionado: pinçar e arrastar 
+para delimitar áreas.
 
-Também nessa etapa, percebeu-se que, devido à posição do \textit{Leap Motion}, alguns dos gestos imaginados para as diferentes mecânicas do jogo - sobretudo o associado a chuva - não poderiam ser captados com a precisão necessária, nos levando a precisar reimaginar uma parte significativa da interação.
+Também nessa etapa, percebeu-se que, devido à posição do \textit{Leap Motion},
+alguns dos gestos imaginados para as diferentes mecânicas do jogo - sobretudo 
+o associado a chuva - não poderiam ser captados com a precisão necessária, 
+nos levando a precisar reimaginar uma parte significativa da interação.
 
 
 
@@ -139,7 +229,8 @@ Também nessa etapa, percebeu-se que, devido à posição do \textit{Leap Motion
 \section{Arquitetura}\label{sec-desenvolvimento-arquitetura}
 % ---
 
-Para se definir a arquitetura do sistema, é antes necessário identificar e entender cada um dos principais elementos, assim como suas interfaces.
+Para se definir a arquitetura do sistema, é antes necessário identificar e 
+entender cada um dos principais elementos, assim como suas interfaces.
 
 % ---
 \subsection{Identificação dos elementos}\label{subsec-identificacao-elementos}
@@ -149,37 +240,65 @@ Para se definir a arquitetura do sistema, é antes necessário identificar e ent
 \subsubsection{Controlador \textit{Leap Motion}}\label{subsubsec-elemento-leapmotion}
 % ---
 
-Conforme visto na Seção \ref{subsubsec-teo-leap-motion}, o controlador pode ser dividido em dois elementos diferentes: O \textbf{hardware do controlador} e o \textbf{serviço} que aplica algoritmos de visão computacional nas imagens vindas do hardware, transformando-as em dados estruturados.
+Conforme visto na Seção \ref{subsubsec-teo-leap-motion}, o controlador pode 
+ser dividido em dois elementos diferentes: O \textbf{hardware do controlador} e 
+o \textbf{serviço} que aplica algoritmos de visão computacional nas imagens 
+vindas do hardware, transformando-as em dados estruturados.
 
-O serviço pode ser executado no computador ou, no caso de se utilizar a versão v2 do \textit{SDK} do \textit{Leap Motion}, no \textit{Android}.
+O serviço pode ser executado no computador ou, no caso de se utilizar a versão 
+v2 do \textit{SDK} do \textit{Leap Motion}, no \textit{Android}.
 
 % ---
 \subsubsection{Lógica do jogo}\label{subsubsec-elemento-logica-jogo}
 % ---
 
-Este é o elemento que age sobre o ambiente virtual a partir de dados de entrada do controlador e do movimento do \textit{headset} de realidade virtual. Este elemento estará implementado no Unity, e pode ser executado ou no computador ou no próprio celular.
+Este é o elemento que age sobre o ambiente virtual a partir de dados de entrada 
+do controlador e do movimento do \textit{headset} de realidade virtual. 
+Este elemento estará implementado no Unity, e pode ser executado ou no 
+computador ou no próprio celular.
 
 % ---
 \subsubsection{Processamento de saída do video}\label{subsubsec-elemento-video}
 % ---
 
-Este elemento é controlado pelo \textit{SDK} do \textit{Google Cardboard}, e cuida de toda a parte de gerar a visão estereoscópica necessária para a visão 3D, além de movimentar a visão do jogo de acordo com o movimento do \textit{headset} de realidade virtual. Este elemento pode ser executado ou no computador ou no próprio celular.
+Este elemento é controlado pelo \textit{SDK} do \textit{Google Cardboard}, e 
+cuida de toda a parte de gerar a visão estereoscópica necessária para a visão 
+3D, além de movimentar a visão do jogo de acordo com o movimento do 
+\textit{headset} de realidade virtual. Este elemento pode ser executado ou 
+no computador ou no próprio celular.
 
 % ---
 \subsection{Arquiteturas estudadas}\label{subsec-arquiteturas-estudadas}
 % ---
 
-As três arquiteturas estudadas têm como entrada as imagens vindas do controlador \textit{Leap Motion} e do movimento do \textit{Google Cardboard}, que são enviadas à lógica de jogo que, então, modifica o estado do jogo e envia para o \textit{Google Cardboard}. As diferentes opções de arquitetura diferem quanto à como a conexão é feita, se é intermediada ou não por um computador, e aonde essa intermediação acontece.
+As três arquiteturas estudadas têm como entrada as imagens vindas do 
+controlador \textit{Leap Motion} e do movimento do \textit{Google Cardboard}, 
+que são enviadas à lógica de jogo que, então, modifica o estado do jogo e envia 
+para o \textit{Google Cardboard}. As diferentes opções de arquitetura diferem 
+quanto à como a conexão é feita, se é intermediada ou não por um computador, e 
+aonde essa intermediação acontece.
 
 % ---
 \subsubsection{Alternativa utilizando o servidor WebSocket}\label{subsubsec-arquiteturas-leapmotion-pc-leapdata-android}
 % ---
 
-Nesta opção, conecta-se o controlador a um computador que esteja rodando o serviço do \textit{Leap Motion}, transformando as imagens do controlador em dados estruturados. Estes são, então, enviados a um celular que esteja rodando a lógica do jogo e fazendo as transformações necessárias para a saída de vídeo. Esta opção é demonstrada na \autoref{fig:arquitetura-leap-pc-leapdata-android}.
+Nesta opção, conecta-se o controlador a um computador que esteja rodando o 
+serviço do \textit{Leap Motion}, transformando as imagens do controlador em 
+dados estruturados. Estes são, então, enviados a um celular que esteja rodando 
+a lógica do jogo e fazendo as transformações necessárias para a saída de vídeo. 
+Esta opção é demonstrada na \autoref{fig:arquitetura-leap-pc-leapdata-android}.
 
-As vantagens desta opção é que podemos utilizar a versão mais recente do \textit{SDK} do \textit{Leap Motion}, que melhorou muito o rastreamento das mãos, comparada à versão v2. Adicionalmente, o serviço já expõe uma interface web para a leitura dos dados estruturados. 
+As vantagens desta opção é que podemos utilizar a versão mais recente 
+do \textit{SDK} do \textit{Leap Motion}, que melhorou muito o rastreamento das 
+mãos, comparada à versão v2. Adicionalmente, o serviço já expõe uma interface 
+web para a leitura dos dados estruturados. 
 
-Uma desvantagen desta opção, porém, é a necessidade de modificar a biblioteca do \textit{Leap Motion} do \textit{Unity} para que esta aceite conexões web, já que, nativamente, ela aceita apenas conexões via USB. Outra desvantagem é a latência adicionada entre o movimento das mãos do usuário e o momento em que a lógica do jogo recebe tais informações. Se esta latência for alta demais, cria-se uma dissociação entre a mão do jogador e a mão virtual, diminuindo a imersão no jogo.
+Uma desvantagen desta opção, porém, é a necessidade de modificar a biblioteca 
+do \textit{Leap Motion} do \textit{Unity} para que esta aceite conexões web, já 
+que, nativamente, ela aceita apenas conexões via USB. Outra desvantagem é a 
+latência adicionada entre o movimento das mãos do usuário e o momento em que 
+a lógica do jogo recebe tais informações. Se esta latência for alta demais, 
+cria-se uma dissociação entre a mão do jogador e a mão virtual, diminuindo a imersão no jogo.
 
 \begin{figure}[h]
 	\centering
@@ -193,11 +312,24 @@ Uma desvantagen desta opção, porém, é a necessidade de modificar a bibliotec
 \subsubsection{Alternativa com streaming do video}\label{subsubsec-arquiteturas-leapmotion-pc-riftcat-android}
 % ---
 
-O diferencial desta opção é que a lógica do jogo roda no computador, e a saída de vídeo é transmitida para o celular via algum software, como o Riftcat(pago) ou o TrinusVR(gratuíto). Desta forma, o controlador é conectado diretamente ao computador, que está rodando o serviço do \textit{Leap Motion} e lê diretamente dele os dados estruturados. Esta arquitetura pode ser vista na \autoref{fig:Arquitetura-leap-pc-riftcat-android}.
+O diferencial desta opção é que a lógica do jogo roda no computador, e a saída 
+de vídeo é transmitida para o celular via algum software, como o Riftcat(pago) ou
+o TrinusVR(gratuíto). Desta forma, o controlador é conectado diretamente 
+ao computador, que está rodando o serviço do \textit{Leap Motion} e lê 
+diretamente dele os dados estruturados. Esta arquitetura pode ser vista 
+na \autoref{fig:Arquitetura-leap-pc-riftcat-android}.
 
-As vantagens desta opção são que, por rodar num computador, o poder de processamento é mais alto e, portanto, existem mais possibilidades quanto a algoritmos utilizados, mecânicas do jogo e processamento gráfico. A conexão com o controlador, por ser direta, também significa uma latência baixa. 
+As vantagens desta opção são que, por rodar num computador, o poder de 
+processamento é mais alto e, portanto, existem mais possibilidades quanto
+a algoritmos utilizados, mecânicas do jogo e processamento gráfico. A conexão 
+com o controlador, por ser direta, também significa uma latência baixa. 
 
-O principal contraponto desta opção é o aumento da latência entre o movimento da cabeça do usuário e o movimento da cabeça virtual. Esta latência é maior do que a da primeira opção pois é necessário enviar os dados referentes ao movimento da cabeça do celular para o computador, que então deve enviar as imagens de volta para o celular. Essa latência adicional não apenas cria uma dissociação entre o jogador e o mundo virtual, mas também pode causar tontura e enjoo.
+O principal contraponto desta opção é o aumento da latência entre o movimento 
+da cabeça do usuário e o movimento da cabeça virtual. Esta latência é maior do 
+que a da primeira opção pois é necessário enviar os dados referentes ao movimento 
+da cabeça do celular para o computador, que então deve enviar as imagens de 
+volta para o celular. Essa latência adicional não apenas cria uma dissociação 
+entre o jogador e o mundo virtual, mas também pode causar tontura e enjoo.
 
 \begin{figure}
 	\centering
@@ -210,9 +342,19 @@ O principal contraponto desta opção é o aumento da latência entre o moviment
 \subsubsection{Alternativa com conexão direta}\label{subsubsec-arquiteturas-leapmotion-android}
 % ---
 
-Nesta opção, o controlador é conectado diretamente ao celular, conforme mostrado na \autoref{fig:arquitetura-leap-android}. Desta forma, esta opção provê a maior mobilidade e tem o menor número de subsistemas diferente. Para tal, é necessário utilizar o serviço do \textit{Leap Motion} v2 específica para o \textit{Android}. Neste caso, todo o processamento é feito diretamente no celular (A transformação das imagens em dados estruturados; a lógica do jogo e as transformações necessárias para a saída de video). Por esta razão, esta é a opção que adiciona a menor latência, devido à inexistência de conexões extras entre um computador e o celular, como nas outras opções.
+Nesta opção, o controlador é conectado diretamente ao celular, conforme 
+mostrado na \autoref{fig:arquitetura-leap-android}. Desta forma, esta opção 
+provê a maior mobilidade e tem o menor número de subsistemas diferente. Para 
+tal, é necessário utilizar o serviço do \textit{Leap Motion} v2 específica para 
+o \textit{Android}. Neste caso, todo o processamento é feito diretamente no 
+celular (A transformação das imagens em dados estruturados; a lógica do jogo e 
+as transformações necessárias para a saída de video). Por esta razão, esta é a 
+opção que adiciona a menor latência, devido à inexistência de conexões extras 
+entre um computador e o celular, como nas outras opções.
 
-As desvantagens, porém, são a dependência do serviço do \textit{Leap} nativo do \textit{Android}, que estava na versão beta antes de ser descontinuado, e também o fato de se tratar da versão v2, que tem um rastreamento pior.
+As desvantagens, porém, são a dependência do serviço do \textit{Leap} nativo 
+do \textit{Android}, que estava na versão beta antes de ser descontinuado, e 
+também o fato de se tratar da versão v2, que tem um rastreamento pior.
 
 \begin{figure}
 	\centering
@@ -226,7 +368,7 @@ As desvantagens, porém, são a dependência do serviço do \textit{Leap} nativo
 \subsubsection{Comparação das alternativas}\label{subsubsec-arquiteturas-comparacao}
 % ---
 
-A comparação das alternativas pode ser vista na \autoref{tabela:alternativas-arquiteturas}.
+A comparação das alternativas pode ser vista no \autoref{tabela:alternativas-arquiteturas}.
 
 \begin{quadro}[htb] \scriptsize
 	\centering
@@ -279,17 +421,57 @@ A comparação das alternativas pode ser vista na \autoref{tabela:alternativas-a
 \subsection{Escolha da arquitetura}\label{subsec-arquitetura-escolha}
 % ---
 
-Inicialmente, se optou pela alternativa do streaming de video, visto que a sua implementação não necessitaria de mudanças no código. Bastaria gerar o executável do jogo no windows e rodar um software de streaming, como o Riftcat. Durante o desenvolvimento inicial, esta foi a alternativa utilizada, mesmo sendo necessário inicializar o software várias vezes, devido a bugs e falta de documentação do Rifcat.
+Inicialmente, se optou pela alternativa do \textit{streaming} de video, visto que a 
+sua implementação não necessitaria de mudanças no código. Bastaria gerar 
+o executável do jogo no windows e rodar um software de \textit{streaming}, como o 
+Riftcat. Durante o desenvolvimento inicial, esta foi a alternativa utilizada, 
+mesmo sendo necessário inicializar o software várias vezes, devido a 
+bugs e falta de documentação do Rifcat.
 
-Porém, descobriu-se posteriormente que para que esta alternativa funcionasse, era necessário uma placa de video relativamente potente, de acordo com as especificações mínimas do software, encontrada em \cite{riftcat:2016:requirements}. Inclusive, o software do Riftcat só funcionava em um dos cinco computadores testados. Por esta razão, optou-se por abandonar esta alternativa, visto que dificultaria a acessibilidade do jogo.
+Porém, descobriu-se posteriormente que para que esta alternativa funcionasse, 
+era necessário uma placa de video relativamente potente, de acordo com 
+as especificações mínimas do software, encontrada em
+\cite{riftcat:2016:requirements}. Inclusive, o software do Riftcat só 
+funcionava em um dos cinco computadores testados. Por esta razão, optou-se 
+por abandonar esta alternativa, visto que dificultaria a acessibilidade do jogo.
 
-Dado este contratempo, decidiu-se testar as outras duas alternativas para verificar suas viabilidades. 
+Dado este contratempo, decidiu-se testar as outras duas alternativas para 
+verificar suas viabilidades. 
 
-A alternativa da conexão direta necessitava a obtenção da versão do serviço do \textit{Leap Motion} para o \textit{Android}, que não estava mais disponível no website da empresa. Afortunadamente, a co-orientadora deste projeto havia trabalhado anteriormente com o \textit{Leap Motion} no \textit{Android}, e conseguiu uma cópia dos arquivos necessários. Entretanto, nos testes preliminares feitos, não se obteve sucesso na utilização do serviço: O aplicativo do software no celular reconhecia o controlador conectado, mas aplicativos 'clientes' que utilizariam os dados do controlador não conseguiam conectar-se ao controlador. Por este motivo, esta alternativa foi descartada.
+A alternativa da conexão direta necessitava a obtenção da versão do serviço 
+do \textit{Leap Motion} para o \textit{Android}, que não estava mais 
+disponível no website da empresa. Afortunadamente, a co-orientadora 
+deste projeto havia trabalhado anteriormente com o \textit{Leap Motion} 
+no \textit{Android}, e conseguiu uma cópia dos arquivos necessários. 
+Entretanto, nos testes preliminares feitos, não se obteve sucesso na 
+utilização do serviço: O aplicativo do software no celular reconhecia o 
+controlador conectado, mas aplicativos 'clientes' que utilizariam os 
+dados do controlador não conseguiam conectar-se ao controlador. Por este 
+motivo, esta alternativa foi descartada.
 
-Optou-se então pela alternativa que restou, que utiliza o servidor \textit{WebSocket} gerado pelo serviço do \textit{Leap Motion} no computador. A principal dificuldade desta alternativa é que o plugin disponibilizado pela empresa para o Unity só conseguia receber os dados do controlador por meio da conexão direta, e não pelo servidor WebSocket. Portanto, foi necessário modificar o plugin distrubuído, que é software livre e tem seu código fonte disponível, para que ele se conectasse ao servidor WebSocket, recebesse os dados estruturados em mensagens JSON, parseasse-as e então as transformasse na estrutura de dados utilizada pelo Unity.
+Optou-se então pela alternativa que restou, que utiliza o servidor
+\textit{WebSocket} gerado pelo serviço do \textit{Leap Motion} no computador. 
+A principal dificuldade desta alternativa é que o plugin disponibilizado 
+pela empresa para o \textit{Unity} só conseguia receber os dados do controlador 
+por meio da conexão direta, e não pelo servidor \textit{WebSocket}. Portanto, foi 
+necessário modificar o plugin distrubuído, que é software livre e tem seu 
+código fonte disponível, para que ele se conectasse ao servidor \textit{WebSocket}, 
+recebesse os dados estruturados em mensagens JSON, parseasse-as e 
+então as transformasse na estrutura de dados utilizada pelo \textit{Unity}.
 
-Para implementar tais mudanças no código do plugin, foi necessário encontrar e testar bibliotecas que se conectassem a um servidor WebSocket (visto que o Unity não consegue fazer isto nativamente) e parseasse JSON (pois o \textit{parser} JSON nativo do Unity só funciona em casos de uso muito limitados). Visto que é necessário que movimentos das mãos sejam refletidos o mais rapidamente o possível no jogo (para se manter a impressão de que as mãos virtuais são as mãos reais do usuário, para manter a imersão), é essencial que estas bibliotecas fossem rápidas o suficiente para não serem um gargalo, além de serem eficientes em questão de memória e objetos alocados, visto que rodam com frequencia alta e é o Unity que gere a sua memória (ou seja, o Unity roda o coletor de lixo de tempos em tempos, algo que pode causar travamentos dependendo de quantos objetos 'mortos' existirem).
+Para implementar tais mudanças no código do plugin, foi necessário encontrar 
+e testar bibliotecas que se conectassem a um servidor
+\textit{WebSocket} (visto que o \textit{Unity} não consegue fazer 
+isto nativamente) e parseasse JSON (pois o \textit{parser} JSON nativo 
+do \textit{Unity} só funciona em casos de uso muito limitados). Visto que 
+é necessário que movimentos das mãos sejam refletidos o mais rapidamente 
+o possível no jogo (para se manter a impressão de que as mãos virtuais 
+são as mãos reais do usuário, para manter a imersão), é essencial que 
+estas bibliotecas fossem rápidas o suficiente para não serem um gargalo, 
+além de serem eficientes em questão de memória e objetos alocados, visto 
+que rodam com frequencia alta e é o \textit{Unity} que gere a sua 
+memória (ou seja, o Unity roda o coletor de lixo de tempos em tempos, 
+algo que pode causar travamentos dependendo de quantos objetos 'mortos' existirem).
 
 
 \TODO{[11:42 PM, 11/15/2016] Lucy TCC: falta o capítulo com a pesquisa                        
