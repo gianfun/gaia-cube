@@ -24,92 +24,57 @@ Texto numa secao (ex. 2.2)
 As contribuições desse trabalho na nossa formação foram:
 
 \begin{alineas}
-	\item Utiliza a versão v2 do \textit{SDK} do \textit{Leap}, que tem precisão pior.
-	\item Necessita da versão beta do serviço para o \textit{Android}, de difícil acesso.
+	\item Praticar o gerenciamento de projeto e o trabalho em grupo
+	\item Criar uma visão do processo envolvido no desenvolvimento de um jogo do início ao fim.
+	\item Aprender novas tecnologias, como o controlador \textit{Leap Motion}, \textit{WebSockets} e o \textit{Google Cardboard}.
+	\item Aplicar teorias aprendidas durante o curso.
 \end{alineas}
 
-\begin{table}[htb]
-	\IBGEtab{%
-		\caption{Um Exemplo de tabela alinhada que pode ser longa
-			ou curta, conforme padrão IBGE.}%
-		\label{tabela-ibge}
-	}{%
-		\begin{tabular}{ccc}
-			\toprule
-			Nome & Nascimento & Documento \\
-			\midrule \midrule
-			Maria da Silva & 11/11/1111 & 111.111.111-11 \\
-			\midrule 
-			João Souza & 11/11/2111 & 211.111.111-11 \\
-			\midrule 
-			Laura Vicuña & 05/04/1891 & 3111.111.111-11 \\
-			\bottomrule
-		\end{tabular}%
-	}{%
-		\fonte{Produzido pelos autores.}%
-		\nota{Esta é uma nota, que diz que os dados são baseados na
-			regressão linear.}%
-		\nota[Anotações]{Uma anotação adicional, que pode ser seguida de várias
-			outras.}%
-	}
-\end{table}
+Fatores que colaboraram para o projeto foram:
 
- Praticar o gerenciamento de projeto, praticar o trabalho em grupo, e aprender
-
-a lidar com a divisão de tarefas, de forma a manter a coesão do projeto e não
-
-se esquecer da integração entre as partes.
-
- Criar uma visão do processo envolvido no desenvolvimento de um sistema do
-
-início ao fim.
-
- Aprender novas tecnologias, linguagens de programação e metodologias de
-
-projeto.
-
- Aplicar as teorias aprendidas durante o curso e adquirir novos conhecimentos
-
-sempre que necessário.
-
-O que colaborou para o projeto:
-
- Nossa orientadora, Profa. Lucia Filgueiras, ter conhecimento em Engenharia
-
-de Software e Acessibilidade.
-
- Nosso co-orientador, Prof. Bruno Albertini, ter conhecimento sobre Hardware
-
-e Sensores.
-
-64
-
- O grupo já ter trabalhado junto anteriormente, ter um excelente
-
-relacionamento e as habilidades dos membros do grupo serem
-
-complementares.
-
- Conhecimentos em programação que foram diferenciais: a Ana já sabia
-
-programar em Java e em Swift (devido à iniciação científica que ela realizou
-
-anteriormente) e a Isabela já sabia programar em Python;
-
-O que contribuiu para a engenharia:
-
- Criação de um arcabouço para lidar com itens e armazenadores, facilitando o
-
-desenvolvimento de Aplicativos, para iOS, acessíveis e integração com uma
-
-rede de sensores para tornar os itens e armazenadores inteligentes.
-
- Aplicação do conceito de IoT na área de acessibilidade.
+\begin{alineas}
+	\item Nossa co-orientadora, Profa. Msc. Lucy Mari Tabuti, ter conhecimento e experiência na área de jogos de lógica digitais, jogos educacionais, realidade virtual, e com o controlador \textit{Leap Motion}
+	\item Os integrantes do grupo ja terem um pouco de experiênca com o \textit{Unity}.
+\end{alineas}
 
 % ---
 \section{Dificuldades}\label{sec-conc-dificuldades}
 % ---
 
+Em relação ao controlador \textit{Leap Motion}, houve dificuldade em detectar
+movimentos específicos, tanto por inexperiência quanto por dificuldades 
+em expressar os movimentos da forma correta, ao se tratar das relações entre 
+os ossos e vetores que definiam a mão do jogador, conforme descrito na
+\autoref{subsec-deteccao-gestos}
+
+Adicionalmente, houve dificuldade de se aplicar os testes em crianças pois
+suas mãos, possivelmente pelo seu tamanho menor, não eram detectadas muito 
+bem pelo controlador. Conforme descrito na 
+\autoref{subsec-teste-museu-catavento}, porém, é possível que este problema 
+tenha sido devido à iluminação do local, que atrapalha o controlador.
+
+Houve também dificuldade na definição da arquitetura, visto que a 
+primeira escolha de arquitetura acabou encontrando problemas devido 
+ao hardware, sendo necessário modificar a arquitetura para que o jogo 
+funcionasse da maneira prevista.
+
+\TODO{Continuar}
+
+
 % ---
 \section{Trabalhos Futuros}\label{sec-conc-trabalhos-futuros}
 % ---
+
+Dado que não foi possível aplicar o questionário com pessoas pertencentes ao 
+público alvo, um próximo passo seria este. Desta forma, seria possível verificar 
+o quão benéfico o jogo é.
+
+Adicionalmente, novas fases com novas mecânicas podem ser implementadas no 
+futuro, aumentando o tamanho do jogo, de forma a permitir que jogadores 
+passem mais tempo se divertindo, enquanto exercitam suas habilidades de 
+raciocínio lógico.
+
+Melhorias no código, em especial no reconhecimento de gestos utilizados 
+para ações também são um próximo passo importante, por tornar o jogo 
+menos frustrante ao usuário, que não mais precisará repetidamente executar 
+um mesmo gesto para tentar ativar uma ação.
