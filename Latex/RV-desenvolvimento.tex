@@ -57,9 +57,10 @@ que as demais alternativas disponíveis, o que permitiria ao grupo focar-se
 na conceituação e implementação do jogo em si, sem prender-se a eventuais 
 problemas relativos à configuração e uso do hardware, criação de APIs próprias 
 ou preocupações com elementos mais elementares da criação de um jogo digital.
+\TODO{Ultimos dois paragrafos não dizem a respeito ao publico alvo..}
 
 % ---
-\section{\textit{Brainstorming} e seleção do conceito do jogo}\label{sec-brainstorming-conceito}
+\section{\textit{Brainstorming} e Seleção do Conceito do Jogo}\label{sec-brainstorming-conceito}
 % ---
 
 Com a enunciação do problema e as restrições de implementação bem definidas 
@@ -68,66 +69,120 @@ o \textit{brainstorm}, durante o qual várias ideias foram debatidas e
 exploradas pelos membros do grupo. Nesta fase, diversas propostas foram feitas 
 para uma solução que fizesse um bom uso dos recursos de realidade 
 virtual disponíveis e gerasse um projeto adequado ao público alvo 
-selecionado, resultando em um jogo intuitivo, divertido que capaz de transmitir 
-os conceitos de lógicos e cognitivos relevantes.
+selecionado, resultando em um jogo intuitivo e divertido que fosse 
+capaz de transmitir os conceitos lógicos e cognitivos relevantes.
 
 As ideias geradas variaram desde jogos de um ritmo mais acelerado, no qual 
 um jogador teria que categorizar elementos abstratos o mais rápido que 
 pudesse - segundo características como cor, formato e tamanho - até experiências 
 nas quais pressões de tempo e condições de falha estavam completamente 
-ausentes, como jogos de resolução de quebra-cabeças tridimensionais.
+ausentes, como jogos de resolução de quebra-cabeças tridimensionais, 
+e são apresentadas a seguir.
+
+% ---
+\subsection{Ideias do Brainstorm}\label{subsec-ideias-brainstorm}
+% ---
+
+Na \autoref{fig:rascunhos-brainstorm} é possível ver o rascunho das ideias feitas durante o \textit{brainstorm}. 
 
 \begin{figure}[h]
 	\centering
 	\caption{Primeiro rascunho do jogo}
 	\includegraphics[width=0.5\textwidth]{first_concepts}
 	\legend{\fonteAP}
+	\label{fig:rascunhos-brainstorm}
 \end{figure}
-\TODO{Ref. figura 2! "Queria que vocês explicassem as ideias dos jogos apresentados na Figura 2, acho que isso é importante. Precisa escrever também, porque a escolha final do jogo que vocês escolheram. Porque desse jogo e não dos demais pensados."}
 
-Por fim, uma análise cuidadosa das limitações das tecnologias escolhidas, aliada 
-a uma preocupação em manter o jogo intuitivo e imersivo levaram o grupo a 
-um \textit{design} mais diretamente análogo ao mundo real, gerando um jogo no 
-qual o jogador manipularia características de uma pequena configuração 
-geológica tridimensional, de forma a manipulá-la para chegar a um determinado 
-estado pré-definido.
+No canto superior direito, vê-se o rascunho de um conceito de jogo aonde 
+peças vão caindo lentamente e devem ser empilhadas em uma bandeja ou 
+superfície controlada pelo movimento das mãos do jogador, que deve 
+movimentar a bandeja de forma que as peças que caem fiquem bem dispostas, 
+em vez de tombar para fora da bandeja. Outra possibilidade é que as 
+peças caindo tenham que se juntar para fazer um formato específico, 
+ou até mesmo uma adaptação do famoso jogo \textit{Tetris}, mas 
+tridimensional, aonde deve-se criar um plano inteiro sobre a bandeja 
+(ao invés de uma linha, como no jogo original).
 
-Neste jogo, as crianças deparariam-se com um terreno digital composto por acidentes
-geográficos como planaltos, depressões, corpos d'água e formações magmáticas, 
-e poderiam modificá-lo a partir de gestos manuais simples que controlassem 
-a elevação, precipitação, movimentação do ar, entre outros. Este terreno 
-seria subdivido em unidades cúbicas que poderiam ser manipuladas individualmente,
-fornecendo uma resolução suficiente para que configurações diversas e 
-interessantes pudessem ser construídas, mas sem exigir uma precisão incompatível 
-com os dispositivos de entrada e saída escolhidos.
+No canto superior esquerdo, existe o rascunho para um jogo de classificação. Assim como antes, peças vão caindo, e o jogador deve categorizar estas peças em uma de duas ou mais categorias, através de movimentos das mãos. No exemplo desenhado, o objetivo poderia ser mover todos os cubos azuis para a direita, esferas pretas para a esquerda, e não agir sobre as esferas com espinhos vermelhas. Outras variações poderiam ser feitas, também, como todos os cubos (independente de sua cor) vão para a direita, por exemplo. Existem inúmeras possibilidades, tendo como pré-requisito ser possível categorias os elementos. Adicionalmente, os exemplos dados foram com formas geométricas, mas podem ser abstraídas para quase qualquer área, como por exemplo elementos (ex. Separe os elementos que reajam com oxigênio), geografia (ex. Categorize os países por continente), história (ex. Classifique estes eventos como causas ou consequências da segunda guerra mundial), ou qualquer outro assunto que se consiga imaginar.
+
+Logo abaixo do rascunho no canto superior esquerdo, estão as frases "Zelda Boss Key" e "Game Show JP". Estas são referências para uma terceira ideia de jogo, aonde é apresentado ao jogador uma peça tridimensional e uma abertura ou ranhura tridimensional. O jogador deve então, com movimentos da mão, rotacionar ou modificar a peça para que esta encaixe na ranhura/abertura. Dois exemplos da referência do jogo \textit{Legend of Zelda: Skyward Sword} podem ser vistas na \autoref{fig:zelda-key-puzzle}, aonde é possivel ver a peça na frente e, ao fundo, o encaixe.
 
 \begin{figure}[h]
 	\centering
-	\caption{Conceitos iniciais}
-	\includegraphics[width=0.5\textwidth]{draft1}
-	\legend{\fonteAP}
+	\caption{Dois exemplos do \textit{minigame} "Zelda Boss Key" do jogo \textit{Legend of Zelda: Skyward Sword}}
+	\includegraphics[width=0.3\textwidth]{zelda-puzzle-1}
+	\includegraphics[width=0.3\textwidth]{zelda-puzzle-2}
+	\legend{\fontedaimg{\cite{youtube:2016:boss-key}(esquerda) e \cite{zeldainformer:2016:boss-key}(direita)}}
+	\label{fig:zelda-key-puzzle}
 \end{figure}
-\TODO{Ref. figura 3!}
 
-Foram então imaginados cenários que extrapolassem os usos básicos das 
+Por último, na \autoref{fig:rascunhos-brainstorm}, no canto inferior esquerdo,
+é possível ver o rascunho da quarta e última ideia. Neste jogo, os 
+jogadores deparariam-se com um terreno digital composto por acidentes
+geográficos como planaltos, depressões, corpos d'água e formações magmáticas, 
+e poderiam modificá-lo a partir de gestos manuais simples que controlassem 
+a elevação, precipitação, movimentação do ar, entre outros. O objetivo do jogo
+é manipular a pequena configuração geológica tridimensional, de forma a chegar 
+a um determinado estado pré-definido. O terreno seria subdivido em unidades 
+cúbicas que poderiam ser manipuladas individualmente, fornecendo uma 
+resolução suficiente para que configurações diversas e interessantes pudessem 
+ser construídas, mas sem exigir uma precisão incompatível com os dispositivos 
+de entrada e saída escolhidos.
+
+% ---
+\subsection{Seleção do Conceito do Jogo}\label{subsec-selecao-conceito}
+% ---
+
+Por fim, uma análise cuidadosa das limitações das tecnologias escolhidas, aliada 
+a uma preocupação em manter o jogo intuitivo e imersivo levaram o grupo a 
+escolher o último conceito dentre os quatro. Os dois primeiros conceitos, por 
+mais interessante que fossem, tinham uma dependência muito forte sobre a
+entrada do controlador \textit{Leap Motion}. Dado que o controlador não 
+é completamente preciso e que poderia falhar em detectar movimentos ou 
+capturar a mão do jogador, não queríamos que o jogador fosse punido por conta 
+disso. Visto que os dois primeiros conceitos dependiam dos objetos caindo, 
+uma falha do controlador poderia fazê-los perder, causando frustração. 
+Entre o terceiro e quarto conceito, o grupo escolheu o último, devido a 
+um interesse maior e também por ter um número muito maior de 
+possibilidades. O jogador possivelmente perderia o interesse no terceiro 
+conceito após poucas partidas do jogo.
+
+Desta forma, o quarto conceito foi o escolhido para ser desenvolvido. Para 
+que o jogo não fosse curto demais, foram então imaginados cenários 
+que extrapolassem os usos básicos das 
 mecânicas propostas, de maneiras que se alinhassem aos conceitos pedagógicos 
 que deveriam ser transmitidos pelo jogo: desafios que dependessem da execução 
 de tarefas em uma determinada ordem, em combinação com outras tarefas paralelas, 
 ou dentro de um determinado limite de tempo. Nestes cenários, era esperado 
 que jogadores conseguissem imaginar soluções mais sofisticadas, indo além 
 das interações básicas às quais teriam acesso direto. Seria necessário 
-movimentar massas de ar para jogar água contra blocos de terra, formando 
+movimentar massas de ar para jogar água contra blocos de terra (cujo rascunho 
+é mostrado na \autoref{fig:rascunhos-praia}), formando 
 praias; escavar o solo para alcançar câmaras magmáticos e formar vulcões; ou 
 alterar o curso de corpos d'água para formar cascatas.
 
-
 \begin{figure}[htb]
 	\centering
-	\caption{Rascunho do elemento água}
+	\caption{Rascunho de como criar uma praia, utilizando os elementos terra, água e ar}
 	\includegraphics[width=0.5\textwidth]{draft2}
 	\legend{\fonteAP}
+	\label{fig:rascunhos-praia}
 \end{figure}
-\TODO{Ref. figura 4!}
+
+Algumas primeiras ideias de possíveis fases também foram discutidas, para 
+dar uma direção para a criação da prova de conceito. A primeira fase lidaria 
+apenas com a mudança da elevação da terra e o jogador teria que criar um 
+buraco e uma torre de terra, algo similar à \autoref{fig:rascunho-torre-buraco}.
+Desta forma, a primeira prova de conceito já teria uma base 'jogável' 
+para se testar a viabilidade do conceito.
+
+\begin{figure}[h]
+	\centering
+	\caption{Rascunho de uma possível primeira fase}
+	\includegraphics[width=0.5\textwidth]{draft1}
+	\legend{\fonteAP}
+	\label{fig:rascunho-torre-buraco}
+\end{figure}
 
 % ---
 \section{Primeira iteração: prova de conceito}\label{sec-primeira-iteracao-prova-conceito}
@@ -145,17 +200,17 @@ O protótipo deveria se ater apenas a uma mecânica básica da especificação
 do conceito: controle da elevação do terreno. O jogador teria acesso direto ao 
 jogo - sem passar por telas de menu ou tutoriais - no qual se depararia com 
 uma grade tridimensional de 5x5x5 cubos de terra, os quais poderia elevar 
-ou rebaixar livremente.
+ou rebaixar livremente. Um exemplo desta prova de conceito está demonstrado na \autoref{fig:primeiro-screenshot-terra}.
 
 \begin{figure}[h]
 	\centering
 	\caption{Prova de conceito do jogo}
 	\includegraphics[width=0.5\textwidth]{ss1}
 	\legend{\fonteAP}
+	\label{fig:primeiro-screenshot-terra}
 \end{figure}
-\TODO{Ref. figura 5!}
 
-Apesar da simples implementação, algumas  primeiras dificuldades já puderam 
+Apesar da simples implementação, algumas primeiras dificuldades já puderam 
 ser percebidas nesta iteração, sobretudo na integração dos dispositivos de 
 realidade virtual.
 
