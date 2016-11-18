@@ -284,8 +284,12 @@ aonde essa intermediação acontece.
 
 Nesta opção, conecta-se o controlador a um computador que esteja rodando o 
 serviço do \textit{Leap Motion}, transformando as imagens do controlador em 
-dados estruturados. Estes são, então, enviados a um celular que esteja rodando 
-a lógica do jogo e fazendo as transformações necessárias para a saída de vídeo. 
+dados estruturados. O celular que está executando a lógica do jogo então se
+conecta ao servidor \textit{websocket} gerado pelo serviço do controlador que 
+esta rodando no computador. A partir desta conexão, o servidor envia os
+dados estruturados ao celular para que estes possam ser utilizados como 
+entradas no jogo. O celular então aplica as transformações necessárias para 
+a saída de vídeo, que é enviada à tela do celular.
 Esta opção é demonstrada na \autoref{fig:arquitetura-leap-pc-leapdata-android}.
 
 As vantagens desta opção é que podemos utilizar a versão mais recente 
@@ -322,7 +326,8 @@ na \autoref{fig:Arquitetura-leap-pc-riftcat-android}.
 As vantagens desta opção são que, por rodar num computador, o poder de 
 processamento é mais alto e, portanto, existem mais possibilidades quanto
 a algoritmos utilizados, mecânicas do jogo e processamento gráfico. A conexão 
-com o controlador, por ser direta, também significa uma latência baixa. 
+com o controlador, por ser direta, também significa uma latência baixa 
+neste quesito. 
 
 O principal contraponto desta opção é o aumento da latência entre o movimento 
 da cabeça do usuário e o movimento da cabeça virtual. Esta latência é maior do 
@@ -333,8 +338,9 @@ entre o jogador e o mundo virtual, mas também pode causar tontura e enjoo.
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.7\linewidth]{images/Arquitetura-leap-pc-riftcat-android}
 	\caption{Alternativa de arquitetura com streaming do video}
+	\includegraphics[width=0.7\linewidth]{images/Arquitetura-leap-pc-riftcat-android}
+	\legend{\fonteAP}
 	\label{fig:Arquitetura-leap-pc-riftcat-android}
 \end{figure}
 
@@ -395,12 +401,14 @@ A comparação das alternativas pode ser vista no \autoref{tabela:alternativas-a
 		\end{itemize}
 		&\begin{itemize}[label={},leftmargin=1mm]
 			\item Latência entre movimento da cabeça do jogador e movimento da cabeça virtual, podendo causar desconforto e náusea.
-			\item Dependência de mais software, podendo ser pago.
+			\item Dependência de mais software, podendo ser pago, e que pode ter como requisito um hardware mais caro para funcionar.
 		\end{itemize}
 	    \\ \hline 
 		Conexão Direta
 		&\begin{itemize}[label={},leftmargin=1mm]
 				\item Menor latência dentre as opções
+				\item Maior mobilidade
+				\item Não depende de um computador
 			\end{itemize}
 		&\begin{itemize}[label={},leftmargin=1mm]
 				\item Utiliza a versão v2 do \textit{SDK} do \textit{Leap}, que tem precisão pior.
@@ -414,9 +422,8 @@ A comparação das alternativas pode ser vista no \autoref{tabela:alternativas-a
 \label{tabela:alternativas-arquiteturas}
 \end{quadro}
 
-\TODO{Concluir a tabela 2}
+É possivel ver que as alternativas que não têm a conexão direta introduzem latências no sistema, mas em locais diferentes. O servidor \textit{Websocket} introduz latência na entrada referente ao movimento das mãos, enquanto o \textit{streaming} de video adiciona atrasos na saída do vídeo para o \textit{headset}. Por outro lado, a alternativa da conexão direta utiliza uma versão anterior do \textit{SDK} do controlador, que tem um rastreamento pior.
 
-\TODO{Ver diferenca entre Tabela e Quadro. Lucy acha que isso é um quadro.}
 % ---
 \subsection{Escolha da arquitetura}\label{subsec-arquitetura-escolha}
 % ---

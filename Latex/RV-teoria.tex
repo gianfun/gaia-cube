@@ -92,7 +92,6 @@ representação virtual do mundo.
 O Ministerio da Educação (MEC) define um conjunto de parâmetros que devem estar
 presentes no curriculo de escolas em todo o Brasil. Estes são os Parâmetros
 Curriculares Nacionais (PCN), e abordam várias diferentes áreas importantes. 
-\TODO{ MEC é cultura tbm?	}
 
 As competências e habilidades de raciocínio lógico consideradas para análise
 consistem de um subconjunto dos PCN, em especial, daqueles relativos ao 
@@ -160,8 +159,8 @@ de raciocínio lógico segundo (------).
 % ---
 \section{Tecnologia}\label{sec-tecnologia}
 % ---
-\TODO{"colocar um parágrafo introduzindo essa seção."}
 
+Para se desenvolver este projeto, foi necessário se familiarizar com algumas tecnologias, apresentadas a seguir. 
 % ---
 \subsection{Protocolo WebSocket}\label{subsec-teo-websocket}
 % ---
@@ -192,17 +191,17 @@ Software Development Kit foi lançada em maio de 2012. Dois anos depois, foi
 apresentada a segunda versão do SDK, que melhorou bastante o rastreamento das 
 mãos, e que é atualmente a versão mais utilizada. No início de 2016, a mais 
 nova versão, chamada Orion, foi lançada, desenvolvida especialmente para a 
-realidade virtual.
+realidade virtual, de acordo com \cite{leap:2016:changeset}
 
 Para utilizar o controlador, são necessários 3 elementos diferentes: O hardware 
 do controlador em si; um software rodando como um serviço em um computador; 
-e um software 'cliente' que receberá os dados do serviço para utilizá-los.
-
-\TODO{"faltou a fonte sobre leap nos primeiro parágrafos da seção."}
+e um software 'cliente' que receberá os dados do serviço para utilizá-los, 
+como pode ser visto na arquitetura do Leap Motion \cite{leap:2016:architecture}
 
 O controlador nada mais é do que um conjunto de duas câmeras e 3 LEDs, todos 
-infravermelhos. Os LEDs projetam luz infravermelha, que é refletida pelas mãos 
-do usuário e captadas pelas câmeras. Estas imagens são enviadas ao serviço, 
+infravermelhos, de acordo com \cite{leap:2016:how-it-works}. Os LEDs projetam
+luz infravermelha, que é refletida pelas mãos do usuário e captadas 
+pelas câmeras. Estas imagens são enviadas ao serviço, 
 que utiliza algoritmos de visão computacional para gerar modelos tridimensionais 
 das mãos do usuário. A versão 2 do software aumentou muito a precisão do 
 controlador por começar a trabalhar com um modelo esqueletal da mão, baseado 
@@ -232,7 +231,8 @@ O \textit{Google Cardboard} é um projeto da empresa Google criada em 2014 para
 fomentar o desenvolvimento de aplicações de realidade virtual. É composta por um 
 \textit{headset} e de um software compatível. A ideia principal do projeto era
 conseguir proporcionar a experiência de realidade virtual da forma mais barata 
-o possível. Para alcançar tal objetivo, o \textit{headset} é feito de papelão, 
+o possível, conforme dito em \cite{cnet:2016:google-cardboard}. Para 
+alcançar tal objetivo, o \textit{headset} é feito de papelão, 
 de tal forma que o único subcomponente mais caro seja as lentes. Adicionalmente, 
 um celular é utilizado tanto como poder de processamento do \textit{headset} 
 quanto como a tela deste. Visto que uma grande parcela da população ja tem um 
@@ -249,8 +249,6 @@ de forma que a imagem após passar pela lente fique correta. É também necessá
 ler sensores encontrados no dispositivo móvel, como acelerômetros e giroscópios, 
 e disponibilizar estes dados para que se possa implementar o movimento do 
 usuário dentro do jogo ou aplicativo.
-
-\TODO{"faltou a fonte sobre leap nos primeiro parágrafos da seção."}
 
 O SDK do Google Cardboard, distribuído pela própria Google e disponível online 
 em \cite{google:2016:cardboardSDK}, já faz todas estas transformações necessárias 
