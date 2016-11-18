@@ -38,3 +38,5 @@ Latex/meta.log
 Latex/meta.lot
 Latex/meta.synctex.gz
 Latex/meta.toc
+Latex/meta.loq
+Latex/*.log
