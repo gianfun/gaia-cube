@@ -182,21 +182,21 @@ O interessante é que o aplicativo não precisa ficar consultando o servidor
 ao cliente quando o servidor quiser.
 
 % ---
-\subsection{Controlador Leap Motion}\label{subsubsec-teo-leap-motion}
+\subsection{Controlador Leap Motion}\label{subsec-teo-leap-motion}
 % ---
 
-O controlador Leap Motion, da empresa de mesmo nome, começou a ser desenvolvido 
+O controlador \textit{Leap Motion}, da empresa de mesmo nome, começou a ser desenvolvido 
 em 2008, contou com várias rodadas de investimento, e a primeira versão do 
-Software Development Kit foi lançada em maio de 2012. Dois anos depois, foi 
-apresentada a segunda versão do SDK, que melhorou bastante o rastreamento das 
+\textit{Software Development Kit}(\textit{SDK}) foi lançada em maio de 2012. Dois anos depois, foi 
+apresentada a segunda versão do \textit{SDK}, que melhorou bastante o rastreamento das 
 mãos, e que é atualmente a versão mais utilizada. No início de 2016, a mais 
-nova versão, chamada Orion, foi lançada, desenvolvida especialmente para a 
+nova versão, chamada \textit{Orion}, foi lançada, desenvolvida especialmente para a 
 realidade virtual, de acordo com \cite{leap:2016:changeset}
 
 Para utilizar o controlador, são necessários 3 elementos diferentes: O hardware 
 do controlador em si; um software rodando como um serviço em um computador; 
 e um software 'cliente' que receberá os dados do serviço para utilizá-los, 
-como pode ser visto na arquitetura do Leap Motion \cite{leap:2016:architecture}
+como pode ser visto na arquitetura do \textit{Leap Motion} \cite{leap:2016:architecture}
 
 O controlador nada mais é do que um conjunto de duas câmeras e 3 LEDs, todos 
 infravermelhos, de acordo com \cite{leap:2016:how-it-works}. Os LEDs projetam
@@ -210,10 +210,10 @@ na anatomia humana, ou seja, um modelo composto por 5 dedos, cada um contendo
 que não seriam fisicamente possíveis.
 
 O software cliente, então, pode receber os dados do serviço por duas interfaces:
-Conversando diretamente com o serviço, utilizando um DLL que acompanha o software, 
-ou acessando o servidor WebSocket que o serviço roda localmente.
+Conversando diretamente com o serviço, utilizando uma biblioteca que acompanha o software, 
+ou acessando o servidor \textit{WebSocket} que o serviço roda localmente.
 
-A versão mais recente do SDK ainda é nova, e tem focado na otimização dos 
+A versão mais recente do \textit{SDK} ainda é nova, e tem focado na otimização dos 
 algoritmos utilizados em várias áreas, tanto no processamento de imagens quanto 
 outros algoritmos de 'suporte', como a detecção da adição ou remoção de um 
 controlador. Visto a sua orientação para a realidade virtual, uma otimização 
@@ -221,7 +221,24 @@ importante foi em relação à mãos ocluídas, que sumiam em versões anteriore
 conforme descrito em \cite{leap:2016:changeset}. É possível que comece a focar 
 em coisas mais específicas para a realidade virtual em pouco tempo.
 
-% TODO: Falar que é um dos mais importantes controles?
+\TODO{Falar que é um dos mais importantes controles?}
+
+% ---
+\subsection{Reconhecimento de Gestos}\label{subsubsec-teo-gestos}
+% ---
+
+\begin{figure}[h]
+	\centering
+	\caption{Modelo baseado na anatomia humana utilizado pelo controlador \textit{Leap Motion}}
+	\includegraphics[width=0.7\textwidth]{leap-anatomical-hand}
+	\legend{\fontedaimg{\cite{leap:2016:intro-skeletal}}}
+	\label{fig:leap-anatomical-hand}
+\end{figure}
+
+Conforme mencionado na \autoref{subsec-teo-leap-motion}, a versão v2 em diante do controlador \textit{Leap Motion} utiliza um modelo da mão baseado na anatomia humana, conforme descrito em \cite{leap:2016:intro-skeletal}, e que pode ser visto na \autoref{fig:leap-anatomical-hand}. Isto significa que o rastreamento das mãos e dedos ficou mais preciso, pois a imagem capturada pelo controlador é processada e encaixada em um modelo anatomicamente correto. Desta forma, qualquer mão capturada terá 5 dedos, composto do número certo de ossos, e em posições e rotações anatomicamente possível. Isto também melhorou a oclusão de dedos, que antes sumiam do modelo da versão um(pois o modelo não teria necessariamente 5 dedos), agora podem ser estimados a partir do resto da mão.
+
+\TODO{Write more!}
+
 
 % ---
 \subsection{Google Cardboard}\label{subsec-teo-google-cardboard}
