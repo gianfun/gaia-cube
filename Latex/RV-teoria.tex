@@ -70,20 +70,17 @@ considerado não-imersiva, enquanto a percepção deste mundo virtual através d
 com multiprojeção ou por meio de capacetes é considerado imersivo. Desta forma, a
 realidade virtual:
 
-- considera a entrada e saída feita com equipamentos capazes de manipular 
-informação multisensorial em tempo real;
-
-- prioriza interação em tempo real sobre a qualidade das informações;
-
-- requer processamento gráfico, háptico e sonoro em alta escala;
-
-- leva em consideração que ações ocorrem em um espaço tridimensional;
-
-- considera que equipamentos especiais para a interação multisensorial sejam
-utilizados;
-
-- entende que o usuário necessita de um período de adaptação para entender a
-representação virtual do mundo.
+\begin{alineas}
+	\item considera a entrada e saída feita com equipamentos capazes de manipular 
+	informação multisensorial em tempo real;
+	\item prioriza interação em tempo real sobre a qualidade das informações;
+	\item requer processamento gráfico, háptico e sonoro em alta escala;
+	\item leva em consideração que ações ocorrem em um espaço tridimensional;
+	\item considera que equipamentos especiais para a interação multisensorial sejam
+	utilizados;
+	\item entende que o usuário necessita de um período de adaptação para entender a
+	representação virtual do mundo.
+\end{alineas}
 
 % ---
 \section{Competências e Habilidades do Raciocínio Lógico}\label{sec-competenciashabilidades}
@@ -237,6 +234,9 @@ em coisas mais específicas para a realidade virtual em pouco tempo.
 
 Conforme mencionado na \autoref{subsec-teo-leap-motion}, a versão v2 em diante do controlador \textit{Leap Motion} utiliza um modelo da mão baseado na anatomia humana, conforme descrito em \cite{leap:2016:intro-skeletal}, e que pode ser visto na \autoref{fig:leap-anatomical-hand}. Isto significa que o rastreamento das mãos e dedos ficou mais preciso, pois a imagem capturada pelo controlador é processada e encaixada em um modelo anatomicamente correto. Desta forma, qualquer mão capturada terá 5 dedos, composto do número certo de ossos, e em posições e rotações anatomicamente possível. Isto também melhorou a oclusão de dedos, que antes sumiam do modelo da versão um(pois o modelo não teria necessariamente 5 dedos), agora podem ser estimados a partir do resto da mão.
 
+A segunda versão do \textit{SDK} do \textit{Leap Motion} tinha, nativamente, o conceito de 'gestos', e o próprio \textit{SDK} disponibilizava alguns métodos para checar se alguns gestos básicos havia sido executado. Eram quatro o número de gestos reconhecidos: fazer um círculo com o dedo, deslizar o dedo, 'pressionar' um botão e tocar a tela O modelo da mão 
+
+https://developer.leapmotion.com/documentation/csharp/devguide/Leap_Gestures.html
 \TODO{Write more!}
 
 
