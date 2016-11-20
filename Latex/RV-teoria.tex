@@ -30,6 +30,14 @@ o aprendizado através de estratégias de ensino diferentes daquelas exploradas 
 de aula, conforme demonstrado por \cite{fernandes:2012:digital_education}. Isto 
 ocorre, em parte, por incentivar o aprendizado através da prática de atividades.
 
+\cite{correia:2009:digital_games_spore} comprovam que a utilização de jogos 
+na área de educação é importante não só pela motivação de se jogar um jogo, 
+mas também pelo aprendizado através da exploração que ocorre. O 
+desenvolvimento de jogos educacionais, porém, ainda são um desafio, devido 
+à dificuldade de se juntar dois conceitos que parecem, a primeira vista,
+ser discordantes: 'Educação' e 'Jogo'.
+
+
 \TODO{"Vale a pena colocar mais uns dois parágrafos"}
 
 % ---
@@ -132,7 +140,7 @@ geral. O desenvolvimento da competência de inferência, por sua vez, permite
 reutilizar informações, padrões e relações aprendidas em situações anteriores 
 para solucionar problemas futuros.
 
-Dentro do escopo deste projeto, prentede-se dar maior enfoque na exploração e
+Dentro do escopo deste projeto, pretende-se dar maior enfoque na exploração e
 desenvolvimento das habilidades H1, H2, H6 e H7.
 
 \TODO{Explicar porque H1, H2, H6 e H7}
@@ -218,8 +226,6 @@ importante foi em relação à mãos ocluídas, que sumiam em versões anteriore
 conforme descrito em \cite{leap:2016:changeset}. É possível que comece a focar 
 em coisas mais específicas para a realidade virtual em pouco tempo.
 
-\TODO{Falar que é um dos mais importantes controles?}
-
 % ---
 \subsection{Reconhecimento de Gestos}\label{subsubsec-teo-gestos}
 % ---
@@ -232,13 +238,60 @@ em coisas mais específicas para a realidade virtual em pouco tempo.
 	\label{fig:leap-anatomical-hand}
 \end{figure}
 
-Conforme mencionado na \autoref{subsec-teo-leap-motion}, a versão v2 em diante do controlador \textit{Leap Motion} utiliza um modelo da mão baseado na anatomia humana, conforme descrito em \cite{leap:2016:intro-skeletal}, e que pode ser visto na \autoref{fig:leap-anatomical-hand}. Isto significa que o rastreamento das mãos e dedos ficou mais preciso, pois a imagem capturada pelo controlador é processada e encaixada em um modelo anatomicamente correto. Desta forma, qualquer mão capturada terá 5 dedos, composto do número certo de ossos, e em posições e rotações anatomicamente possível. Isto também melhorou a oclusão de dedos, que antes sumiam do modelo da versão um(pois o modelo não teria necessariamente 5 dedos), agora podem ser estimados a partir do resto da mão.
+Conforme mencionado na \autoref{subsec-teo-leap-motion}, a versão 
+v2 em diante do controlador \textit{Leap Motion} utiliza um modelo 
+da mão baseado na anatomia humana, conforme descrito 
+em \cite{leap:2016:intro-skeletal}, e que pode ser visto 
+na \autoref{fig:leap-anatomical-hand}. Isto significa que o 
+rastreamento das mãos e dedos ficou mais preciso, pois a 
+imagem capturada pelo controlador é processada e encaixada em 
+um modelo anatomicamente correto. Desta forma, qualquer mão 
+capturada terá 5 dedos, composto do número certo de ossos, e 
+em posições e rotações anatomicamente possível. Isto também 
+melhorou a oclusão de dedos, que antes sumiam do modelo da 
+versão um(pois o modelo não teria necessariamente 5 dedos), 
+agora podem ser estimados a partir do resto da mão.
 
-A segunda versão do \textit{SDK} do \textit{Leap Motion} tinha, nativamente, o conceito de 'gestos', e o próprio \textit{SDK} disponibilizava alguns métodos para checar se alguns gestos básicos havia sido executado. Eram quatro o número de gestos reconhecidos: fazer um círculo com o dedo, deslizar o dedo, 'pressionar' um botão e tocar a tela O modelo da mão 
+A segunda versão do \textit{SDK} do \textit{Leap Motion} 
+tinha, nativamente, o conceito de 'gestos', e o próprio 
+\textit{SDK} disponibilizava alguns métodos para checar 
+se alguns gestos básicos havia sido executado. Eram quatro 
+o número de gestos reconhecidos: fazer um círculo com o 
+dedo, deslizar o dedo, 'pressionar' um botão e tocar a 
+tela, conforme descrito em \cite{leap:2016:gestures}. A 
+versão \textit{Orion}, porém, no momento em que se 
+iniciou o desenvolvimento deste trabalho, ainda não 
+contava com a detecção automática de gestos, sendo 
+necessário que o grupo desenvolvesse o código que o fizesse.
 
-https://developer.leapmotion.com/documentation/csharp/devguide/Leap_Gestures.html
-\TODO{Write more!}
+Dados os modelos das mãos, é possível detectar gestos através 
+da posicão, rotação e velocidade da palma da mão, dos dedos, 
+ou dos ossos individuais. Para a detecção de um dedo 
+esticado, por exemplo, pode-se checar se o ângulo entre 
+cada par de ossos adjacentes daquele dedo é \textit{pequeno} 
+(aonde \textit{pequeno} deve ser definido com testes). 
+Para se detectar uma palma virada para cima, pode-se 
+verificar o vetor normal da palma (que nos é dada pelo 
+\textit{SDK} do controlador) e ver se seu componente em 
+y é positivo (tomando y como o eixo perpendicular ao 
+plano do solo). Uma palma aberta apontando para cima, 
+portando, pode ser detectada com o conjunto da detecção 
+de um dedo esticado e da palma virada para cima.
 
+É importante também notar que um mesmo gesto ou posicionamento
+da mão pode ser descrita de várias formas. No caso do dedo esticado, 
+por exemplo, poderia-se checar apenas o ângulo entre o primeiro e 
+último ossos. Poderia, também, se calcular a distância entre estes
+dois ossos. Dependendo do caso, as formas diferentes podem ser 
+equivalentes, mas também podem apenas parecer iguais, mas quando
+testados em ambientes diferentes, resultarão em saídas diferentes.
+Por exemplo, uma mão menor poderia não ter o dedo considerado esticado
+caso se utilizasse a distância entre os ossos.
+
+Mais recentemente, porém, a empresa do \textit{Leap Motion} 
+lançou módulos (chamados de \textit{utilities} no site) 
+que permitem a detecção de gestos simples, não sendo 
+mais necessário desenvolver código que o faça.
 
 % ---
 \subsection{Google Cardboard}\label{subsec-teo-google-cardboard}
@@ -253,10 +306,10 @@ alcançar tal objetivo, o \textit{headset} é feito de papelão,
 de tal forma que o único subcomponente mais caro seja as lentes. Adicionalmente, 
 um celular é utilizado tanto como poder de processamento do \textit{headset} 
 quanto como a tela deste. Visto que uma grande parcela da população ja tem um 
-\textit{smartphone}, estas partes do Cardboard vêm de graça.
+\textit{smartphone}, estas partes do \textit{Cardboard} vêm de graça.
 
 Quanto ao software compatível, é necessário que este divida a sua saída de 
-video (que será mostrado na tela do celular) em metades, uma para cada olho. 
+vídeo (que será mostrado na tela do celular) em metades, uma para cada olho. 
 Visto que cada imagem emula a visão de um olho, é necessário que as imagens 
 venham de pontos de origem separados por uma distância equivalente àquela entre 
 as duas pupilas, valor que varia entre 58 mm e 70 mm, de acordo com
@@ -267,7 +320,7 @@ ler sensores encontrados no dispositivo móvel, como acelerômetros e giroscópi
 e disponibilizar estes dados para que se possa implementar o movimento do 
 usuário dentro do jogo ou aplicativo.
 
-O SDK do Google Cardboard, distribuído pela própria Google e disponível online 
+O \textit{SDK} do \textit{Google Cardboard}, distribuído pela própria Google e disponível online 
 em \cite{google:2016:cardboardSDK}, já faz todas estas transformações necessárias 
 na imagem, além de enviar os dados de movimento, ja processados, de volta ao
-software que esteja utilizando o SDK.
+software que esteja utilizando o \textit{SDK}.

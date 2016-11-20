@@ -147,8 +147,35 @@ um interesse maior e também por ter um número muito maior de
 possibilidades. O jogador possivelmente perderia o interesse no terceiro 
 conceito após poucas partidas do jogo.
 
-Desta forma, o quarto conceito foi o escolhido para ser desenvolvido. Para 
-que o jogo não fosse curto demais, foram então imaginados cenários 
+Desta forma, o quarto conceito foi o escolhido para ser desenvolvido. O próximo passo era definir formalmente as mecânicas do jogo, assim como os elementos que o jogador poderia manipular. Estes elementos estão listados no \autoref{quadro:elementos}, junto das interações planejadas para cada um.
+
+\begin{quadro}[htb] 
+	\centering
+	\caption[Elementos manipuláveis pelo jogador]{Elementos manipuláveis pelo jogador}
+	
+	\begin{tabular} {| >{\centering\arraybackslash} m{3cm} | >{\centering\arraybackslash} m{9cm} |}
+		\hline
+		\textbf{Elemento} & \textbf{Interação planejada} \\
+		\hline
+		Terra/Pedra & O principal elemento do mundo. O jogador consegue manipular os blocos de terra modificando sua altura, criando pilares ou buracos \\
+		\hline
+		Água & O jogador consegue causar precipitação em uma área pre-determinada, criando corpos d'água, como lagos \\
+		\hline
+		Fogo & O jogador pode colocar fogo em uma área pre-determinada, secando corpos d'água que estiverem ali \\
+		\hline
+		Vento & O jogador consegue criar correntezas de vento em uma das quatro direções cardeais. Se aplicados em uma configuração específica dos blocos, o vento cria ondas num corpo d'água que erode um bloco de terra/pedra, criando areia \\
+		\hline
+		Lava & Esse elemento não pode ser gerado pelo jogador, sendo encontrado no nível mais baixo do mundo em algumas fases. Se um buraco é escavado até este nível mais baixo, a lava começa a subir. Em contato com água, a lava vira terra/pedra \\
+		\hline
+		Areia & Criado pela erosão de terra/pedra devido à interação do vento com a água \\
+		\hline
+	\end{tabular}
+	
+	\legend{\fonteAP}
+	\label{quadro:elementos}
+\end{quadro}
+
+Para que o jogo não fosse curto demais, foram então imaginados cenários 
 que extrapolassem os usos básicos das 
 mecânicas propostas, de maneiras que se alinhassem aos conceitos pedagógicos 
 que deveriam ser transmitidos pelo jogo: desafios que dependessem da execução 
@@ -220,15 +247,13 @@ controlador \textit{Leap Motion}, como havia nas versões anteriores. Isso, alia
 ao fato de que a versão anterior do \textit{SDK} não estava mais disponível 
 para download, significou que uma interação direta entre o \textit{Leap Motion} 
 e o jogo compilado para dispositivos móveis não seria possível nessa etapa 
-inicial do projeto.
+inicial do projeto. A solução para este problema foi continuar o desenvolvimento
+diretamente no computador, sem se preocupar em gerar a versão para o 
+\textit{Android} (e, portanto, para o \textit{Google Cardboard}).
 
 Apesar deste empecilho, \textit{Unity} se mostrou uma plataforma robusta e 
 flexível o suficiente para a continuação do projeto, e as mecânicas básicas 
 puderam ser implementadas rapidamente e sem grandes problemas.
-
-
-\TODO{" vocês falam das dificuldades, mas não falam o que fizeram para resolver 
-	essa dificuldade. Falar de como foi resolvido no começo da secao da segunda iteracao"	}
 
 % ---
 \section{Segunda iteração: mecânicas básicas}\label{sec-segunda-iteracao-mecanicas-basicas}
@@ -239,34 +264,37 @@ de conceito, um segundo protótipo foi desenvolvido, desta vez com o intuito
 de acrescentar uma segunda mecânica básica - controle da precipitação - de modo
 a permitir que o jogador experimentasse com a interação entre as duas.
 
+Para tal, foi necessário especificar um pouco melhor a mecânica da água 
+e como ela funcionaria em relação às mudanças de altura do terreno. 
+Primeiro, definiu-se que a agua deveria crescer de baixo para cima, de
+maneira similar a um recipiente sendo preenchido com líquido, demonstrado
+na \autoref{fig:mecanica-agua-enchendo-graficamente}. Esta era uma
+definição mais referente ao apelo gráfico do que uma mecânica. Adicionalmente, 
+definiu-se que, dado um bloco (ou conjunto de blocos) selecionados, a ação de
+precipitação preencheria o espaço aberto até cobrir os blocos selecionados, em 
+vez de preencher de água para que esta fique no mesmo nível do bloco selecionado.
+Esta mecânica pode ser vista na \autoref{fig:mecanica-agua-enchendo-mecanica}.
+
 \begin{figure}[ht]
 	\centering
 	\caption{Mecânicas da água 1}
 	\includegraphics[width=0.5\textwidth]{water_mechanics1}
 	\legend{\fonteAP}
+	\label{fig:mecanica-agua-enchendo-graficamente}
 \end{figure}
-\TODO{Ref. figura 6!}
 
 \begin{figure}[ht]
 	\centering
 	\caption{Mecânicas da água 2}
 	\includegraphics[width=0.5\textwidth]{water_mechanics2}
 	\legend{\fonteAP}
+	\label{fig:mecanica-agua-enchendo-mecanica}
 \end{figure}
-\TODO{Ref. figura 7!}
 
 Nesta iteração, haveria dois gestos que deveriam ser captados e interpretados 
 pelo \textit{Leap Motion}: abaixar e elevar a mão com a palma aberta para alterar 
 a elevação do terreno e apontar todos os dedos para baixo para fazer chover em 
 uma área específica.
-
-\begin{figure}[ht]
-	\centering
-	\caption{Prova de conceito do jogo}
-	\includegraphics[width=0.5\textwidth]{ss2}
-	\legend{\fonteAP}
-\end{figure}
-\TODO{Ref. figura 8!}
 
 Durante a implementação dessas mecânicas, ficou clara a necessidade de uma 
 mecânica de seleção que permitisse a manipulação de grandes áreas do terreno
@@ -276,9 +304,55 @@ para delimitar áreas.
 Também nessa etapa, percebeu-se que, devido à posição do \textit{Leap Motion},
 alguns dos gestos imaginados para as diferentes mecânicas do jogo - sobretudo 
 o associado a chuva - não poderiam ser captados com a precisão necessária, 
-nos levando a precisar reimaginar uma parte significativa da interação.
+nos levando a precisar reimaginar uma parte significativa da interação. Isto 
+resultou na simplificação do gesto para a chuva, bastante apenas fechar o punho
+com a palma virada para baixo. Desta forma, o gesto era capturado mais facilmente,
+mas também era ativado muitas vezes quando o jogador não havia feito o gesto, 
+dificultando a jogabilidade. Uma possível razão para isto é ter definido o 
+gesto de maneira não ótima, devido à inexperiência neste assunto por parte
+dos integrantes do grupo.
 
+Apesar de tudo, o protótipo já estava jogável e era possível modificar o terreno e adicionar ou remover água, como mostrado na \autoref{fig:example-water-earth}
 
+\begin{figure}[ht]
+	\centering
+	\caption{Prova de conceito do jogo}
+	\includegraphics[width=0.5\textwidth]{ss2}
+	\legend{\fonteAP}
+	\label{fig:example-water-earth}
+\end{figure}
+
+% ---
+\section{Terceira iteração: últimas mecânicas}\label{sec-terceira-iteracao-ultimas-mecanicas}
+% ---
+
+Ao final da segunda iteração, faltavam dois elementos para
+completar o conjunto de elementos que o jogador poderia criar, de acordo
+com o que havia sido definido: ar/vento e fogo.
+
+O primeira é importante para ser possível criar fases que necessitem uma 
+sequência maior de passos para se chegar ao objetivo e, portanto, criar
+um desafio maior. Já o segundo é importante por sua reação com a água, 
+que até então, quando criada, não podia ser removida. Desta forma, o 
+fogo serve para desfazer movimentos errôneos de água. Dado a certa 
+imprecisão existente com o gesto de geração de água, aonde o nosso
+código acusava que o jogador havia feito o gesto erroneamente isto era
+importante para minimizar a frustração do jogador.
+
+% ---
+\section{Quarta iteração: últimas mecânicas}\label{sec-quarta-iteracao-integracao}
+% ---
+
+Uma vez que os elementos principais foram implementados e o jogo já podia
+ser jogado, focou-se em possibilitar a execução do jogo no android 
+(que estava, até então, rodando no computador, por dificuldades 
+discutidas na \autoref{sec-primeira-iteracao-prova-conceito}). Visto que
+a primeira opção, que parecia a mais óbvia, não iria funcionar, foi feito um 
+estudo mais a fundo sobre a arquitetura do sistema, que está descrita
+na \autoref{sec-desenvolvimento-arquitetura}. 
+
+Adicionalmente, correções foram feitas de bugs no código, e melhorias foram
+feitas na detecção de gestos.
 
 % ---
 \section{Arquitetura}\label{sec-desenvolvimento-arquitetura}
@@ -483,26 +557,30 @@ A comparação das alternativas pode ser vista no \autoref{tabela:alternativas-a
 \subsection{Escolha da arquitetura}\label{subsec-arquitetura-escolha}
 % ---
 
-Inicialmente, se optou pela alternativa do \textit{streaming} de video, visto que a 
+Inicialmente, havia se optado pela alternativa da conexão direta. Porém, devido
+a impossibilidade de se utilizar a versão \textit{Orion} do \textit{SDK} do 
+\textit{Leap Motion}, foi necessário mudar de alternativa. A alternativa 
+escolhida foi a do \textit{streaming} de video, visto que a 
 sua implementação não necessitaria de mudanças no código. Bastaria gerar 
-o executável do jogo no windows e rodar um software de \textit{streaming}, como o 
-Riftcat. Durante o desenvolvimento inicial, esta foi a alternativa utilizada, 
-mesmo sendo necessário inicializar o software várias vezes, devido a 
-bugs e falta de documentação do Rifcat.
+o executável do jogo no Windows e rodar um software de \textit{streaming}, como o 
+Riftcat. Esta alternativa foi testada por um tempo, aonde se constatou
+alguns defeitos, como a necessidade de se reiniciar o software várias vezes 
+devido a bugs e falta de documentação do Rifcat. Mesmo assim, devido a facilidade
+de implementação e qualidade aceitável da solução, a alternativa foi escolhida
+como a que seria utilizada.
 
-Porém, descobriu-se posteriormente que para que esta alternativa funcionasse, 
+Porém, descobriu-se posteriormente, ao se testar o software nos computadores
+dos outros membros do grupo, que para que esta alternativa funcionasse, 
 era necessário uma placa de video relativamente potente, de acordo com 
 as especificações mínimas do software, encontrada em
 \cite{riftcat:2016:requirements}. Inclusive, o software do Riftcat só 
 funcionava em um dos cinco computadores testados. Por esta razão, optou-se 
 por abandonar esta alternativa, visto que dificultaria a acessibilidade do jogo.
 
-Dado este contratempo, decidiu-se testar as outras duas alternativas para 
-verificar suas viabilidades. 
-
-A alternativa da conexão direta necessitava a obtenção da versão do serviço 
-do \textit{Leap Motion} para o \textit{Android}, que não estava mais 
-disponível no website da empresa. Afortunadamente, a co-orientadora 
+Dado este contratempo, decidiu-se verificar a viabilidade das outras duas 
+alternativas. A alternativa da conexão direta havia sido descartada devido
+à remoção do \textit{SDK} do site do \textit{Leap Motion}. 
+Afortunadamente, a co-orientadora 
 deste projeto havia trabalhado anteriormente com o \textit{Leap Motion} 
 no \textit{Android}, e conseguiu uma cópia dos arquivos necessários. 
 Entretanto, nos testes preliminares feitos, não se obteve sucesso na 
@@ -521,7 +599,7 @@ código fonte disponível, para que ele se conectasse ao servidor \textit{WebSoc
 recebesse os dados estruturados em mensagens JSON, parseasse-as e 
 então as transformasse na estrutura de dados utilizada pelo \textit{Unity}.
 
-Para implementar tais mudanças no código do plugin, foi necessário encontrar 
+Para implementar tais mudanças no código do \textit{plugin}, foi necessário encontrar 
 e testar bibliotecas que se conectassem a um servidor
 \textit{WebSocket} (visto que o \textit{Unity} não consegue fazer 
 isto nativamente) e parseasse JSON (pois o \textit{parser} JSON nativo 
@@ -529,20 +607,44 @@ do \textit{Unity} só funciona em casos de uso muito limitados). Visto que
 é necessário que movimentos das mãos sejam refletidos o mais rapidamente 
 o possível no jogo (para se manter a impressão de que as mãos virtuais 
 são as mãos reais do usuário, para manter a imersão), é essencial que 
-estas bibliotecas fossem rápidas o suficiente para não serem um gargalo, 
-além de serem eficientes em questão de memória e objetos alocados, visto 
-que rodam com frequencia alta e é o \textit{Unity} que gere a sua 
-memória (ou seja, o Unity roda o coletor de lixo de tempos em tempos, 
-algo que pode causar travamentos dependendo de quantos objetos 'mortos' existirem).
+estas bibliotecas fossem rápidas o suficiente para não serem um gargalo. 
+Como, no \textit{Unity}, é o próprio \textit{framework}
+que faz a gerência da sua memória (ou seja, o \textit{Unity} roda o coletor de 
+lixo de tempos em tempos, em oposição ao programador ter de se preocupar com isto)
+é necessário também que os algoritmos sejam eficientes em questão de memória 
+e objetos alocados, visto que rodam com frequência alta e que a execução do
+coletor de lixo pode causar travamentos dependendo de quantos objetos 'mortos' 
+existirem.
+
+Uma dificuldade encontrada nesta parte de modificação do \textit{plugin} é que o
+\textit{Unity} tem um \textit{profiler} interno, que permite ver a alocação
+de memória e dados sobre a performance do jogo, mas que só permite esse
+monitoramento no \textit{thread} principal do \textit{Unity}. Visto que a 
+modificação do \textit{plugin} inseria a necessidade de se ficar esperando uma 
+mensagem chegar do servidor \textit{WebSocket}, e que fazer isto na 
+\textit{thread} principal acarretaria em uma grande queda de desempenho, 
+o código que recebe as mensagens do servidor e que as transforma nos dados
+esperados pelo \textit{Unity} foi colocado para executar em uma \textit{thread}
+secundária. Portanto, com o \textit{profiler} interno do \textit{Unity} não
+era possivel se monitorar diretamente o desempenho da \textit{thread}, sendo 
+necessário estimar o desempenho através das consequências dos resultados do 
+\textit{thread} secundário, ou através da impressão do valor de variáveis
+no console.
 
 
-\TODO{[11:42 PM, 11/15/2016] Lucy TCC: falta o capítulo com a pesquisa                        
-	[11:42 PM, 11/15/2016] Lucy TCC: falta o capítulo com os resultados da pesquisa                        
-	[11:42 PM, 11/15/2016] Lucy TCC: falta a conclusão                        
-	[11:43 PM, 11/15/2016] Lucy TCC: na introdução falta também os trabalhos relacionados.                        
-	[11:43 PM, 11/15/2016] Lucy TCC: em nenhum momento vocês falam onde está sendo aplicado as habilidades no jogo de vocês.                        
-	[11:43 PM, 11/15/2016] Lucy TCC: isso precisa ficar claro em algum lugar.}
+\TODO{Lucy: falta o capítulo com a pesquisa           }        
+     
+\TODO{Lucy: falta o capítulo com os resultados da pesquisa    }    
+                
+\TODO{Lucy: falta a conclusão                     }   
 
-\TODO{Apendice - Feito por nos. Anexo: Nao feito por nós.}
+\TODO{Lucy: na introdução falta também os trabalhos relacionados. }       
+               
+\TODO{Lucy: em nenhum momento vocês falam onde está sendo
+	 aplicado as habilidades no jogo de vocês.                        }
+ 
+\TODO{Lucy: isso precisa ficar claro em algum lugar.}
 
-\TODO{Questionario foi validado, sim.}
+\TODO{Lembrete: Apendice - Feito por nos. Anexo: Nao feito por nós.}
+
+\TODO{Lembrete: Questionario foi validado, sim.}
