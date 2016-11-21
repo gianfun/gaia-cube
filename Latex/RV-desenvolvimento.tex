@@ -103,7 +103,7 @@ ou até mesmo uma adaptação do famoso jogo \textit{Tetris}, mas
 tridimensional, aonde deve-se criar um plano inteiro sobre a bandeja 
 (ao invés de uma linha, como no jogo original).
 
-No canto superior esquerdo, existe o rascunho para um jogo de classificação. Assim como antes, peças vão caindo, e o jogador deve categorizar estas peças em uma de duas ou mais categorias, através de movimentos das mãos. No exemplo desenhado, o objetivo poderia ser mover todos os cubos azuis para a direita, esferas pretas para a esquerda, e não agir sobre as esferas com espinhos vermelhas. Outras variações poderiam ser feitas, também, como todos os cubos (independente de sua cor) vão para a direita, por exemplo. Existem inúmeras possibilidades, tendo como pré-requisito ser possível categorias os elementos. Adicionalmente, os exemplos dados foram com formas geométricas, mas podem ser abstraídas para quase qualquer área, como por exemplo elementos (ex. Separe os elementos que reajam com oxigênio), geografia (ex. Categorize os países por continente), história (ex. Classifique estes eventos como causas ou consequências da segunda guerra mundial), ou qualquer outro assunto que se consiga imaginar.
+No canto superior esquerdo, existe o rascunho para um jogo de classificação. Assim como antes, peças vão caindo, e o jogador deve categorizar estas peças em uma de duas ou mais categorias, através de movimentos das mãos. No exemplo desenhado, o objetivo poderia ser mover todos os cubos azuis para a direita, esferas pretas para a esquerda, e não agir sobre as esferas com espinhos vermelhas. Outras variações poderiam ser feitas, também, como todos os cubos (independente de sua cor) vão para a direita, por exemplo. Existem inúmeras possibilidades, tendo como pré-requisito ser possível categorizar os elementos. Adicionalmente, os exemplos dados foram com formas geométricas, mas podem ser abstraídas para quase qualquer área, como por exemplo elementos (ex. Separe os elementos que reajam com oxigênio), geografia (ex. Categorize os países por continente), história (ex. Classifique estes eventos como causas ou consequências da segunda guerra mundial), ou qualquer outro assunto que se consiga imaginar.
 
 Logo abaixo do rascunho no canto superior esquerdo, estão as frases "Zelda Boss Key" e "Game Show JP". Estas são referências para uma terceira ideia de jogo, aonde é apresentado ao jogador uma peça tridimensional e uma abertura ou ranhura tridimensional. O jogador deve então, com movimentos da mão, rotacionar ou modificar a peça para que esta encaixe na ranhura/abertura. Dois exemplos da referência do jogo \textit{Legend of Zelda: Skyward Sword} podem ser vistas na \autoref{fig:zelda-key-puzzle}, aonde é possivel ver a peça na frente e, ao fundo, o encaixe.
 
@@ -136,11 +136,12 @@ de entrada e saída escolhidos.
 Por fim, uma análise cuidadosa das limitações das tecnologias escolhidas, aliada 
 a uma preocupação em manter o jogo intuitivo e imersivo levaram o grupo a 
 escolher o último conceito dentre os quatro. Os dois primeiros conceitos, por 
-mais interessante que fossem, tinham uma dependência muito forte sobre a
+mais interessantes que fossem, tinham uma dependência muito forte sobre a
 entrada do controlador \textit{Leap Motion}. Dado que o controlador não 
-é completamente preciso e que poderia falhar em detectar movimentos ou 
-capturar a mão do jogador, não queríamos que o jogador fosse punido por conta 
-disso. Visto que os dois primeiros conceitos dependiam dos objetos caindo, 
+é completamente preciso e poderia falhar na detecção de movimentos ou 
+na captura da mão do jogador, era necessário prevenir que o jogador fosse
+punido indevidamente.
+Visto que os dois primeiros conceitos dependiam dos objetos caindo, 
 uma falha do controlador poderia fazê-los perder, causando frustração. 
 Entre o terceiro e quarto conceito, o grupo escolheu o último, devido a 
 um interesse maior e também por ter um número muito maior de 
@@ -174,6 +175,7 @@ Desta forma, o quarto conceito foi o escolhido para ser desenvolvido. O próximo
 	\legend{\fonteAP}
 	\label{quadro:elementos}
 \end{quadro}
+\cite{Deve estar justificado?}
 
 Para que o jogo não fosse curto demais, foram então imaginados cenários 
 que extrapolassem os usos básicos das 
@@ -304,8 +306,8 @@ para delimitar áreas.
 Também nessa etapa, percebeu-se que, devido à posição do \textit{Leap Motion},
 alguns dos gestos imaginados para as diferentes mecânicas do jogo - sobretudo 
 o associado a chuva - não poderiam ser captados com a precisão necessária, 
-nos levando a precisar reimaginar uma parte significativa da interação. Isto 
-resultou na simplificação do gesto para a chuva, bastante apenas fechar o punho
+obrigado o grupo a reimaginar uma parte significativa da interação. Isto 
+resultou na simplificação do gesto para a chuva, bastando apenas fechar o punho
 com a palma virada para baixo. Desta forma, o gesto era capturado mais facilmente,
 mas também era ativado muitas vezes quando o jogador não havia feito o gesto, 
 dificultando a jogabilidade. Uma possível razão para isto é ter definido o 
@@ -330,13 +332,13 @@ Ao final da segunda iteração, faltavam dois elementos para
 completar o conjunto de elementos que o jogador poderia criar, de acordo
 com o que havia sido definido: ar/vento e fogo.
 
-O primeira é importante para ser possível criar fases que necessitem uma 
+O primeiro é importante para permitir a criação de fases que necessitem uma 
 sequência maior de passos para se chegar ao objetivo e, portanto, criar
 um desafio maior. Já o segundo é importante por sua reação com a água, 
 que até então, quando criada, não podia ser removida. Desta forma, o 
 fogo serve para desfazer movimentos errôneos de água. Dado a certa 
 imprecisão existente com o gesto de geração de água, aonde o nosso
-código acusava que o jogador havia feito o gesto erroneamente isto era
+código acusava o jogador de ter feito o gesto erroneamente, o fogo era
 importante para minimizar a frustração do jogador.
 
 % ---
@@ -351,7 +353,7 @@ a primeira opção, que parecia a mais óbvia, não iria funcionar, foi feito um
 estudo mais a fundo sobre a arquitetura do sistema, que está descrita
 na \autoref{sec-desenvolvimento-arquitetura}. 
 
-Adicionalmente, correções foram feitas de bugs no código, e melhorias foram
+Adicionalmente, erros de código foram corrigidos, e melhorias foram
 feitas na detecção de gestos.
 
 % ---
@@ -464,6 +466,10 @@ que a da primeira opção pois é necessário enviar os dados referentes ao movi
 da cabeça do celular para o computador, que então deve enviar as imagens de 
 volta para o celular. Essa latência adicional não apenas cria uma dissociação 
 entre o jogador e o mundo virtual, mas também pode causar tontura e enjoo.
+Adicionalmente, mesmo a latência entre o movimento das mãos do jogador e
+sua detecção pelo código sendo baixa, a latência adicionada na saída de vídeo
+pode fazer com que pareça que as mãos estejam sendo detectadas com uma latência 
+mais alta.
 
 \begin{figure}
 	\centering
@@ -559,7 +565,7 @@ A comparação das alternativas pode ser vista no \autoref{tabela:alternativas-a
 
 Inicialmente, havia se optado pela alternativa da conexão direta. Porém, devido
 a impossibilidade de se utilizar a versão \textit{Orion} do \textit{SDK} do 
-\textit{Leap Motion}, foi necessário mudar de alternativa. A alternativa 
+\textit{Leap Motion}, foi necessário mudar de alternativa. A segunda alternativa 
 escolhida foi a do \textit{streaming} de video, visto que a 
 sua implementação não necessitaria de mudanças no código. Bastaria gerar 
 o executável do jogo no Windows e rodar um software de \textit{streaming}, como o 
@@ -596,13 +602,13 @@ pela empresa para o \textit{Unity} só conseguia receber os dados do controlador
 por meio da conexão direta, e não pelo servidor \textit{WebSocket}. Portanto, foi 
 necessário modificar o plugin distrubuído, que é software livre e tem seu 
 código fonte disponível, para que ele se conectasse ao servidor \textit{WebSocket}, 
-recebesse os dados estruturados em mensagens JSON, parseasse-as e 
+recebesse os dados estruturados em mensagens JSON, preocessasse-as e 
 então as transformasse na estrutura de dados utilizada pelo \textit{Unity}.
 
 Para implementar tais mudanças no código do \textit{plugin}, foi necessário encontrar 
 e testar bibliotecas que se conectassem a um servidor
 \textit{WebSocket} (visto que o \textit{Unity} não consegue fazer 
-isto nativamente) e parseasse JSON (pois o \textit{parser} JSON nativo 
+isto nativamente) e processasse JSON (pois o \textit{parser} JSON nativo 
 do \textit{Unity} só funciona em casos de uso muito limitados). Visto que 
 é necessário que movimentos das mãos sejam refletidos o mais rapidamente 
 o possível no jogo (para se manter a impressão de que as mãos virtuais 
@@ -626,7 +632,7 @@ mensagem chegar do servidor \textit{WebSocket}, e que fazer isto na
 o código que recebe as mensagens do servidor e que as transforma nos dados
 esperados pelo \textit{Unity} foi colocado para executar em uma \textit{thread}
 secundária. Portanto, com o \textit{profiler} interno do \textit{Unity} não
-era possivel se monitorar diretamente o desempenho da \textit{thread}, sendo 
+era possivel monitorar diretamente o desempenho da \textit{thread}, sendo 
 necessário estimar o desempenho através das consequências dos resultados do 
 \textit{thread} secundário, ou através da impressão do valor de variáveis
 no console.
