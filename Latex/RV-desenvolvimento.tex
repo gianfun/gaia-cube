@@ -57,7 +57,7 @@ que as demais alternativas disponíveis, o que permitiria ao grupo focar-se
 na conceituação e implementação do jogo em si, sem prender-se a eventuais 
 problemas relativos à configuração e uso do hardware, criação de APIs próprias 
 ou preocupações com elementos mais elementares da criação de um jogo digital.
-\TODO{Ultimos dois paragrafos não dizem a respeito ao publico alvo..}
+\TODO{Essa seção não diz a respeito ao publico alvo, mas da tecnologia, não?}
 
 % ---
 \section{\textit{Brainstorming} e Seleção do Conceito do Jogo}\label{sec-brainstorming-conceito}
@@ -71,6 +71,9 @@ para uma solução que fizesse um bom uso dos recursos de realidade
 virtual disponíveis e gerasse um projeto adequado ao público alvo 
 selecionado, resultando em um jogo intuitivo e divertido que fosse 
 capaz de transmitir os conceitos lógicos e cognitivos relevantes.
+Importante também era que o jogo exercitasse competências e 
+habilidades do raciocínio lógico, apresentados previamente na 
+\autoref{quadro:PCN}.
 
 As ideias geradas variaram desde jogos de um ritmo mais acelerado, no qual 
 um jogador teria que categorizar elementos abstratos o mais rápido que 
@@ -101,11 +104,16 @@ em vez de tombar para fora da bandeja. Outra possibilidade é que as
 peças caindo tenham que se juntar para fazer um formato específico, 
 ou até mesmo uma adaptação do famoso jogo \textit{Tetris}, mas 
 tridimensional, aonde deve-se criar um plano inteiro sobre a bandeja 
-(ao invés de uma linha, como no jogo original).
+(ao invés de uma linha, como no jogo original). Esta ideia, além de
+exercitar a coordenação motora do jogador, treina também as 
+competências e habilidades H1, H2 e H7 do \autoref{quadro:PCN}, pela
+necessidade de se resolver o problema atual (de identificar a 
+peça que está caindo e aonde ela deve ser colocada), assim como planejar
+para aonde colocar peças futuras.
 
-No canto superior esquerdo, existe o rascunho para um jogo de classificação. Assim como antes, peças vão caindo, e o jogador deve categorizar estas peças em uma de duas ou mais categorias, através de movimentos das mãos. No exemplo desenhado, o objetivo poderia ser mover todos os cubos azuis para a direita, esferas pretas para a esquerda, e não agir sobre as esferas com espinhos vermelhas. Outras variações poderiam ser feitas, também, como todos os cubos (independente de sua cor) vão para a direita, por exemplo. Existem inúmeras possibilidades, tendo como pré-requisito ser possível categorizar os elementos. Adicionalmente, os exemplos dados foram com formas geométricas, mas podem ser abstraídas para quase qualquer área, como por exemplo elementos (ex. Separe os elementos que reajam com oxigênio), geografia (ex. Categorize os países por continente), história (ex. Classifique estes eventos como causas ou consequências da segunda guerra mundial), ou qualquer outro assunto que se consiga imaginar.
+No canto superior esquerdo, existe o rascunho para um jogo de classificação. Assim como antes, peças vão caindo, e o jogador deve categorizar estas peças em uma de duas ou mais categorias, através de movimentos das mãos. No exemplo desenhado, o objetivo poderia ser mover todos os cubos azuis para a direita, esferas pretas para a esquerda, e não agir sobre as esferas com espinhos vermelhas. Outras variações poderiam ser feitas, também, como todos os cubos (independente de sua cor) vão para a direita, por exemplo. Existem inúmeras possibilidades, tendo como pré-requisito ser possível categorizar os elementos. Adicionalmente, os exemplos dados foram com formas geométricas, mas podem ser abstraídas para quase qualquer área, como por exemplo elementos (ex. Separe os elementos que reajam com oxigênio), geografia (ex. Categorize os países por continente), história (ex. Classifique estes eventos como causas ou consequências da segunda guerra mundial), ou qualquer outro assunto que se consiga imaginar. Esta alternativa pode exercitar as competências e habilidades H1, H2, H7 e H8 do \autoref{quadro:PCN}, dependendo de quão complexo for o desafio. No caso simples de apenas se classificar formas, por exemplo, apenas a competência H8 será exercitada. Em um caso mais elaborado, aonde a ordem em que se colocam elementos em cada uma das categorias importe, como por exemplo as peças maiores tem que entrar antes de peças menores, as quatro competências listadas podem ser praticadas.
 
-Logo abaixo do rascunho no canto superior esquerdo, estão as frases "Zelda Boss Key" e "Game Show JP". Estas são referências para uma terceira ideia de jogo, aonde é apresentado ao jogador uma peça tridimensional e uma abertura ou ranhura tridimensional. O jogador deve então, com movimentos da mão, rotacionar ou modificar a peça para que esta encaixe na ranhura/abertura. Dois exemplos da referência do jogo \textit{Legend of Zelda: Skyward Sword} podem ser vistas na \autoref{fig:zelda-key-puzzle}, aonde é possivel ver a peça na frente e, ao fundo, o encaixe.
+Logo abaixo do rascunho no canto superior esquerdo, estão as frases "Zelda Boss Key" e "Game Show JP". Estas são referências para uma terceira ideia de jogo, aonde é apresentado ao jogador uma peça tridimensional e uma abertura ou ranhura tridimensional. O jogador deve então, com movimentos da mão, rotacionar ou modificar a peça para que esta encaixe na ranhura/abertura. Dois exemplos da referência do jogo \textit{Legend of Zelda: Skyward Sword} podem ser vistas na \autoref{fig:zelda-key-puzzle}, aonde é possivel ver a peça na frente e, ao fundo, o encaixe. Uma possibilidade mais elaborada é possível, aonde, para se encaixar a peça, é necessário uma série de movimentos, não apenas uma rotação. Nesta opção, seria possível exercitar as competências e habilidades H1, H2 e H8 do \autoref{quadro:PCN}, devido à necessidade de se entender a peça tridimensional e como ela encaixa na ranhura. Adicionalmente, este jogo permitiria melhorar o raciocínio espacial do jogador.
 
 \begin{figure}[h]
 	\centering
@@ -176,7 +184,6 @@ Desta forma, o quarto conceito foi o escolhido para ser desenvolvido. O próximo
 	\legend{\fonteAP}
 	\label{quadro:elementos}
 \end{quadro}
-\TODO{Deve estar justificado?}
 
 Para que o jogo não fosse curto demais, foram então imaginados cenários 
 que extrapolassem os usos básicos das 
@@ -372,7 +379,7 @@ entender cada um dos principais elementos, assim como suas interfaces.
 \subsubsection{Controlador \textit{Leap Motion}}\label{subsubsec-elemento-leapmotion}
 % ---
 
-Conforme visto na Seção \ref{subsubsec-teo-leap-motion}, o controlador pode 
+Conforme visto na Seção \ref{subsec-teo-leap-motion}, o controlador pode 
 ser dividido em dois elementos diferentes: O \textbf{hardware do controlador} e 
 o \textbf{serviço} que aplica algoritmos de visão computacional nas imagens 
 vindas do hardware, transformando-as em dados estruturados.
