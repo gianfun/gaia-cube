@@ -29,7 +29,7 @@
 % ------------------------------------------------------------------------
 
 % verso e anverso:
-\documentclass[12pt,openright,oneside,a4paper,english,brazil]{abntex2}
+\documentclass[12pt,openright,twoside,a4paper,english,brazil]{abntex2}
 
 % apenas verso:
 % \documentclass[12pt,oneside,a4paper,english,french,spanish,brazil]{abntex2}
@@ -327,37 +327,37 @@ Digitais da Escola Politécnica da Universidade de São Paulo para obtenção do
 % o conteúdo de implementação deste arquivo pelo comando abaixo:
 %
 \begin{fichacatalografica}
-%    \includepdf{fig/fichaCatalografica.pdf}
+    \includepdf{EPUSP-Catalogacao-na-Fonte.pdf}
 \end{fichacatalografica}
-%\begin{comment}
-\begin{fichacatalografica}
-	\vspace*{\fill}					% Posição vertical
-	\hrule							% Linha horizontal
-	\begin{center}					% Minipage Centralizado
-	\begin{minipage}[c]{12.5cm}		% Largura
-
-	\imprimirautor
-	\hspace{0.5cm} \imprimirtitulo  / \imprimirautor. --
-	\imprimirlocal, \imprimirdata-
-
-	\hspace{0.5cm} \pageref{LastPage} p. : il. (algumas color.) ; 30 cm.
-
-	\hspace{0.5cm} \imprimirorientadorRotulo~\imprimirorientador
-
-	\hspace{0.5cm}
-	\parbox[t]{\textwidth}{\imprimirtipotrabalho~--~\imprimirinstituicao,
-	\imprimirdata.}
-
-	\hspace{0.5cm}
-                \TODO{Definir palavras chave com a biblioteca}
-
-	\hspace{8.75cm} CDU 02:141:005.7
-
-	\end{minipage}
-	\end{center}
-	\hrule
-\end{fichacatalografica}
-%\end{comment}
+\begin{comment}
+	\begin{fichacatalografica}
+		\vspace*{\fill}					% Posição vertical
+		\hrule							% Linha horizontal
+		\begin{center}					% Minipage Centralizado
+		\begin{minipage}[c]{12.5cm}		% Largura
+	
+		\imprimirautor
+		\hspace{0.5cm} \imprimirtitulo  / \imprimirautor. --
+		\imprimirlocal, \imprimirdata-
+	
+		\hspace{0.5cm} \pageref{LastPage} p. : il. (algumas color.) ; 30 cm.
+	
+		\hspace{0.5cm} \imprimirorientadorRotulo~\imprimirorientador
+	
+		\hspace{0.5cm}
+		\parbox[t]{\textwidth}{\imprimirtipotrabalho~--~\imprimirinstituicao,
+		\imprimirdata.}
+	
+		\hspace{0.5cm}
+	                \TODO{Definir palavras chave com a biblioteca}
+	
+		\hspace{8.75cm} CDU 02:141:005.7
+	
+		\end{minipage}
+		\end{center}
+		\hrule
+	\end{fichacatalografica}
+\end{comment}
 % ---
 
 \begin{comment}
@@ -515,7 +515,8 @@ contribuirão para a evolução do \abnTeX.
 % ---
 % inserir lista de tabelas
 % ---
-\input{RV-tabelas}
+% Nao temos tabelas! 
+% \input{RV-tabelas}
 
 % ---
 
@@ -606,16 +607,19 @@ contribuirão para a evolução do \abnTeX.
 % ---
 % Inicia os anexos
 % ---
-\begin{anexosenv}
-
-% Imprime uma página indicando o início dos anexos
-\partanexos
-
-%\input{chap/comandosELM}
-
-%\input{chap/pesquisa}
-
-\end{anexosenv}
+% Nao temos anexos
+\begin{comment}
+	\begin{anexosenv}
+	
+	% Imprime uma página indicando o início dos anexos
+	\partanexos
+	
+	%\input{chap/comandosELM}
+	
+	%\input{chap/pesquisa}
+	
+	\end{anexosenv}
+\end{comment}
 
 
 %---------------------------------------------------------------------
