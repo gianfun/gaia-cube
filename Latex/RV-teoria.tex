@@ -21,7 +21,7 @@ formulação e desenvolvimento do projeto.
 \section{Jogos Digitais}\label{sec-jogosdigitais}
 % ---
 
-\TODO{Será legal definir "jogo" antes? E "jogo digital educacional" depois?}
+\TODO{Será legal definir *jogo* antes? E *jogo digital educacional* depois?}
 
 Para \cite{correia:2009:digital_games_spore}, jogos digitais são aqueles aonde exista
 interação humano-computador, com o uso da tecnologia, e desenvolvidos para serem 
@@ -40,17 +40,17 @@ desenvolvimento de jogos educacionais, porém, ainda é um desafio, devido
 ser discordantes: 'Educação' e 'Jogo'.
 
 Para \cite{ramos:2013:jogos}, a inserção dos jogos digitais na educação 
-contribui para o "desenvolvimento de aspectos cognitivos que são fundamentais 
-para a aprendizagem", favorecendo o desenvolvimento de habilidades 
+contribui para o ``desenvolvimento de aspectos cognitivos que são fundamentais 
+para a aprendizagem'', favorecendo o desenvolvimento de habilidades 
 relevantes ao processo de aprendizagem. Adicionalmente, devido à 
 grande quantidade de jogos digitais existentes, sua inclusão na sala 
 de aula permite o acesso a um acervo muito grande e diversificado de 
-novo conteúdo, com um custo baixo, que contribui com a "inclusão e 
-alfabetização digital dos alunos". 
+novo conteúdo, com um custo baixo, que contribui com a ``inclusão e 
+alfabetização digital dos alunos''. 
 
 Os jogos que desafiam a lógica, considerado por \cite{ramos:2013:jogos} 
-aqueles que "mobilizam o jogador a pensar, levantar hipóteses, 
-experimentar, planejar, testar, realizar cálculos", contribuem uma
+aqueles que ``mobilizam o jogador a pensar, levantar hipóteses, 
+experimentar, planejar, testar, realizar cálculos'', contribuem uma
 melhoria no desenvolvimento do raciocínio lógico, melhorando 
 também habilidades de planejamento e atenção, além da percepção visual. 
 
@@ -82,7 +82,7 @@ sensações que ele é capaz de invocar.
 \section{Realidade Virtual}\label{sec-realidadevirtual}
 % ---
 
-A Realidade Virtual é, de acordo com \cite{kirner:2007:RV_e_RA}, uma interface de
+A realidade virtual é, de acordo com \cite{kirner:2007:RV_e_RA}, uma interface de
 usuário avançada, que permite que o usuário veja, mova e interaja, em tempo real, 
 com um ambiente tridimensional, através de dispositivos especiais. Em geral, a visão
 tende a ser priorizada em interfaces de realidade virtual, mas a audição e o toque 
@@ -179,14 +179,14 @@ idade \cite{seeto:2016:playstation-vr}, o pesquisador da Universidade da Califó
 não existem comprovações de malefícios específicos a crianças advindos do
 uso de equipamentos de realidade virtual, e que quaisquer efeitos adversos
 que venham a incorrer sobre crianças novas fazendo uso destes equipamentos
-seriam "os mesmos que aqueles sofridos por adultos" \cite{hill:2016:vr-safe}.
+seriam ``os mesmos que aqueles sofridos por adultos'' \cite{hill:2016:vr-safe}.
 
 Banks publicou também em 2008 um artigo \cite{hoffman2008vergence} 
 detalhando como \textit{displays}
 tridimensionais e, por extensão, \textit{headsets} de realidade virtual,
-não acarretariam nos malefícios causados por "\textit{near work}" - ou
+não acarretariam nos malefícios causados por ``\textit{near work}'' - ou
 seja, atividades de leitura ou foco visual em páginas e \textit{displays}
-muito próximos ao rosto -, uma vez que este tipo de \textit{display} gera
+muito próximos ao rosto - uma vez que este tipo de \textit{display} gera
 pontos focais virtuais a uma distância confortável dos olhos, muito além
 da distância do \textit{display} em si.
 
@@ -213,10 +213,10 @@ suas capacidades de raciocínio lógico.
 
 Para se desenvolver este projeto, foi necessário o estudo de algumas tecnologias, apresentadas a seguir. 
 % ---
-\subsection{Protocolo WebSocket}\label{subsec-teo-websocket}
+\subsection{Protocolo \textit{WebSocket}}\label{subsec-teo-websocket}
 % ---
 
-O WebSocket é um protocolo de comunicação full-duplex que pode ser implementado
+O \textit{WebSocket} é um protocolo de comunicação full-duplex que pode ser implementado
 sobre uma conexão TCP, e foi padronizado em 2011 conforme descrito no RFC 6455
 \cite{RFC:2011:websocket}. Ele foi desenvolvido para ser implementado em 
 navegadores e servidores web, com o intuito de ampliar as possibilidades de
@@ -225,7 +225,7 @@ lados enviem mensagens ao outro a qualquer momento, sem a necessidade de um
 lado solicitar a mensagem. Mesmo tendo sido desenvolvido para uso em navegadores, 
 o protocolo pode ser utilizado por qualquer aplicação de cliente e servidor.
 
-Outro termo bastante relacionado ao WebSocket é o conceito de 
+Outro termo bastante relacionado ao \textit{WebSocket} é o conceito de 
 \textit{Push Notifications}, que são as mensagens enviadas de um servidor para 
 um aplicativo executando em um celular para notificar o usuário de algum evento. 
 O interessante é que o aplicativo não precisa ficar consultando o servidor 
@@ -233,7 +233,7 @@ O interessante é que o aplicativo não precisa ficar consultando o servidor
 ao cliente quando o servidor quiser.
 
 % ---
-\subsection{Controlador Leap Motion}\label{subsec-teo-leap-motion}
+\subsection{Controlador \textit{Leap Motion}}\label{subsec-teo-leap-motion}
 % ---
 
 O controlador \textit{Leap Motion}, da empresa de mesmo nome, começou a ser desenvolvido 
@@ -245,19 +245,19 @@ nova versão, chamada \textit{Orion}, foi lançada, desenvolvida especialmente p
 realidade virtual, de acordo com \cite{leap:2016:changeset}
 
 Para utilizar o controlador, são necessários 3 elementos diferentes: O hardware 
-do controlador em si; um software rodando como um serviço em um computador; 
-e um software 'cliente' que receberá os dados do serviço para utilizá-los, 
+do controlador em si; um software rodando como um serviço em um computador, agindo como um servidor; 
+e um software cliente que receberá os dados do serviço para utilizá-los, 
 como pode ser visto na arquitetura do \textit{Leap Motion} \cite{leap:2016:architecture}
 
-O controlador nada mais é do que um conjunto de duas câmeras e 3 LEDs, todos 
+O controlador nada mais é do que um conjunto de duas câmeras e três LEDs, todos 
 infravermelhos, de acordo com \cite{leap:2016:how-it-works}. Os LEDs projetam
 luz infravermelha, que é refletida pelas mãos do usuário e captadas 
 pelas câmeras. Estas imagens são enviadas ao serviço, 
 que utiliza algoritmos de visão computacional para gerar modelos tridimensionais 
-das mãos do usuário. A versão 2 do software aumentou muito a precisão do 
+das mãos do usuário. A versão v2 do software aumentou muito a precisão do 
 controlador por começar a trabalhar com um modelo esqueletal da mão, baseado 
-na anatomia humana, ou seja, um modelo composto por 5 dedos, cada um contendo 
-4 ossos. Este método insere restrições ao modelo, eliminando poses e movimentos 
+na anatomia humana, ou seja, um modelo composto por cinco dedos, cada um contendo 
+quatro ossos. Este método insere restrições ao modelo, eliminando poses e movimentos 
 que não seriam fisicamente possíveis.
 
 O software cliente, então, pode receber os dados do serviço por duas interfaces:
@@ -266,7 +266,7 @@ ou acessando o servidor \textit{WebSocket} que o serviço roda localmente.
 
 A versão mais recente do \textit{SDK} ainda é nova, e tem focado na otimização dos 
 algoritmos utilizados em várias áreas, tanto no processamento de imagens quanto 
-outros algoritmos de 'suporte', como a detecção da adição ou remoção de um 
+outros algoritmos de suporte, como a detecção da adição ou remoção de um 
 controlador. Visto a sua orientação para a realidade virtual, uma otimização 
 importante foi em relação à mãos ocluídas, que sumiam em versões anteriores, 
 conforme descrito em \cite{leap:2016:changeset}. É possível que comece a focar 
@@ -286,16 +286,15 @@ em coisas mais específicas para a realidade virtual em pouco tempo.
 
 Conforme mencionado na \autoref{subsec-teo-leap-motion}, a versão 
 v2 em diante do controlador \textit{Leap Motion} utiliza um modelo 
-da mão baseado na anatomia humana, conforme descrito 
-em \cite{leap:2016:intro-skeletal}, e que pode ser visto 
-na \autoref{fig:leap-anatomical-hand}. Isto significa que o 
+da mão baseado na anatomia humana e pode ser visto 
+na \autoref{fig:leap-anatomical-hand}, retirada de \cite{leap:2016:intro-skeletal}. Isto significa que o 
 rastreamento das mãos e dedos ficou mais preciso, pois a 
 imagem capturada pelo controlador é processada e encaixada em 
 um modelo anatomicamente correto. Desta forma, qualquer mão 
-capturada terá 5 dedos, composto do número certo de ossos, e 
+capturada terá cinco dedos, composto do número certo de ossos, e 
 em posições e rotações anatomicamente possível. Isto também 
 melhorou a oclusão de dedos, que antes sumiam do modelo da 
-versão um(pois o modelo não teria necessariamente 5 dedos), 
+primeira versão (pois o modelo não teria necessariamente cinco dedos), 
 agora podem ser estimados a partir do resto da mão.
 
 A segunda versão do \textit{SDK} do \textit{Leap Motion} 
@@ -303,7 +302,7 @@ tinha, nativamente, o conceito de 'gestos', e o próprio
 \textit{SDK} disponibilizava alguns métodos para checar 
 se alguns gestos básicos havia sido executado. Eram quatro 
 o número de gestos reconhecidos: fazer um círculo com o 
-dedo, deslizar o dedo, 'pressionar' um botão e tocar a 
+dedo, deslizar o dedo, `pressionar' um botão e tocar a 
 tela, conforme descrito em \cite{leap:2016:gestures}. A 
 versão \textit{Orion}, porém, no momento em que se 
 iniciou o desenvolvimento deste trabalho, ainda não 
@@ -340,18 +339,18 @@ que permitem a detecção de gestos simples, não sendo
 mais necessário desenvolver código que o faça.
 
 % ---
-\subsection{Google Cardboard}\label{subsec-teo-google-cardboard}
+\subsection{\textit{Google Cardboard}}\label{subsec-teo-google-cardboard}
 % ---
 
-O \textit{Google Cardboard} é um projeto da empresa Google criada em 2014 para 
+O \textit{Google Cardboard} é um projeto da empresa Google criado em 2014 para 
 fomentar o desenvolvimento de aplicações de realidade virtual. É composta por um 
-\textit{headset} e de um software compatível. A ideia principal do projeto era
+\textit{headset} e de um \textit{software} compatível. A ideia principal do projeto era
 conseguir proporcionar a experiência de realidade virtual da forma mais barata 
 o possível, conforme dito em \cite{cnet:2016:google-cardboard}. Para 
 alcançar tal objetivo, o \textit{headset} é feito de papelão, 
 de tal forma que o único subcomponente mais caro seja as lentes. Adicionalmente, 
 um celular é utilizado tanto como poder de processamento do \textit{headset} 
-quanto como a tela deste. Visto que uma grande parcela da população ja tem um 
+quanto como tela. Visto que uma grande parcela da população ja tem um 
 \textit{smartphone}, estas partes do \textit{Cardboard} vêm de graça.
 
 Quanto ao software compatível, é necessário que este divida a sua saída de 
@@ -361,7 +360,7 @@ venham de pontos de origem separados por uma distância equivalente àquela entr
 as duas pupilas, valor que varia entre 58 mm e 70 mm, de acordo com
 \cite{dodgson:2004:svariation}. Adicionalmente, devido à distorção causada 
 pelas lentes, é necessário que o software aplique a distorção inversa na imagem, 
-de forma que a imagem após passar pela lente fique correta. É também necessário 
+de forma que a imagem fique correta após passar pela lente. É também necessário 
 ler sensores encontrados no dispositivo móvel, como acelerômetros e giroscópios, 
 e disponibilizar estes dados para que se possa implementar o movimento do 
 usuário dentro do jogo ou aplicativo.
