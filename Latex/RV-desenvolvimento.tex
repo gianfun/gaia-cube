@@ -60,7 +60,7 @@ ou preocupações com elementos mais elementares da criação de um jogo digital
 Pelo reduzido tempo de execução disponível para a implementação do projeto,
 limitada familiaridade com as tecnologias escolhidas, e pelo grupo ser
 composto apenas por dois integrantes, decidiu-se manter o escopo do projeto
-pequeno, de forma que o grupo pudesse se focar em criar um jogo que servisse
+pequeno, de forma que o grupo pudesse focar-se em criar um jogo que servisse
 como prova de conceito, fizesse bom uso da mídia e dos dispositivos empregados,
 e implementasse mecânicas diversificadas o suficiente para que testes posteriores
 pudessem ser realizados quanto à sua eficácia.
@@ -390,7 +390,7 @@ dos integrantes do grupo.
 
 Apesar de tudo, o protótipo já estava jogável e era possível modificar 
 o terreno e adicionar ou remover água, como mostrado 
-na \autoref{fig:example-water-earth}
+na \autoref{fig:example-water-earth}.
 
 \begin{figure}[ht]
 	\centering
@@ -425,7 +425,7 @@ Uma vez que os elementos principais foram implementados e o jogo já podia
 ser jogado, focou-se em possibilitar a execução do jogo no dispositivo \textit{Android}
 (que estava, até então, rodando no computador, por dificuldades 
 discutidas na \autoref{sec-primeira-iteracao-prova-conceito}). Visto que
-a primeira opção, que parecia a mais óbvia, não iria funcionar, foi feito um 
+a primeira opção, que parecia a mais óbvia, não funcionaria, foi feito um 
 estudo mais a fundo sobre a arquitetura do sistema, que está descrita
 na \autoref{sec-desenvolvimento-arquitetura}. 
 
@@ -726,7 +726,7 @@ Afortunadamente, a co-orientadora
 deste projeto havia trabalhado anteriormente com o \textit{Leap Motion} 
 no \textit{Android}, e conseguiu uma cópia dos arquivos necessários. 
 Entretanto, nos testes preliminares feitos, não se obteve sucesso na 
-utilização do serviço: O aplicativo do software no celular reconhecia o 
+utilização do serviço: o aplicativo do software no celular reconhecia o 
 controlador conectado, mas aplicativos clientes que utilizariam os 
 dados do controlador não conseguiam conectar-se ao controlador. Por este 
 motivo, esta alternativa foi descartada.
@@ -738,7 +738,7 @@ pela empresa para o \textit{Unity} só conseguia receber os dados do controlador
 por meio da conexão direta, e não pelo servidor \textit{WebSocket}. Portanto, foi 
 necessário modificar o plugin distrubuído, que é software livre e tem seu 
 código fonte disponível, para que ele se conectasse ao servidor \textit{WebSocket}, 
-recebesse os dados estruturados em mensagens JSON, preocessasse-as e 
+recebesse os dados estruturados em mensagens JSON, processasse-as e 
 então as transformasse na estrutura de dados utilizada pelo \textit{Unity}.
 
 Para implementar tais mudanças no código do \textit{plugin}, foi necessário encontrar 
