@@ -200,6 +200,11 @@ public class UniverseController : MonoBehaviour, IConnectionGuru {
         }
         if (Input.GetKeyUp(KeyCode.I))
         {
+            Debug.Log("Reset rotation");
+            GameObject.FindWithTag("Player").GetComponent<Transform>().localRotation = Quaternion.Euler(0, -GvrViewer.Instance.HeadPose.Orientation.eulerAngles.y + 90, 0);
+        }
+        if (Input.GetKeyUp(KeyCode.L))
+        {
             GoToMenu();
         }
 
