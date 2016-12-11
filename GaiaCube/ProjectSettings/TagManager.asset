@@ -16,6 +16,7 @@ TagManager:
   - CanvasScroller
   - Canvas
   - EventSystem
+  - TutorialCanvas
   layers:
   - Default
   - TransparentFX

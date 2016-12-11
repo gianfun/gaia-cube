@@ -27,6 +27,10 @@ public class UniverseController : MonoBehaviour, IConnectionGuru {
     public GameObject WinMessage;
 	public bool goBackToMenu;
 
+    public GameObject tutorialPrefab;
+    private TutorialController mainTutorialController;
+    private TutorialController secondaryTutorialController;
+
     private GameObject cameraScroller;
 
 	IEnumerator StartLevel(int level){
@@ -58,6 +62,15 @@ public class UniverseController : MonoBehaviour, IConnectionGuru {
         vrManager = VRManager.getInstance();
         vrManager.OnToggleVR += (e) => onToggleVR(e);
 
+        if(TutorialScreensNeeded(sm.currentLevel) >= 1)
+        {
+            mainTutorialController = Instantiate(tutorialPrefab).GetComponent<TutorialController>();
+        }
+        if (TutorialScreensNeeded(sm.currentLevel) >= 2)
+        {
+            secondaryTutorialController = Instantiate(tutorialPrefab).GetComponent<TutorialController>();
+        }
+
         cameraScroller = GameObject.FindWithTag("CanvasScroller");
 
         clayWorldTrans = GameObject.FindWithTag ("ClayWorld").GetComponent<Transform>();
@@ -78,7 +91,11 @@ public class UniverseController : MonoBehaviour, IConnectionGuru {
 		RenderSettings.fogColor = skyBlue;
 
 		StartCoroutine(StartLevel (sm.currentLevel));
-	}
+
+        TutorialOnClick(); //Show first tutorial
+
+        //SceneManager.LoadScene("AnimationTest", LoadSceneMode.Additive);
+    }
 
     public void onToggleVR(bool turnOn)
     {
@@ -95,6 +112,20 @@ public class UniverseController : MonoBehaviour, IConnectionGuru {
             GameObject.FindWithTag("Player").GetComponent<Transform>().localRotation = Quaternion.Euler(0, 90, 0);
             GameObject.FindWithTag("BoundingGrid").GetComponent<Transform>().localPosition = new Vector3(7, 11, 0);
             GameObject.FindWithTag("World").GetComponent<Transform>().localPosition = new Vector3(7, 0, 0);
+
+            if (mainTutorialController != null)
+            {
+                mainTutorialController.SetPosition(new Vector3(0, 0, 150), Quaternion.Euler(0, 0, 0), new Vector3(0.2f, 0.2f, 0.2f), new Vector2(775, 438));
+                mainTutorialController.GetComponent<Canvas>().renderMode = RenderMode.WorldSpace;
+                mainTutorialController.HideButton();
+                if (secondaryTutorialController != null)
+                {
+                    secondaryTutorialController.SetPosition(new Vector3(-107, 0, 107), Quaternion.Euler(0, -45, 0), new Vector3(0.2f, 0.2f, 0.2f), new Vector2(775, 438));
+                    secondaryTutorialController.GetComponent<Canvas>().renderMode = RenderMode.WorldSpace;
+                    secondaryTutorialController.HideButton();
+                }
+                
+            }
         }
         else
         {
@@ -104,6 +135,11 @@ public class UniverseController : MonoBehaviour, IConnectionGuru {
             Camera.main.GetComponent<Transform>().localRotation = Quaternion.Euler(45, 0, 0);
             GameObject.FindWithTag("BoundingGrid").GetComponent<Transform>().localPosition = new Vector3(0, 11, 0);
             GameObject.FindWithTag("World").GetComponent<Transform>().localPosition = new Vector3(0, 0, 0);
+            if (mainTutorialController != null)
+            {
+                mainTutorialController.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
+                mainTutorialController.ShowButton();
+            }
         }
 
         vrManager.toggleReticle(sm.leapMode == StateManager.LeapMode.None);
@@ -233,6 +269,75 @@ public class UniverseController : MonoBehaviour, IConnectionGuru {
         return sm.leapIP;
     }
 
+    private int TutorialScreensNeeded(int level)
+    {
+        if(level == 1)
+        {
+            return 2;
+        }
+        if(level == 2 || level == 3 || level == 4)
+        {
+            return 1;
+        }
+        return 0;
+    }
+
+    public void TutorialOnClick()
+    {
+        if (mainTutorialController == null) return; //Has been destroyed
+
+        bool actionTaken = false;
+
+        Debug.Log("TutorialOnClick. Curr level: " + sm.currentLevel);
+        if(sm.currentLevel == 1)
+        {
+            if (sm.shouldUseVR)
+            {
+                mainTutorialController.showTutorial(TutorialController.Tutorials.SELECT);
+                secondaryTutorialController.showTutorial(TutorialController.Tutorials.EARTH);
+                actionTaken = true;
+            }
+            else
+            {
+                if (mainTutorialController.currentTut == TutorialController.Tutorials.NONE)
+                {
+                    mainTutorialController.showTutorial(TutorialController.Tutorials.SELECT);
+                    actionTaken = true;
+                }
+                else if (mainTutorialController.currentTut == TutorialController.Tutorials.SELECT)
+                {
+                    mainTutorialController.showTutorial(TutorialController.Tutorials.EARTH);
+                    actionTaken = true;
+                }
+            }
+        }
+        else if (sm.currentLevel == 3)
+        {
+            if (mainTutorialController.currentTut == TutorialController.Tutorials.NONE)
+            {
+                mainTutorialController.showTutorial(TutorialController.Tutorials.WATER);
+                actionTaken = true;
+            }
+        }
+        else if (sm.currentLevel == 4)
+        {
+            if (mainTutorialController.currentTut == TutorialController.Tutorials.NONE)
+            {
+                mainTutorialController.showTutorial(TutorialController.Tutorials.WIND);
+                actionTaken = true;
+            }
+        }
+
+        if (!actionTaken) //No new tutorial. We should close screen
+        {
+            Destroy(mainTutorialController.gameObject);
+            if (secondaryTutorialController != null)
+            {
+                Destroy(secondaryTutorialController.gameObject);
+            }
+        }
+    }
+    
     public void GoToMenu()
     {
         goBackToMenu = true;
