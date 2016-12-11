@@ -93,10 +93,7 @@ public class GestureManager : MonoBehaviour {
 				extrudedLength = 0f;
 			}
 
-
-
-
-            if (left.isFist && right.isFist)
+            if (left.isFist && right.isFist && left.cntrlHandNormal.y < -0.3f && right.cntrlHandNormal.y < -0.3f)
             {
                 changedLateralMovement = true;
                 if (!bothHandsWereFists)

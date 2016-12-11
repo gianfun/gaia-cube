@@ -65,7 +65,8 @@ public class PlayerController : MonoBehaviour {
                 changedLateralMovement = true;
                 lateralMovementDistance = GM.lateralMovementDistance;
                 lastTriggerTime = -TRIGGER_COOLDOWN;
-            } else if (GM.left.isPinching && GM.right.isPinching) {
+            }
+            if (GM.left.isPinching && GM.right.isPinching) {
 				doSelect = true;
 				ray_topleft = new Ray (cameraTrans.position, GM.left.pinchPosition - cameraTrans.position);
 				ray_bottomright = new Ray (cameraTrans.position, GM.right.pinchPosition - cameraTrans.position);

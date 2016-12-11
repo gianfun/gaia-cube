@@ -211,6 +211,9 @@ public class UniverseController : MonoBehaviour, IConnectionGuru {
         if (playerController.lateralMovementDistance != 0f)
         {
             cameraSpeed = Mathf.Clamp(playerController.lateralMovementDistance*2, -1.5f, +1.5f);
+        } else if(playerController.lateralMovementDistance == 0f && playerController.changedLateralMovement) //If using leap, ignore mouse movement.
+        {
+            cameraSpeed = 0;
         }
 
         if (cameraSpeed != 0)

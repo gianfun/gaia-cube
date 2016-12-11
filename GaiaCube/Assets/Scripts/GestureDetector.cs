@@ -79,6 +79,7 @@ public class GestureDetector : MonoBehaviour {
 			doRotate = false;
 			isPinching = false;
 			isOpenHand = false;
+			isFist = false;
 			isPaw = false;
 			extendedFingers = 0;
 			rawExtendedFingers = 0;
@@ -163,7 +164,7 @@ public class GestureDetector : MonoBehaviour {
                     middleFingerToPalmDistance = Vector3.Distance(finger.TipPosition.ToVector3(), palmPosition);
                     angleMiddleFingerAndPalmNormal = Vector3.Dot(finger.Bone(Leap.Bone.BoneType.TYPE_PROXIMAL).Direction.ToVector3(), handNormal);
                     angleMiddleFingerProximalAndIntermediate = Vector3.Dot(finger.Bone(Leap.Bone.BoneType.TYPE_INTERMEDIATE).Direction.ToVector3(), finger.Bone(Leap.Bone.BoneType.TYPE_PROXIMAL).Direction.ToVector3());
-                    if (angleMiddleFingerAndPalmNormal > 0.9f && angleMiddleFingerProximalAndIntermediate < 0.15)
+                    if (angleMiddleFingerAndPalmNormal > 0.9f && angleMiddleFingerProximalAndIntermediate < 0.4)
                     {
                         isFist = true;
                     }
