@@ -120,7 +120,7 @@ public class GestureDetector : MonoBehaviour {
 
 			//*-- Pinch Check --*//
 			//If we are pinching, calculate pinch position.
-			if (hand.PinchDistance < 30f && cntrlHandNormal.y < 0) {
+			if (hand.PinchDistance < 30f && cntrlHandNormal.y < 0 && Mathf.Abs(cntrlHandNormal.x) > 0.7f) {
 				for (int i = 0; i < fingers.Count; i++) {
 					var finger = fingers [i];
 					//Get position of thumb and index
