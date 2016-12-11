@@ -180,7 +180,7 @@ public class GestureDetector : MonoBehaviour {
 				isOpenHand = true;
 			}
 			//Check if is currently paw
-			if (isOpenHand && fingerDistance < 0.025f) {
+			if (isOpenHand && fingerDistance < 0.045f) {
 				pawLeeway = 0;
 				isPaw = true;
 			} else { //If not currently paw, wait a bit to set not-paw (smoothing to obtain better results)

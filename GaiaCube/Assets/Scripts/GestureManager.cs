@@ -59,31 +59,28 @@ public class GestureManager : MonoBehaviour {
 		SetBoolsToFalse ();
 
         if (gd1.hand != null && gd2.hand != null) {
-			
 
-			Vector3 a = (transform.rotation * left.hand.PalmNormal.ToVector3 ()).normalized;
-
-			if (left.currentAction != GestureDetector.Action.None) {
-				if (left.currentAction == GestureDetector.Action.Fire) {
+			if (right.currentAction != GestureDetector.Action.None) {
+				if (right.currentAction == GestureDetector.Action.Fire) {
 					doFire = true;
-				} else if (left.currentAction == GestureDetector.Action.Water) {
+				} else if (right.currentAction == GestureDetector.Action.Water) {
 					doWater = true;
-				} else if (left.currentAction == GestureDetector.Action.Wind) {
+				} else if (right.currentAction == GestureDetector.Action.Wind) {
 					doWind = true;
 				} 
 			
 			}
 
-			if (left.isPaw) {
-				if (left.wasPaw) {
-                    extrudedLength += left.palmVelocity.y;
+			if (right.isPaw) {
+				if (right.wasPaw) {
+                    extrudedLength += right.palmVelocity.y;
                     //Is palm facing down or up
-                    if (left.cntrlHandNormal.y > 0.6f && extrudedLength > moveEarthYThreshold)
+                    if (right.cntrlHandNormal.y > 0.4f && extrudedLength > moveEarthYThreshold)
                     {
                         moveEarthUp = true;
                         extrudedLength = 0;
                     }
-                    else if (left.cntrlHandNormal.y < -0.6f && extrudedLength < -moveEarthYThreshold)
+                    else if (right.cntrlHandNormal.y < -0.4f && extrudedLength < -moveEarthYThreshold)
                     {
                         moveEarthDown = true;
                         extrudedLength = 0;
