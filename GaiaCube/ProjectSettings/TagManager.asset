@@ -16,7 +16,6 @@ TagManager:
   - CanvasScroller
   - Canvas
   - EventSystem
-  - TutorialCanvas
   layers:
   - Default
   - TransparentFX
@@ -29,7 +28,7 @@ TagManager:
   - SelectorPlane
   - ClayWorld
   - GoalWorld
-  - 
+  - Tutorial
   - 
   - 
   - 

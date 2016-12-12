@@ -2883,7 +2883,7 @@ MonoBehaviour:
   leapController: {fileID: 1008686133}
   WinMessage: {fileID: 440308833}
   goBackToMenu: 0
-  tutorialPrefab: {fileID: 1000014276785498, guid: e646ef86f336117478ee19f8da043f83,
+  tutorialPanelPrefab: {fileID: 1000012544544562, guid: 1396221de049a1b4fbc7453407844380,
     type: 2}
 --- !u!1001 &492160217
 Prefab:

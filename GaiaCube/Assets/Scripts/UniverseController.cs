@@ -27,9 +27,9 @@ public class UniverseController : MonoBehaviour, IConnectionGuru {
     public GameObject WinMessage;
 	public bool goBackToMenu;
 
-    public GameObject tutorialPrefab;
-    private TutorialController mainTutorialController;
-    private TutorialController secondaryTutorialController;
+    public GameObject tutorialPanelPrefab;
+    private TutorialPanelController mainTutorialController;
+    private TutorialPanelController secondaryTutorialController;
 
     private GameObject cameraScroller;
 
@@ -64,11 +64,11 @@ public class UniverseController : MonoBehaviour, IConnectionGuru {
 
         if(TutorialScreensNeeded(sm.currentLevel) >= 1)
         {
-            mainTutorialController = Instantiate(tutorialPrefab).GetComponent<TutorialController>();
+            mainTutorialController = Instantiate(tutorialPanelPrefab).GetComponent<TutorialPanelController>();
         }
         if (TutorialScreensNeeded(sm.currentLevel) >= 2)
         {
-            secondaryTutorialController = Instantiate(tutorialPrefab).GetComponent<TutorialController>();
+            secondaryTutorialController = Instantiate(tutorialPanelPrefab).GetComponent<TutorialPanelController>();
         }
 
         cameraScroller = GameObject.FindWithTag("CanvasScroller");
@@ -115,13 +115,13 @@ public class UniverseController : MonoBehaviour, IConnectionGuru {
 
             if (mainTutorialController != null)
             {
-                mainTutorialController.SetPosition(new Vector3(0, 0, 150), Quaternion.Euler(0, 0, 0), new Vector3(0.2f, 0.2f, 0.2f), new Vector2(775, 438));
-                mainTutorialController.GetComponent<Canvas>().renderMode = RenderMode.WorldSpace;
+                mainTutorialController.SetPosition(new Vector3(0, 0, 150), Quaternion.Euler(0, 0, 0), new Vector3(0.2f, 0.2f, 0.2f), new Vector2(800, 500));
+                mainTutorialController.canvas.renderMode = RenderMode.WorldSpace;
                 mainTutorialController.HideButton();
                 if (secondaryTutorialController != null)
                 {
-                    secondaryTutorialController.SetPosition(new Vector3(-107, 0, 107), Quaternion.Euler(0, -45, 0), new Vector3(0.2f, 0.2f, 0.2f), new Vector2(775, 438));
-                    secondaryTutorialController.GetComponent<Canvas>().renderMode = RenderMode.WorldSpace;
+                    secondaryTutorialController.SetPosition(new Vector3(-107, 0, 107), Quaternion.Euler(0, -45, 0), new Vector3(0.2f, 0.2f, 0.2f), new Vector2(800, 500));
+                    secondaryTutorialController.canvas.renderMode = RenderMode.WorldSpace;
                     secondaryTutorialController.HideButton();
                 }
                 
@@ -137,7 +137,8 @@ public class UniverseController : MonoBehaviour, IConnectionGuru {
             GameObject.FindWithTag("World").GetComponent<Transform>().localPosition = new Vector3(0, 0, 0);
             if (mainTutorialController != null)
             {
-                mainTutorialController.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
+                mainTutorialController.canvas.renderMode = RenderMode.ScreenSpaceCamera;
+
                 mainTutorialController.ShowButton();
             }
         }
@@ -301,37 +302,37 @@ public class UniverseController : MonoBehaviour, IConnectionGuru {
         {
             if (sm.shouldUseVR)
             {
-                mainTutorialController.showTutorial(TutorialController.Tutorials.SELECT);
-                secondaryTutorialController.showTutorial(TutorialController.Tutorials.EARTH);
+                mainTutorialController.showTutorial(TutorialPanelController.Tutorials.SELECT);
+                secondaryTutorialController.showTutorial(TutorialPanelController.Tutorials.EARTH);
                 actionTaken = true;
             }
             else
             {
-                if (mainTutorialController.currentTut == TutorialController.Tutorials.NONE)
+                if (mainTutorialController.currentTut == TutorialPanelController.Tutorials.NONE)
                 {
-                    mainTutorialController.showTutorial(TutorialController.Tutorials.SELECT);
+                    mainTutorialController.showTutorial(TutorialPanelController.Tutorials.SELECT);
                     actionTaken = true;
                 }
-                else if (mainTutorialController.currentTut == TutorialController.Tutorials.SELECT)
+                else if (mainTutorialController.currentTut == TutorialPanelController.Tutorials.SELECT)
                 {
-                    mainTutorialController.showTutorial(TutorialController.Tutorials.EARTH);
+                    mainTutorialController.showTutorial(TutorialPanelController.Tutorials.EARTH);
                     actionTaken = true;
                 }
             }
         }
         else if (sm.currentLevel == 3)
         {
-            if (mainTutorialController.currentTut == TutorialController.Tutorials.NONE)
+            if (mainTutorialController.currentTut == TutorialPanelController.Tutorials.NONE)
             {
-                mainTutorialController.showTutorial(TutorialController.Tutorials.WATER);
+                mainTutorialController.showTutorial(TutorialPanelController.Tutorials.WATER);
                 actionTaken = true;
             }
         }
         else if (sm.currentLevel == 4)
         {
-            if (mainTutorialController.currentTut == TutorialController.Tutorials.NONE)
+            if (mainTutorialController.currentTut == TutorialPanelController.Tutorials.NONE)
             {
-                mainTutorialController.showTutorial(TutorialController.Tutorials.WIND);
+                mainTutorialController.showTutorial(TutorialPanelController.Tutorials.WIND);
                 actionTaken = true;
             }
         }
