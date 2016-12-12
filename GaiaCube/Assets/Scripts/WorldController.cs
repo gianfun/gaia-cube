@@ -231,9 +231,9 @@ public class WorldController : MonoBehaviour {
 	public virtual void StartRotateWorld(bool rotateLeft){
 		isRotating = true;
 		if (rotateLeft) {
-			currentRotation = (currentRotation + 1) % 4;
-		} else {
 			currentRotation = (currentRotation - 1 + 4) % 4;
+		} else {
+			currentRotation = (currentRotation + 1) % 4;
 		}
 		targetRotation =  Quaternion.FromToRotation(rotations[0], rotations[currentRotation]);
 		initialRotation = this.transform.rotation;
