@@ -227,9 +227,10 @@ namespace LeapInternal
         {
             if (this._isRunning)
             {
-                ws.Close();
+                
                 this._isRunning = false;
                 this._polster.Join();
+                ws.Close();
             }
         }
 
