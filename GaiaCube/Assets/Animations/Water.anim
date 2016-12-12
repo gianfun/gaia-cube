@@ -153,9 +153,9 @@ AnimationClip:
   m_PPtrCurves:
   - curve:
     - time: 0
-      value: {fileID: 21300000, guid: 5f13af0b8029cd141bab03fe662a7b01, type: 3}
-    - time: 1.5
       value: {fileID: 21300000, guid: 2ec7dc21ddb4a5f4885b44f9703a6919, type: 3}
+    - time: 1.5
+      value: {fileID: 21300000, guid: 5f13af0b8029cd141bab03fe662a7b01, type: 3}
     attribute: m_Sprite
     path: Panel/Water/Left Hand
     classID: 114
@@ -204,8 +204,8 @@ AnimationClip:
       customType: 0
       isPPtrCurve: 1
     pptrCurveMapping:
-    - {fileID: 21300000, guid: 5f13af0b8029cd141bab03fe662a7b01, type: 3}
     - {fileID: 21300000, guid: 2ec7dc21ddb4a5f4885b44f9703a6919, type: 3}
+    - {fileID: 21300000, guid: 5f13af0b8029cd141bab03fe662a7b01, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
