@@ -120,7 +120,7 @@ public class GestureDetector : MonoBehaviour {
 
 			//*-- Pinch Check --*//
 			//If we are pinching, calculate pinch position.
-			if (hand.PinchDistance < 30f && cntrlHandNormal.y < 0 && Mathf.Abs(cntrlHandNormal.x) > 0.7f) {
+			if (hand.PinchDistance < 30f && cntrlHandNormal.y < 0.4f && Mathf.Abs(cntrlHandNormal.x) > 0.6f) {
 				for (int i = 0; i < fingers.Count; i++) {
 					var finger = fingers [i];
 					//Get position of thumb and index
@@ -225,11 +225,11 @@ public class GestureDetector : MonoBehaviour {
 			}
 
 			if (Time.time - startedElementalActionTime > delayBetweenActions) {
-				if (extendedFingers == 0 && lastTipVelocitySum / lastPalmVelocitySum > 5f && lastPalmVelocitySum < 1f) {
-					if (handNormal.normalized.y < -0.9f) { //Is facing down
+				if (extendedFingers == 0 && isFist && lastTipVelocitySum / lastPalmVelocitySum > 20f && lastPalmVelocitySum < 1f) {
+					if (handNormal.normalized.y < -0.8f) { //Is facing down
 						currentAction = Action.Water;
 						startedElementalActionTime = Time.time;
-					} else if (handNormal.normalized.y > 0.9f) { //Is facing up
+					} else if (handNormal.normalized.y > 0.8f) { //Is facing up
 						currentAction = Action.Fire;
 						startedElementalActionTime = Time.time;
 					} else if (facingInwards) { //Is facing inwards

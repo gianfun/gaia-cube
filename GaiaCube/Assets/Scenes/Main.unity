@@ -6052,7 +6052,7 @@ MonoBehaviour:
   doWind: 0
   changedLateralMovement: 0
   lateralMovementDistance: 0
-  moveEarthYThreshold: 2
+  moveEarthYThreshold: 4
   leapController: {fileID: 0}
   infoText: {fileID: 0}
   left: {fileID: 0}

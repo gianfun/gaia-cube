@@ -75,12 +75,12 @@ public class GestureManager : MonoBehaviour {
 				if (right.wasPaw) {
                     extrudedLength += right.palmVelocity.y;
                     //Is palm facing down or up
-                    if (right.cntrlHandNormal.y > 0.4f && extrudedLength > moveEarthYThreshold)
+                    if (right.cntrlHandNormal.y > 0.7f && extrudedLength > moveEarthYThreshold)
                     {
                         moveEarthUp = true;
                         extrudedLength = 0;
                     }
-                    else if (right.cntrlHandNormal.y < -0.4f && extrudedLength < -moveEarthYThreshold)
+                    else if (right.cntrlHandNormal.y < -0.7f && extrudedLength < -moveEarthYThreshold)
                     {
                         moveEarthDown = true;
                         extrudedLength = 0;
