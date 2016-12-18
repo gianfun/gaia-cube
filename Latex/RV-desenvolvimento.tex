@@ -57,23 +57,82 @@ ou preocupações com elementos mais elementares da criação de um jogo digital
 \subsubsection{Alternativas consideradas}
 % ---
 
-Alguns outros dispositivos, de função semelhantes aos citados anteriormente, foram considerados como potenciais alternativas àqueles escolhidos para a realização deste trabalho.
+Alguns outros dispositivos, de função semelhantes aos 
+citados anteriormente, foram considerados como potenciais 
+alternativas àqueles escolhidos para a realização deste 
+trabalho.
 
-Como alternativa para a implementação de controles gestuais, considerou-se duas principais alternativas: o controlador por infra-vermelho \textit{Leap Motion} e o bracelete de controle por contrações musculares \textit{Myo}. 
+Como alternativa para a implementação de controles 
+gestuais, considerou-se duas principais alternativas: 
+o controlador por infra-vermelho \textit{Leap Motion} 
+e o bracelete de controle por contrações musculares 
+\textit{Myo}. 
 
-O controlador \textit{Myo}, que funciona medindo a contração e o relaxamento de músculos no braço do usuário, permitindo detectar gestos e posicionamento do braço e das mãos. Sua principal vantagem sobre o \textit{Leap Motion} é não estar restrito a uma única área de operação: enquanto o \textit{Leap Motion} precisa que o usuário mantenha suas mãos dentro da área de captura de sua câmera infra-vermelho, o \textit{Myo} é capaz de detectar movimentos como quer que o usuário se posicione. 
+O controlador \textit{Myo}, que funciona medindo a 
+contração e o relaxamento de músculos no braço do 
+usuário, permitindo detectar gestos e posicionamento 
+do braço e das mãos. Sua principal vantagem sobre o 
+\textit{Leap Motion} é não estar restrito a uma 
+única área de operação: enquanto o \textit{Leap Motion} 
+precisa que o usuário mantenha suas mãos dentro da 
+área de captura de sua câmera infra-vermelho, o 
+\textit{Myo} é capaz de detectar movimentos como 
+quer que o usuário se posicione. 
 
-Contudo, este dispositivo apresentou uma série de restrições que o apontaram como incompatível com o projeto. Primeiramente, enquanto o \textit{Myo} é mais adequando que o \textit{Leap Motion} para a detecção de gestos maiores, que podem extrapolar a restrita área de operação deste, ele é menos capaz de detectar gestos finos e, necessários para o controle preciso de um jogo nos moldes projetado. 
+Contudo, este dispositivo apresentou uma série de 
+restrições que o apontaram como incompatível com o 
+projeto. Primeiramente, enquanto o \textit{Myo} é 
+mais adequando que o \textit{Leap Motion} para a 
+detecção de gestos maiores, que podem extrapolar 
+a restrita área de operação deste, ele é menos 
+capaz de detectar gestos finos e, necessários para 
+o controle preciso de um jogo nos moldes projetado. 
 
-Além disso o \textit{Myo} tem um custo consideravelmente mais elevado que o \textit{Leap Motion}, custando USD 199,00 \cite{myo:2016:store} por unidade, enquanto o \textit{Leap Motion} está precificado em apenas USD 79,99  \cite{leap:2016:store}. Se considerarmos que para gestos com duas mãos seriam necessários dois braceletes \textit{Myo} por usuário, se custo salta então para USD 398,00.
+Além disso o \textit{Myo} tem um custo 
+consideravelmente mais elevado que o \textit{Leap Motion}, 
+custando USD 199,00 \cite{myo:2016:store} por unidade, 
+enquanto o \textit{Leap Motion} está precificado em 
+apenas USD 79,99  \cite{leap:2016:store}. Se 
+considerarmos que para gestos com duas mãos seriam 
+necessários dois braceletes \textit{Myo} por 
+usuário, se custo salta então para USD 398,00.
 
-Quanto a dispositivos de realidade virtual, duas alternativas ao \textit{Google Cardboard} foram trazidas em questão: os \textit{headsets} \textit{Oculus Rift} e o \textit{HTC} Vive. 
+Quanto a dispositivos de realidade virtual, duas 
+alternativas ao \textit{Google Cardboard} foram 
+trazidas em questão: os \textit{headsets} 
+\textit{Oculus Rift} e o \textit{HTC} Vive. 
 
-Dentre estes o \textit{HTC Vive} oferece a experiência mais precisa, sendo composto por não só um \textit{headset}, mas também sensores individuais a serem dispostos pelo ambiente para detectar movimentação relativa do jogador. Contudo, visto que o jogo contemplado neste projeto visa ser aplicável em sala de aula, um equipamento que necessite um infra-estrutura tão complexa seria incompatível com o que essa estipulação. Há também uma incompatibilidade de preços, pois uma unidade de \textit{HTC Vive} custaria \$799,00  \cite{vive:2016:store}, um valor proibitivo para uso em larga escala, como pretendido pelo projeto.
+Dentre estes o \textit{HTC Vive} oferece a 
+experiência mais precisa, sendo composto por não 
+só um \textit{headset}, mas também sensores 
+individuais a serem dispostos pelo ambiente para 
+detectar movimentação relativa do jogador. 
+Contudo, visto que o jogo contemplado neste projeto 
+visa ser aplicável em sala de aula, um equipamento 
+que necessite um infra-estrutura tão complexa seria 
+incompatível com o que essa estipulação. Há também 
+uma incompatibilidade de preços, pois uma unidade de 
+\textit{HTC Vive} custaria \$799,00  
+\cite{vive:2016:store}, um valor proibitivo para 
+uso em larga escala, como pretendido pelo projeto.
 
-O \textit{Oculus Rift}, por outro lado, não necessita de sensores externos para operar, operando apenas com um \textit{headset}. Apesar de sua performance ser superior à do \textit{Google Cardboard} - visto que aquele é um \textit{hardware} dedicado à realidade virtual enquanto este vale-se somente do uso de um celular para produzir o efeito tridimensional - o \textit{Oculus Rift} ainda possui um preço que extrapola o que foi considerado razoável para implementação em sala de aula: USD 599,00  \cite{rift:2016:store} por unidade.
+O \textit{Oculus Rift}, por outro lado, não 
+necessita de sensores externos para operar, 
+operando apenas com um \textit{headset}. Apesar 
+de sua performance ser superior à do 
+\textit{Google Cardboard} - visto que aquele é um 
+\textit{hardware} dedicado à realidade virtual 
+enquanto este vale-se somente do uso de um celular 
+para produzir o efeito tridimensional - o 
+\textit{Oculus Rift} ainda possui um preço que 
+extrapola o que foi considerado razoável para 
+implementação em sala de aula: USD 599,00  
+\cite{rift:2016:store} por unidade.
 
-O dispositivo escolhido, o Google Cardboard, pode ser adquirido por a partir de USD 15,00  \cite{cardboard:2016:store}, uma faixa de preço muito mais compatível com a ideia original do projeto.
+O dispositivo escolhido, o Google Cardboard, pode 
+ser adquirido por a partir de USD 15,00  
+\cite{cardboard:2016:store}, uma faixa de preço 
+muito mais compatível com a ideia original do projeto.
 
 % ---
 \subsection{Delimitação do escopo}\label{subsec-delimitacao-escopo}
