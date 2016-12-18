@@ -803,3 +803,218 @@ seguem as especificações de \textit{Hardware} e \textit{Software}:
 		\item celular com sistema operacional Android 4.4 em diante.
 	\end{alineas}
 \end{alineas}
+
+
+% ---
+\section{Reconhecimento de Gestos}\label{sec-desenvolvimento-gestos}
+% ---
+
+Um dos principais desafios no desenvolvimento do projeto foi a programação 
+do reconhecimento de gestos. Conforme visto na 
+\autoref{subsubsec-teo-gestos}, o controlador \textit{Leap Motion} 
+capta as mãos por meio de suas câmeras e transforma-as em um modelo 
+baseado na anatomia humana. A partir deste modelo, utilizando a posição 
+e orientação de cada osso do dedo e da palma da mão, é possível extrair gestos. 
+
+No projeto, foram definidos os gestos que podem ser vistos no \autoref{tabela:gestos}
+
+\begin{quadro}[htb] \scriptsize
+	\centering
+	\caption[Gestos definidos]{Gestos definidos}
+	
+	\begin{tabular}{|>{\centering\arraybackslash}m{2.1cm}|>{\centering\arraybackslash}m{6.4cm}|>{\centering\arraybackslash}m{6.4cm}|}
+		\hline 
+		\textbf{Nome} & \textbf{Gesto} & \textbf{Efeito} \\
+		\hline 
+		Selecionar uma área
+		&Para cada mão, juntar o indicador ao polegar e então afastar ou 
+		aproximar as mãos
+		&A seção do mundo que está visualmente entre a junção dos dedos 
+		das duas mãos é selecionado
+		\\ \hline 
+		Abaixar terra
+		&Movimentar a mão direita de cima para baixo, com a palma 
+		apontando para baixo
+		&Abaixa a terra em uma unidade para cada bloco de terra selecionado
+		\\ \hline 
+		Levantar terra
+		&Movimentar a mão direita de baixo para cima, com a palma 
+		apontando para cima
+		&Levanta a terra em uma unidade para cada bloco de terra selecionado
+		\\ \hline 
+		Chover
+		&A partir da mão direita parada, com a palma para baixo, 
+		fechar a mão em um punho
+		&Cria o elemento água sobre os blocos atualmente selecionados
+		\\ \hline 
+		Fogo
+		&A partir da mão direita parada, com a palma para cima, fechar 
+		a mão em um punho
+		&Cria o elemento fogo sobre os blocos atualmente selecionados.
+		\\ \hline 
+		Vento
+		&A partir da mão direita parada, com a palma para a esquerda, 
+		fechar a mão em um punho
+		&Cria vento sobre o mundo todo
+		\\ \hline 
+		Girar para esquerda
+		&Fazer um movimento contínuo com a mão direita, começando com a 
+		palma apontando para a esquerda e terminando com a palma apontando 
+		para o corpo do usuário
+		&Rotaciona ambos os mundos no sentido horário, em relação a um 
+		observador que esteja acima dos mundos olhando para baixo.
+		\\ \hline 
+		Girar para direita
+		&Fazer um movimento contínuo com a mão esquerda, começando com 
+		a palma apontando para a direita e terminando com a palma apontando 
+		para o corpo do usuário
+		&Rotaciona ambos os mundos no sentido anti-horário, em relação a 
+		um observador que esteja acima dos mundos olhando para baixo.
+		\\ \hline 
+		Mover câmera
+		&Com ambas as mãos com suas palmas para baixo, fechá-las em punhos 
+		e então movimentar as mãos para a esquerda ou direita
+		&No modo sem realidade virtual, serve para movimentar a câmera do 
+		jogo para a direita e esquerda, para navegar entre ambos os mundos
+		\\ \hline 
+	\end{tabular} 
+	
+	\legend{\fonteAP}
+	\label{tabela:gestos}
+\end{quadro}
+
+Para se detectar os gestos, foi necessário definir alguma configurações 
+das mãos, que podem ser vistos no \autoref{tabela:gestos-configuracoes}. 
+Para a definição destas configurações criou-se um sistema ortonormal 
+de coordenadas, definido em relação ao controlador Leap Motion. Neste 
+sistema, o eixo x fica na direção da dimensão mais longa do controlador, 
+o eixo y é aquele perpendicular ao plano que contém as câmeras do 
+controlador e o eixo z é paralelo ao plano que contém as câmeras e 
+aumenta no sentido que vai para longe do jogador. Para a mão esquerda, 
+o eixo x cresce para a direita, enquanto para a mão direita o eixo cresce 
+para a esquerda.
+
+Adicionalmente, define-se que o vetor normal da mão é o vetor unitário 
+perpendicular à palma da mão, e segue o mesmo sistema de coordenadas 
+definido acima.
+
+\begin{quadro}[htb] \scriptsize
+	\centering
+	\caption[Configurações definidas]{Configurações definidas}
+	
+	\begin{tabular}{|>{\centering\arraybackslash}m{2.1cm}|>{\centering\arraybackslash}m{5.4cm}|>{\centering\arraybackslash}m{7.4cm}|}
+		\hline 
+		\textbf{Nome} & \textbf{Descrição} & \textbf{Configuração} \\
+		\hline 
+		Punho
+		&Mão em um punho
+		&Caso o menor ângulo entre o vetor normal da mão e o vetor 
+		paralelo à falange proximal do dedo médio seja menor que 25º 
+		e que o menor ângulo entre o vetor paralelo à falange proximal 
+		do dedo médio e o vetor paralelo à falange média do dedo médio 
+		seja maior que 60º
+		\\ \hline 
+		Pinça
+		&Dedo indicador e polegar encostando, com a palma virada para 
+		dentro, em relação ao corpo do jogador
+		&Caso a distância entre as pontas dos dedos indicador e polegar 
+		seja menor que 3cm, e o vetor normal da mão tenha sua componente 
+		em x maior que 0,6 e sua componente em y menor que 0,4
+		\\ \hline 
+		Mão aberta
+		&Mão com todos os dedos esticados, aonde 'esticado' é definido 
+		pelo Leap Motion e disponibilizado no modelo
+		&Caso a propriedade booleana 'isExtended' de cada um dos cinco 
+		dedos do modelo recebido pelo Leap Motion seja verdadeira
+		\\ \hline 
+		Mão esticada
+		&Mão aberta, com os dedos esticados e juntos
+		&Caso a mão esteja aberta e a distância entre a ponta do dedo 
+		mínimo e do dedo indicador seja menor que a soma dos comprimentos 
+		das falanges do dedo anelar
+		\\ \hline 
+		Mão virada para dentro
+		&Mão direita com a palma para a esquerda ou mão esquerda com 
+		a palma para a direita
+		&Caso a componente x do vetor normal da mão seja maior que 0,9
+		\\ \hline 		
+		Mão virada para cima
+		&Mão com a palma para cima
+		&Caso a componente y do vetor normal da mão seja maior que 0,4
+		\\ \hline 
+		Mão virada para baixo
+		&Mão com a palma para baixo
+		&Caso a componente y do vetor normal da mão seja menor que -0,4
+		\\ \hline 
+	\end{tabular} 
+	
+	\legend{\fonteAP}
+	\label{tabela:gestos-configuracoes}
+\end{quadro}
+
+Uma vez definido estas configurações, é possível definir os gestos mais 
+facilmente. A definição do reconhecimento de cada gesto pode ser vista 
+no \autoref{tabela:gestos-reconhecimento}.
+
+\begin{quadro}[htb] \scriptsize
+	\centering
+	\caption[Reconhecimento de gestos]{Reconhecimento de gestos}
+	
+	\begin{tabular}{|>{\centering\arraybackslash}m{2.1cm}|>{\centering\arraybackslash}m{12.8cm}|}
+		\hline 
+		\textbf{Nome} & \textbf{Gesto} \\
+		\hline 
+		Selecionar uma área
+		&Ambas as mãos na configuração de pinça. Basta calcular o 
+		ponto médio entre as pontas dos dedos indicador e polegar 
+		para se obter o ponto exato sendo selecionado
+		\\ \hline 
+		Abaixar terra
+		&Mão direita esticada, com o componente y do vetor perpendicular 
+		à palma da mão negativa. A posição inicial quando a mão fica 
+		esticada é gravada. Caso a mão se mova 5cm para baixo e 
+		continue esticada, a ação de 'abaixar terra' é disparada
+		\\ \hline 
+		Levantar terra
+		&Mão direita esticada, com o componente y do vetor normal da 
+		mão positiva. A posição inicial quando a mão fica esticada é 
+		gravada. Caso a mão se mova 5cm para cima e continue esticada, 
+		a ação de 'levantar terra' é disparada
+		\\ \hline 
+		Chover
+		&Mão direita aberta, virada para baixo, seguido da mão direita 
+		em um punho, ainda virada para baixo
+		\\ \hline 
+		Fogo
+		&Mão direita aberta, virada para cima, seguido da mão direita 
+		em um punho, ainda virada para cima
+		\\ \hline 		
+		Vento
+		&Mão direita aberta, virada para dentro, seguida de mão direita 
+		em um punho, ainda virada para dentro
+		\\ \hline 
+		Mover câmera
+		&Ambas as mãos viradas para baixo. No momento em que ambas 
+		se fecharem em punhos, grava-se a posição de cada mão. 
+		Enquanto ambas as mãos continuam em punhos, calcula-se quanto 
+		cada mão se moveu na direção x e soma-se esta mudanças. 
+		Caso o valor seja positivo, a câmera se move para a direita. 
+		Caso contrário, para a esquerda. No momento no qual pelo 
+		menos uma das mãos deixa de ser um punho, o movimento da câmera para
+		\\ \hline 
+		Girar para esquerda
+		&Mão direita aberta, virada para dentro, seguida de mão 
+		direita aberta, com a componente z do vetor normal da mão 
+		menor que -0,5
+		\\ \hline 
+		Girar para direita
+		&Mão esquerda aberta, virada para dentro, seguida de mão 
+		direita aberta, com a componente z do vetor normal da mão 
+		menor que -0,5
+		\\ \hline 
+	\end{tabular} 
+	
+	\legend{\fonteAP}
+	\label{tabela:gestos-reconhecimento}
+\end{quadro}
+
